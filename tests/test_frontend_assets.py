@@ -49,6 +49,10 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "samplerLengthLabel" in js
     assert "groupBaseProducts" in js
     assert "productCardTemplate" in js
+    assert "colorSwatchTemplate" in js
+    assert "colorSwatchStyle" in js
+    assert "baseColorFor" in js
+    assert "foldText" in js
     assert "presentationTemplate" in js
     assert "productBaseName" in js
     assert "quickLineValues" in js
@@ -103,6 +107,7 @@ def test_styles_are_compact_and_responsive():
     assert ".offer-main" in css
     assert ".presentation-list" in css
     assert ".presentation-row" in css
+    assert ".color-swatch" in css
     assert ".review-reason" in css
     assert "scroll-behavior: smooth" in css
     assert ".footer-provider:target" in css

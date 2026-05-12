@@ -32,7 +32,7 @@ COLORS = {
     "MARRON": "Marron",
     "NATURAL": "Natural",
     "TRANSPARENTE": "Transparente",
-    "CRISTAL": "Transparente",
+    "CRISTAL": "Cristal",
 }
 BRANDS = {
     "GRILON3": "Grilon3",

@@ -48,6 +48,16 @@ def test_keeps_other_weights_separate():
     assert fields.weight_g == 750
 
 
+def test_keeps_special_colors_separate():
+    natural = normalize_record(raw("PLA Natural 1kg 1.75mm"))
+    transparent = normalize_record(raw("PLA Transparente 1kg 1.75mm"))
+    crystal = normalize_record(raw("PLA Cristal 1kg 1.75mm"))
+
+    assert natural.color == "Natural"
+    assert transparent.color == "Transparente"
+    assert crystal.color == "Cristal"
+
+
 def test_product_id_includes_brand_and_format():
     fields = normalize_record(raw("PLA Silk Azul 1kg 1.75mm Grilon3"))
 

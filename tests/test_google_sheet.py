@@ -48,3 +48,18 @@ def test_parse_sheet_csv_supports_mundoinsumos_headers():
     assert items[0].stock_quantity == 114
     assert items[1].stock_quantity is None
     assert items[2].stock_quantity is None
+
+
+def test_parse_sheet_csv_repairs_mojibake_headers_from_export_response():
+    csv_text = "\n".join(
+        [
+            "CÃ³digo,DescripciÃ³n,CÃ³digo,STOCK REAL,,",
+            "M10ING175CJ,GRILON3 PLA 02_G1_NEGRO 1.75 MM X 1 KG,7798049652795,114,,",
+        ]
+    )
+    source = SOURCES["mundoinsumos"]
+
+    items = parse_sheet_csv(csv_text, source, updated_at="2026-05-12T12:00:00-03:00")
+
+    assert len(items) == 1
+    assert items[0].stock_quantity == 114

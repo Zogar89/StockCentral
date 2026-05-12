@@ -28,6 +28,7 @@ def fetch_sheet_items(
     url = build_csv_export_url(source.sheet_id, source.gid)
     response = requests.get(url, timeout=timeout_seconds)
     response.raise_for_status()
+    response.encoding = "utf-8"
     return parse_sheet_csv(response.text, source, updated_at)
 
 
@@ -118,6 +119,16 @@ def _is_non_product_row(original_name: str, stock_quantity: int | None) -> bool:
 
 
 def _normalize_header(value: str) -> str:
+    value = _repair_mojibake(value)
     normalized = unicodedata.normalize("NFKD", value)
     without_marks = "".join(char for char in normalized if not unicodedata.combining(char))
     return " ".join(without_marks.strip().lower().split())
+
+
+def _repair_mojibake(value: str) -> str:
+    if "Ã" not in value and "Â" not in value:
+        return value
+    try:
+        return value.encode("latin1").decode("utf-8")
+    except UnicodeError:
+        return value

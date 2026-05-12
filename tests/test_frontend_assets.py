@@ -52,6 +52,8 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "samplerLengthLabel" in js
     assert "groupBaseProducts" in js
     assert "productCardTemplate" in js
+    assert "cardImageProduct" in js
+    assert "product.weight_g === 1000 && product.image_url" in js
     assert "colorSwatchTemplate" in js
     assert "colorSwatchStyle" in js
     assert "baseColorFor" in js

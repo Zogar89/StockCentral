@@ -128,12 +128,13 @@ function matchesFilters(product) {
 
 function productCardTemplate(card) {
   const product = card.products[0];
+  const imageProduct = cardImageProduct(card.products);
   const titleText = productBaseName(product);
   const title = product.manufacturer_product_url
     ? `<a href="${escapeAttribute(product.manufacturer_product_url)}" target="_blank" rel="noopener">${escapeHtml(titleText)}</a>`
     : escapeHtml(titleText);
-  const image = product.image_url
-    ? `<img class="product-image" src="${escapeAttribute(product.image_url)}" alt="${escapeAttribute(titleText)}">`
+  const image = imageProduct.image_url
+    ? `<img class="product-image" src="${escapeAttribute(imageProduct.image_url)}" alt="${escapeAttribute(productBaseName(imageProduct))}">`
     : colorSwatchTemplate(product);
 
   return `
@@ -155,6 +156,12 @@ function productCardTemplate(card) {
       </div>
     </article>
   `;
+}
+
+function cardImageProduct(products) {
+  return products.find((product) => product.weight_g === 1000 && product.image_url)
+    || products.find((product) => product.image_url)
+    || products[0];
 }
 
 function colorSwatchTemplate(product) {

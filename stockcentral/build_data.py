@@ -39,6 +39,7 @@ def build_payload(
     generated_at: str | None = None,
     enrichments: Mapping[str, Mapping[str, str]] | None = None,
     source_errors: Mapping[str, str] | None = None,
+    catalog_products: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
     generated = generated_at or _now()
     enrichments = enrichments or {}
@@ -63,6 +64,34 @@ def build_payload(
             continue
         grouped[product_id]["offer_keys"].add(offer_key)  # type: ignore[union-attr]
         grouped[product_id]["offers"].append(_offer_from_raw(item))  # type: ignore[index, union-attr]
+
+    for product_id, catalog_product in (catalog_products or {}).items():
+        if product_id in grouped:
+            continue
+        fields = normalize_record(
+            RawStockItem(
+                source_id="grilon3_catalog",
+                provider_name="Grilon3",
+                provider_zone="",
+                provider_url=MANUFACTURERS["grilon3"].official_site_url,
+                original_name=catalog_product.title,
+                stock_quantity=None,
+                source_url=catalog_product.product_url,
+                brand_hint="Grilon3",
+            )
+        )
+        if fields.diameter_mm != 2.85 or fields.weight_g != 1000:
+            continue
+        grouped[product_id] = {
+            "fields": fields,
+            "enrichment": {
+                "manufacturer_product_url": catalog_product.product_url,
+                "image_url": catalog_product.image_url,
+                "image_source": "manufacturer" if catalog_product.image_url else "",
+            },
+            "offers": [],
+            "offer_keys": set(),
+        }
 
     products = [
         _product_from_group(product_id, data)
@@ -109,10 +138,13 @@ def collect_raw_items(
     return items, errors
 
 
-def build_grilon3_enrichments(raw_items: list[RawStockItem]) -> dict[str, dict[str, str]]:
+def build_grilon3_enrichments(
+    raw_items: list[RawStockItem],
+    catalog: Mapping[str, object] | None = None,
+) -> dict[str, dict[str, str]]:
     from stockcentral.connectors.grilon3_catalog import enrich_with_grilon3_catalog, fetch_grilon3_catalog
 
-    catalog = fetch_grilon3_catalog(MANUFACTURERS["grilon3"].products_url)
+    catalog = catalog or fetch_grilon3_catalog(MANUFACTURERS["grilon3"].products_url)
     enrichments: dict[str, dict[str, str]] = {}
 
     for item in raw_items:
@@ -125,6 +157,17 @@ def build_grilon3_enrichments(raw_items: list[RawStockItem]) -> dict[str, dict[s
     return enrichments
 
 
+def fetch_grilon3_catalog_products() -> dict[str, object]:
+    from stockcentral.connectors.grilon3_catalog import fetch_grilon3_catalog, fetch_grilon3_sitemap_catalog
+
+    catalog = fetch_grilon3_catalog(MANUFACTURERS["grilon3"].products_url)
+    try:
+        catalog.update(fetch_grilon3_sitemap_catalog())
+    except Exception:
+        pass
+    return catalog
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build public StockCentral JSON data.")
     parser.add_argument("--output", default="public/data/stock.json")
@@ -132,10 +175,17 @@ def main() -> None:
 
     raw_items, source_errors = collect_raw_items()
     try:
-        enrichments = build_grilon3_enrichments(raw_items)
+        catalog_products = fetch_grilon3_catalog_products()
+        enrichments = build_grilon3_enrichments(raw_items, catalog_products)
     except Exception:
+        catalog_products = {}
         enrichments = {}
-    payload = build_payload(raw_items, enrichments=enrichments, source_errors=source_errors)
+    payload = build_payload(
+        raw_items,
+        enrichments=enrichments,
+        source_errors=source_errors,
+        catalog_products=catalog_products,
+    )
     write_payload(payload, args.output)
 
 

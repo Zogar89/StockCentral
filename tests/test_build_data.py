@@ -1,6 +1,13 @@
 import json
 
-from stockcentral.build_data import build_grilon3_enrichments, build_payload, collect_raw_items, write_payload
+from stockcentral.build_data import (
+    build_grilon3_enrichments,
+    build_payload,
+    collect_raw_items,
+    fetch_grilon3_catalog_products,
+    write_payload,
+)
+from stockcentral.connectors.grilon3_catalog import CatalogProduct
 from stockcentral.models import RawStockItem
 from stockcentral.providers import MANUFACTURERS, SOURCES
 
@@ -112,6 +119,54 @@ def test_build_payload_deduplicates_repeated_provider_rows():
     assert len(payload["products"][0]["offers"]) == 1
 
 
+def test_build_payload_adds_catalog_products_without_provider_stock():
+    payload = build_payload(
+        [],
+        sources=SOURCES,
+        manufacturers=MANUFACTURERS,
+        generated_at="2026-05-12T13:00:00-03:00",
+        catalog_products={
+            "pla-blanco-285-1000-grilon3": CatalogProduct(
+                product_id="pla-blanco-285-1000-grilon3",
+                title="PLA Blanco Grilon3 1 kg 2.85 mm",
+                product_url="https://grilon3.com.ar/producto/pla-blanco-285/",
+                image_url="",
+            )
+        },
+    )
+
+    product = payload["products"][0]
+    assert product["id"] == "pla-blanco-285-1000-grilon3"
+    assert product["diameter_mm"] == 2.85
+    assert product["offers"] == []
+    assert product["manufacturer_product_url"] == "https://grilon3.com.ar/producto/pla-blanco-285/"
+
+
+def test_build_payload_does_not_add_catalog_products_without_285_diameter():
+    payload = build_payload(
+        [],
+        sources=SOURCES,
+        manufacturers=MANUFACTURERS,
+        generated_at="2026-05-12T13:00:00-03:00",
+        catalog_products={
+            "pla-negro-175-1000-grilon3": CatalogProduct(
+                product_id="pla-negro-175-1000-grilon3",
+                title="PLA Negro Grilon3 1 kg 1.75 mm",
+                product_url="https://grilon3.com.ar/producto/pla-negro/",
+                image_url="",
+            ),
+            "abs-negro-285-unknown-grilon3": CatalogProduct(
+                product_id="abs-negro-285-unknown-grilon3",
+                title="ABS Negro 2.85 Grilon3",
+                product_url="https://grilon3.com.ar/producto/abs-negro-285/",
+                image_url="",
+            ),
+        },
+    )
+
+    assert payload["products"] == []
+
+
 def test_build_payload_marks_partial_source_errors():
     payload = build_payload(
         [],
@@ -178,6 +233,35 @@ def test_build_grilon3_enrichments_indexes_raw_grilon_products(monkeypatch):
     )
 
     assert enrichments["pla-negro-175-1000-grilon3"]["manufacturer_product_url"] == "https://grilon3.com.ar/producto/pla-negro/"
+
+
+def test_fetch_grilon3_catalog_products_merges_shop_and_sitemap(monkeypatch):
+    def fake_shop(url):
+        return {
+            "pla-negro-175-1000-grilon3": CatalogProduct(
+                product_id="pla-negro-175-1000-grilon3",
+                title="PLA Negro Grilon3 1 kg 1.75 mm",
+                product_url="https://grilon3.com.ar/producto/pla-negro/",
+                image_url="",
+            )
+        }
+
+    def fake_sitemap():
+        return {
+            "pla-blanco-285-1000-grilon3": CatalogProduct(
+                product_id="pla-blanco-285-1000-grilon3",
+                title="PLA Blanco Grilon3 1 kg 2.85 mm",
+                product_url="https://grilon3.com.ar/producto/pla-blanco-285/",
+                image_url="",
+            )
+        }
+
+    monkeypatch.setattr("stockcentral.connectors.grilon3_catalog.fetch_grilon3_catalog", fake_shop)
+    monkeypatch.setattr("stockcentral.connectors.grilon3_catalog.fetch_grilon3_sitemap_catalog", fake_sitemap)
+
+    catalog = fetch_grilon3_catalog_products()
+
+    assert set(catalog) == {"pla-negro-175-1000-grilon3", "pla-blanco-285-1000-grilon3"}
 
 
 def test_write_payload_creates_json_file(tmp_path):

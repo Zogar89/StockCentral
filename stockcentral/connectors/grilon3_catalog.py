@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from html.parser import HTMLParser
+import re
 from urllib.parse import urljoin
 
 import requests
@@ -10,6 +11,7 @@ from stockcentral.models import NormalizedFields, RawStockItem
 from stockcentral.normalize import build_product_id, normalize_record
 
 BASE_URL = "https://grilon3.com.ar/productos/"
+SITEMAP_URL = "https://grilon3.com.ar/product-sitemap.xml"
 EMPTY_ENRICHMENT = {"manufacturer_product_url": "", "image_url": "", "image_source": ""}
 
 
@@ -25,6 +27,12 @@ def fetch_grilon3_catalog(products_url: str = BASE_URL, timeout_seconds: int = 3
     response = requests.get(products_url, timeout=timeout_seconds)
     response.raise_for_status()
     return parse_grilon3_catalog(response.text, base_url=products_url)
+
+
+def fetch_grilon3_sitemap_catalog(sitemap_url: str = SITEMAP_URL, timeout_seconds: int = 30) -> dict[str, CatalogProduct]:
+    response = requests.get(sitemap_url, timeout=timeout_seconds)
+    response.raise_for_status()
+    return parse_grilon3_sitemap(response.text)
 
 
 def parse_grilon3_catalog(html_text: str, base_url: str = BASE_URL) -> dict[str, CatalogProduct]:
@@ -56,6 +64,37 @@ def parse_grilon3_catalog(html_text: str, base_url: str = BASE_URL) -> dict[str,
             image_url=link["image_url"],
         )
 
+    return catalog
+
+
+def parse_grilon3_sitemap(xml_text: str) -> dict[str, CatalogProduct]:
+    catalog: dict[str, CatalogProduct] = {}
+    for url in re.findall(r"<loc>(.*?)</loc>", xml_text):
+        if "/producto/" not in url:
+            continue
+        title = _title_from_product_url(url)
+        if not title:
+            continue
+        item = RawStockItem(
+            source_id="grilon3_catalog",
+            provider_name="Grilon3",
+            provider_zone="",
+            provider_url="https://grilon3.com.ar/",
+            original_name=title,
+            stock_quantity=None,
+            source_url=url,
+            brand_hint="Grilon3",
+        )
+        fields = normalize_record(item)
+        if fields.brand != "Grilon3" or fields.material == "Sin clasificar" or fields.color == "Sin color":
+            continue
+        product_id = build_product_id(fields)
+        catalog[product_id] = CatalogProduct(
+            product_id=product_id,
+            title=title,
+            product_url=url,
+            image_url="",
+        )
     return catalog
 
 
@@ -126,3 +165,20 @@ class _ProductLinkParser(HTMLParser):
 
 def _clean_text(value: str) -> str:
     return " ".join(value.split())
+
+
+def _title_from_product_url(url: str) -> str:
+    slug = url.rstrip("/").rsplit("/", 1)[-1]
+    if slug in {"producto", ""}:
+        return ""
+
+    parts = slug.split("-")
+    diameter = ""
+    if parts and parts[-1] == "285":
+        diameter = "2.85 mm"
+        parts = parts[:-1]
+    title = " ".join(part.upper() if part in {"pla", "petg", "abs", "hips"} else part.title() for part in parts)
+    pieces = [title, "Grilon3", "1 kg"]
+    if diameter:
+        pieces.append(diameter)
+    return " ".join(pieces)

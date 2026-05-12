@@ -3,7 +3,9 @@ from pathlib import Path
 from stockcentral.connectors.grilon3_catalog import (
     enrich_with_grilon3_catalog,
     fetch_grilon3_catalog,
+    fetch_grilon3_sitemap_catalog,
     parse_grilon3_catalog,
+    parse_grilon3_sitemap,
 )
 from stockcentral.models import NormalizedFields
 
@@ -78,3 +80,40 @@ def test_fetch_grilon3_catalog_downloads_products_url(monkeypatch):
 
     assert calls == [("https://grilon3.com.ar/productos/", 8), "raise_for_status"]
     assert "pla-negro-175-1000-grilon3" in catalog
+
+
+def test_parse_grilon3_sitemap_adds_285_catalog_products():
+    xml = """
+    <urlset>
+      <url><loc>https://grilon3.com.ar/producto/pla-blanco-285/</loc></url>
+      <url><loc>https://grilon3.com.ar/producto/petg-negro-285/</loc></url>
+      <url><loc>https://grilon3.com.ar/no-producto/pla/</loc></url>
+    </urlset>
+    """
+
+    catalog = parse_grilon3_sitemap(xml)
+
+    assert catalog["pla-blanco-285-1000-grilon3"].title == "PLA Blanco Grilon3 1 kg 2.85 mm"
+    assert catalog["pla-blanco-285-1000-grilon3"].product_url == "https://grilon3.com.ar/producto/pla-blanco-285/"
+    assert catalog["petg-negro-285-1000-grilon3"].title == "PETG Negro Grilon3 1 kg 2.85 mm"
+
+
+def test_fetch_grilon3_sitemap_catalog_downloads_sitemap(monkeypatch):
+    calls = []
+
+    class Response:
+        text = "<urlset><url><loc>https://grilon3.com.ar/producto/pla-blanco-285/</loc></url></urlset>"
+
+        def raise_for_status(self):
+            calls.append("raise_for_status")
+
+    def fake_get(url, timeout):
+        calls.append((url, timeout))
+        return Response()
+
+    monkeypatch.setattr("stockcentral.connectors.grilon3_catalog.requests.get", fake_get)
+
+    catalog = fetch_grilon3_sitemap_catalog("https://grilon3.com.ar/product-sitemap.xml", timeout_seconds=9)
+
+    assert calls == [("https://grilon3.com.ar/product-sitemap.xml", 9), "raise_for_status"]
+    assert "pla-blanco-285-1000-grilon3" in catalog

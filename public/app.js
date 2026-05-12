@@ -116,10 +116,18 @@ function productTemplate(product) {
           ${product.weight_g ? chip(`${product.weight_g / 1000} kg`) : ""}
           ${product.brand ? chip(product.brand) : ""}
         </div>
-        <div class="offers">${(product.offers || []).map((offer) => offerTemplate(offer)).join("")}</div>
+        <div class="offers">${offerListTemplate(product)}</div>
       </div>
     </article>
   `;
+}
+
+function offerListTemplate(product) {
+  const offers = product.offers || [];
+  if (!offers.length) {
+    return `<div class="offer stock-out">0 · sin stock online registrado</div>`;
+  }
+  return offers.map((offer) => offerTemplate(offer)).join("");
 }
 
 function offerTemplate(offer) {

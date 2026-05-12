@@ -39,7 +39,7 @@ async function init() {
 
 function setupFilters() {
   setSelect("material", valuesFor("material"), "Material");
-  setSelect("variant", valuesFor("variant"), "Variante");
+  setSelect("variant", lineValues(), "Línea");
   setSelect("color", valuesFor("color"), "Color");
   setSelect("diameter", valuesFor("diameter_mm").map((value) => [String(value), `${value} mm`]), "Diámetro");
   setSelect("weight", valuesFor("weight_g").map((value) => [String(value), `${Number(value) / 1000} kg`]), "Peso");
@@ -83,7 +83,7 @@ function matchesFilters(product) {
 
   if (state.filters.query && !queryText.includes(state.filters.query)) return false;
   if (state.filters.material && product.material !== state.filters.material) return false;
-  if (state.filters.variant && product.variant !== state.filters.variant) return false;
+  if (state.filters.variant && lineLabel(product) !== state.filters.variant) return false;
   if (state.filters.color && product.color !== state.filters.color) return false;
   if (state.filters.diameter && String(product.diameter_mm) !== state.filters.diameter) return false;
   if (state.filters.weight && String(product.weight_g) !== state.filters.weight) return false;
@@ -193,6 +193,7 @@ function groupTemplate(group) {
 }
 
 function lineLabel(product) {
+  if (!product.variant && product.material === "PLA") return "PLA Standard";
   return product.variant || product.material || "Sin clasificar";
 }
 
@@ -237,6 +238,10 @@ function valuesFor(field) {
 
 function providerValues() {
   return [...new Set(state.products.flatMap((product) => (product.offers || []).map((offer) => offer.provider_name)))].sort();
+}
+
+function lineValues() {
+  return [...new Set(state.products.map(lineLabel).filter(Boolean))].sort();
 }
 
 function chip(value) {

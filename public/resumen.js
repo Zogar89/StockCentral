@@ -114,14 +114,14 @@ function compareProducts(left, right) {
     brandRank(left.brand),
     left.brand || "",
     left.diameter_mm ? `${left.diameter_mm} mm` : "Sin diámetro",
-    left.variant || left.material || "Sin clasificar",
+    lineLabel(left),
     left.color || "",
     left.display_name,
   ].join(" ").localeCompare([
     brandRank(right.brand),
     right.brand || "",
     right.diameter_mm ? `${right.diameter_mm} mm` : "Sin diámetro",
-    right.variant || right.material || "Sin clasificar",
+    lineLabel(right),
     right.color || "",
     right.display_name,
   ].join(" "), "es-AR");
@@ -131,6 +131,11 @@ function brandRank(brand) {
   if (brand === "Grilon3") return "0";
   if (brand === "3N3") return "1";
   return "9";
+}
+
+function lineLabel(product) {
+  if (!product.variant && product.material === "PLA") return "PLA Standard";
+  return product.variant || product.material || "Sin clasificar";
 }
 
 function formatInteger(value) {

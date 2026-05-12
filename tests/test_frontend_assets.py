@@ -33,6 +33,7 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "contact_whatsapp_url" in js
     assert "groupProducts" in js
     assert "group-section" in js
+    assert "PLA Standard" in js
     assert "whatsappLink" not in js
 
 

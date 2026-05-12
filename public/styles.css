@@ -169,16 +169,6 @@ input {
   font: inherit;
 }
 
-select[multiple] {
-  height: 86px;
-  padding: 6px;
-}
-
-select[multiple] option {
-  padding: 4px 6px;
-  border-radius: 6px;
-}
-
 .product-list {
   display: grid;
   gap: 14px;
@@ -262,6 +252,37 @@ select[multiple] option {
 
 .chips {
   margin: 8px 0;
+}
+
+.presentation-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.presentation-row {
+  display: grid;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.presentation-row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.presentation-row header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.presentation-row header strong {
+  color: var(--text);
+  font-size: 13px;
 }
 
 .chip,

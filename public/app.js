@@ -3,14 +3,14 @@ const state = {
   sources: [],
   filters: {
     query: "",
-    material: [],
-    variant: [],
-    color: [],
-    diameter: [],
-    weight: [],
-    brand: [],
-    provider: [],
-    stock: [],
+    material: "",
+    variant: "",
+    color: "",
+    diameter: "",
+    weight: "",
+    brand: "",
+    provider: "",
+    stock: "all",
   },
 };
 
@@ -72,7 +72,7 @@ function setupFilters() {
   setSelect("weight", valuesFor("weight_g").map((value) => [String(value), `${Number(value) / 1000} kg`]), "Peso");
   setSelect("brand", valuesFor("brand"), "Marca");
   setSelect("provider", providerValues(), "Proveedor");
-  setSelect("stock", [["in_stock", "Con stock"], ["out_of_stock", "Sin stock"], ["unknown", "A revisar"]], "Stock");
+  setSelect("stock", [["all", "Todos"], ["in_stock", "Con stock"], ["out_of_stock", "Sin stock"], ["unknown", "A revisar"]]);
   renderQuickLines();
   updateLineHelp();
 
@@ -82,14 +82,14 @@ function setupFilters() {
   });
   Object.entries(filterIds).forEach(([key, id]) => {
     document.getElementById(id).addEventListener("change", (event) => {
-      state.filters[key] = selectedValues(event.target);
+      state.filters[key] = event.target.value;
       if (key === "variant") updateLineHelp();
       render();
     });
   });
   document.getElementById("pla-shortcut").addEventListener("click", () => {
-    state.filters.material = ["PLA"];
-    setSelectedValues(document.getElementById("material-filter"), state.filters.material);
+    state.filters.material = "PLA";
+    document.getElementById("material-filter").value = "PLA";
     render();
   });
 }
@@ -112,35 +112,25 @@ function matchesFilters(product) {
   ].join(" ").toLowerCase();
 
   if (state.filters.query && !queryText.includes(state.filters.query)) return false;
-  if (!matchesAny(state.filters.material, product.material)) return false;
-  if (!matchesAny(state.filters.variant, lineLabel(product))) return false;
-  if (!matchesAny(state.filters.color, product.color)) return false;
-  if (!matchesAny(state.filters.diameter, String(product.diameter_mm))) return false;
-  if (!matchesAny(state.filters.weight, String(product.weight_g))) return false;
-  if (!matchesAny(state.filters.brand, product.brand)) return false;
-  if (!matchesProviderFilter(product)) return false;
-  if (!matchesStockFilter(product)) return false;
+  if (state.filters.material && product.material !== state.filters.material) return false;
+  if (state.filters.variant && lineLabel(product) !== state.filters.variant) return false;
+  if (state.filters.color && product.color !== state.filters.color) return false;
+  if (state.filters.diameter && String(product.diameter_mm) !== state.filters.diameter) return false;
+  if (state.filters.weight && String(product.weight_g) !== state.filters.weight) return false;
+  if (state.filters.brand && product.brand !== state.filters.brand) return false;
+  if (state.filters.provider && !(product.offers || []).some((offer) => offer.provider_name === state.filters.provider)) return false;
+  if (state.filters.stock !== "all" && !(product.offers || []).some((offer) => offer.stock_status === state.filters.stock)) return false;
   return true;
 }
 
-function matchesAny(selected, value) {
-  return !selected.length || selected.includes(String(value));
-}
-
-function matchesProviderFilter(product) {
-  return !state.filters.provider.length || (product.offers || []).some((offer) => state.filters.provider.includes(offer.provider_name));
-}
-
-function matchesStockFilter(product) {
-  return !state.filters.stock.length || (product.offers || []).some((offer) => state.filters.stock.includes(offer.stock_status));
-}
-
-function productTemplate(product) {
+function productCardTemplate(card) {
+  const product = card.products[0];
+  const titleText = productBaseName(product);
   const title = product.manufacturer_product_url
-    ? `<a href="${escapeAttribute(product.manufacturer_product_url)}" target="_blank" rel="noopener">${escapeHtml(product.display_name)}</a>`
-    : escapeHtml(product.display_name);
+    ? `<a href="${escapeAttribute(product.manufacturer_product_url)}" target="_blank" rel="noopener">${escapeHtml(titleText)}</a>`
+    : escapeHtml(titleText);
   const image = product.image_url
-    ? `<img class="product-image" src="${escapeAttribute(product.image_url)}" alt="${escapeAttribute(product.display_name)}">`
+    ? `<img class="product-image" src="${escapeAttribute(product.image_url)}" alt="${escapeAttribute(titleText)}">`
     : `<div class="product-image image-placeholder">Sin imagen</div>`;
 
   return `
@@ -155,13 +145,22 @@ function productTemplate(product) {
           ${product.variant ? chip(product.variant) : ""}
           ${chip(product.color)}
           ${product.diameter_mm ? chip(`${product.diameter_mm} mm`) : ""}
-          ${product.weight_g ? chip(`${product.weight_g / 1000} kg`) : ""}
-          ${!product.weight_g && formatPresentation(product) ? chip(formatPresentation(product)) : ""}
           ${product.brand ? chip(product.brand) : ""}
         </div>
-        <div class="offers">${offerListTemplate(product)}</div>
+        <div class="presentation-list">${card.products.map(presentationTemplate).join("")}</div>
       </div>
     </article>
+  `;
+}
+
+function presentationTemplate(product) {
+  return `
+    <section class="presentation-row">
+      <header>
+        <strong>${escapeHtml(formatPresentation(product) || "Presentación sin dato")}</strong>
+      </header>
+      <div class="offers">${offerListTemplate(product)}</div>
+    </section>
   `;
 }
 
@@ -246,9 +245,29 @@ function groupTemplate(group) {
         <span>${escapeHtml(group.diameter)}</span>
         <strong>${escapeHtml(group.line)}</strong>
       </header>
-      <div class="group-products">${group.products.map(productTemplate).join("")}</div>
+      <div class="group-products">${groupBaseProducts(group.products).map(productCardTemplate).join("")}</div>
     </section>
   `;
+}
+
+function groupBaseProducts(products) {
+  const cards = new Map();
+  products.forEach((product) => {
+    const key = [
+      product.brand || "Sin marca",
+      product.diameter_mm || "Sin diámetro",
+      lineLabel(product),
+      product.material || "Sin material",
+      product.variant || "",
+      product.color || "Sin color",
+    ].join("||");
+    if (!cards.has(key)) cards.set(key, { products: [] });
+    cards.get(key).products.push(product);
+  });
+  return [...cards.values()].map((card) => {
+    card.products.sort(comparePresentations);
+    return card;
+  });
 }
 
 function lineLabel(product) {
@@ -262,8 +281,12 @@ function isSamplerProduct(product) {
 }
 
 function formatPresentation(product) {
+  const weight = formatWeightLabel(product.weight_g);
+  if (weight) return weight;
+
   const samplerLength = samplerLengthLabel(product);
   if (samplerLength) return `Sampler ${samplerLength}`;
+
   return "";
 }
 
@@ -296,6 +319,22 @@ function compareProducts(left, right) {
   ].join(" "), "es-AR");
 }
 
+function comparePresentations(left, right) {
+  return presentationRank(left) - presentationRank(right) || left.display_name.localeCompare(right.display_name, "es-AR");
+}
+
+function presentationRank(product) {
+  if (Number.isFinite(Number(product.weight_g)) && Number(product.weight_g) > 0) return Number(product.weight_g);
+  if (isSamplerProduct(product)) return 10_000_000;
+  return 20_000_000;
+}
+
+function productBaseName(product) {
+  const presentation = formatWeightLabel(product.weight_g);
+  if (!presentation) return product.display_name;
+  return product.display_name.replace(` ${presentation}`, "").replace(/\s+/g, " ").trim();
+}
+
 function brandRank(brand) {
   if (brand === "Grilon3") return "0";
   if (brand === "3N3") return "1";
@@ -304,26 +343,12 @@ function brandRank(brand) {
 
 function setSelect(key, values, emptyLabel = "") {
   const select = document.getElementById(filterIds[key]);
-  select.multiple = true;
-  select.size = Math.min(4, Math.max(3, values.length + (emptyLabel ? 1 : 0)));
   const normalized = values.map((value) => {
     if (Array.isArray(value)) return value;
     return [value, key === "variant" ? lineOptionLabel(value) : value];
   });
-  const options = emptyLabel ? [["", emptyLabel, true], ...normalized] : normalized;
-  select.innerHTML = options.map(([value, label, disabled]) => {
-    return `<option value="${escapeAttribute(value)}"${disabled ? " disabled" : ""}>${escapeHtml(label)}</option>`;
-  }).join("");
-}
-
-function selectedValues(select) {
-  return [...select.selectedOptions].map((option) => option.value).filter(Boolean);
-}
-
-function setSelectedValues(select, values) {
-  [...select.options].forEach((option) => {
-    option.selected = values.includes(option.value);
-  });
+  const options = emptyLabel ? [["", emptyLabel], ...normalized] : normalized;
+  select.innerHTML = options.map(([value, label]) => `<option value="${escapeAttribute(value)}">${escapeHtml(label)}</option>`).join("");
 }
 
 function valuesFor(field) {
@@ -349,14 +374,10 @@ function lineRank(line) {
 }
 
 function updateLineHelp() {
-  const line = state.filters.variant.length === 1 ? state.filters.variant[0] : "";
+  const line = state.filters.variant;
   const help = document.getElementById("line-help");
-  if (!state.filters.variant.length) {
-    help.textContent = "Líneas más usadas: PLA Standard, PLA+, PETG y flexibles. Algunas líneas especiales tienen descripción para elegir sin adivinar.";
-    return;
-  }
   if (!line) {
-    help.textContent = `${state.filters.variant.length} líneas seleccionadas.`;
+    help.textContent = "Líneas más usadas: PLA Standard, PLA+, PETG y flexibles. Algunas líneas especiales tienen descripción para elegir sin adivinar.";
     return;
   }
   help.textContent = lineMeta[line]?.help || `${line}: línea/material detectado desde las fuentes de stock.`;
@@ -370,12 +391,17 @@ function renderQuickLines() {
   document.getElementById("quick-lines").innerHTML = buttons.join("");
   document.querySelectorAll(".quick-line").forEach((button) => {
     button.addEventListener("click", () => {
-      state.filters.variant = [button.dataset.line || ""].filter(Boolean);
-      setSelectedValues(document.getElementById("variant-filter"), state.filters.variant);
+      state.filters.variant = button.dataset.line || "";
+      document.getElementById("variant-filter").value = state.filters.variant;
       updateLineHelp();
       render();
     });
   });
+}
+
+function formatWeightLabel(weightG) {
+  if (!weightG) return "";
+  return `${Number(weightG) / 1000} kg`;
 }
 
 function chip(value) {

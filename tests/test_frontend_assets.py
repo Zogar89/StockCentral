@@ -45,10 +45,10 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "isSamplerProduct" in js
     assert "formatPresentation" in js
     assert "samplerLengthLabel" in js
-    assert "selectedValues" in js
-    assert "setSelectedValues" in js
-    assert "matchesAny" in js
-    assert "select.multiple = true" in js
+    assert "groupBaseProducts" in js
+    assert "productCardTemplate" in js
+    assert "presentationTemplate" in js
+    assert "productBaseName" in js
     assert "quickLineValues" in js
     assert "sin stock online registrado" in js
     assert "offer-main" in js
@@ -88,11 +88,12 @@ def test_styles_are_compact_and_responsive():
     assert "@media" in css
     assert "position: sticky" in css
     assert "grid-template-columns" in css
-    assert "select[multiple]" in css
     assert "border-radius: 8px" in css
     assert ".group-section" in css
     assert "repeat(auto-fit, minmax(320px, 1fr))" in css
     assert ".offer-main" in css
+    assert ".presentation-list" in css
+    assert ".presentation-row" in css
     assert ".review-reason" in css
     assert "scroll-behavior: smooth" in css
     assert ".footer-provider:target" in css

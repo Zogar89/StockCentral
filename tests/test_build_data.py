@@ -1,6 +1,9 @@
 import json
+from pathlib import Path
+
 import pytest
 
+from stockcentral.cache_grilon3_metadata import download_grilon3_images, load_metadata_cache
 from stockcentral.build_data import (
     build_grilon3_enrichments,
     build_payload,
@@ -301,6 +304,50 @@ def test_load_grilon3_metadata_reads_cache_file(tmp_path):
         "pla-negro-grilon3": {"pantone": "Pantone Black", "sku": "M09INE175CJ", "ean": "7798049653037"},
         "old": {"pantone": "Pantone Old"},
     }
+
+
+def test_load_metadata_cache_reads_extended_local_image_metadata(tmp_path):
+    cache = tmp_path / "metadata.json"
+    cache.write_text(
+        '{"pla-negro-grilon3": {"image_url": "assets/grilon3/pla-negro.jpg", "image_remote_url": "https://grilon3.com.ar/pla-negro.jpg"}}',
+        encoding="utf-8",
+    )
+
+    assert load_metadata_cache(cache) == {
+        "pla-negro-grilon3": {
+            "image_url": "assets/grilon3/pla-negro.jpg",
+            "image_remote_url": "https://grilon3.com.ar/pla-negro.jpg",
+        }
+    }
+
+
+def test_download_grilon3_images_caches_remote_images_locally(tmp_path, monkeypatch):
+    calls = []
+
+    class Response:
+        content = b"image-bytes"
+
+        def raise_for_status(self):
+            calls.append("raise_for_status")
+
+    def fake_get(url, timeout):
+        calls.append((url, timeout))
+        return Response()
+
+    monkeypatch.setattr("stockcentral.cache_grilon3_metadata.requests.get", fake_get)
+
+    cache = download_grilon3_images(
+        {"pla-negro-grilon3": {"image_url": "https://grilon3.com.ar/wp-content/uploads/pla-negro.jpg"}},
+        assets_dir=tmp_path / "assets",
+        image_url_prefix="assets/grilon3",
+        timeout_seconds=9,
+    )
+
+    image_url = cache["pla-negro-grilon3"]["image_url"]
+    assert image_url.startswith("assets/grilon3/pla-negro-")
+    assert cache["pla-negro-grilon3"]["image_remote_url"] == "https://grilon3.com.ar/wp-content/uploads/pla-negro.jpg"
+    assert (tmp_path / "assets" / Path(image_url).name).read_bytes() == b"image-bytes"
+    assert calls == [("https://grilon3.com.ar/wp-content/uploads/pla-negro.jpg", 9), "raise_for_status"]
 
 
 def test_fetch_grilon3_catalog_products_merges_shop_and_sitemap(monkeypatch):

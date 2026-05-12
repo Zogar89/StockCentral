@@ -52,8 +52,9 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "quickLineValues" in js
     assert "sin stock online registrado" in js
     assert "offer-main" in js
-    assert "A revisar" in js
-    assert "La fuente no publicó una cantidad numérica." in js
+    assert "Sin cantidad" in js
+    assert "0*" in js
+    assert "El proveedor seguramente no maneja esta variante." in js
     assert "providerAnchorId" in js
     assert "proveedor-" in js
     assert "sourceWhatsappUrl" in js
@@ -80,7 +81,9 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert "productSummaryName" in js
     assert "summary-group-row" in js
     assert "groupRows" in js
-    assert "A revisar" in js
+    assert "0*" in js
+    assert "El proveedor seguramente no maneja esta variante" in js
+    assert "A revisar" not in js
     assert "Rev." not in js
     assert "total_stock_units" in js
     assert "total_stock_kg" not in js

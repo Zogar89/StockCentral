@@ -148,7 +148,7 @@ function groupTitle(product) {
 function cellTemplate(cell) {
   if (!cell) return `<td class="stock-out">0</td>`;
   if (cell.units > 0) return `<td class="stock-in">${formatInteger(cell.units)}</td>`;
-  if (cell.unknown) return `<td class="stock-unknown" title="La fuente no publicó una cantidad numérica">A revisar</td>`;
+  if (cell.unknown) return `<td class="stock-unknown" title="El proveedor seguramente no maneja esta variante">0*</td>`;
   return `<td class="stock-out">0</td>`;
 }
 

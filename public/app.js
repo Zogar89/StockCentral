@@ -72,7 +72,7 @@ function setupFilters() {
   setSelect("weight", valuesFor("weight_g").map((value) => [String(value), `${Number(value) / 1000} kg`]), "Peso");
   setSelect("brand", valuesFor("brand"), "Marca");
   setSelect("provider", providerValues(), "Proveedor");
-  setSelect("stock", [["all", "Todos"], ["in_stock", "Con stock"], ["out_of_stock", "Sin stock"], ["unknown", "A revisar"]]);
+  setSelect("stock", [["all", "Todos"], ["in_stock", "Con stock"], ["out_of_stock", "Sin stock"], ["unknown", "Sin cantidad"]]);
   renderQuickLines();
   updateLineHelp();
 
@@ -174,8 +174,8 @@ function offerListTemplate(product) {
 
 function offerTemplate(offer) {
   const stockClass = offer.stock_status === "in_stock" ? "stock-in" : offer.stock_status === "out_of_stock" ? "stock-out" : "stock-unknown";
-  const stockLabel = offer.stock_status === "in_stock" ? `${offer.stock_quantity} carretes` : offer.stock_status === "out_of_stock" ? "0" : "A revisar";
-  const reviewReason = offer.stock_status === "unknown" ? `<small class="review-reason">La fuente no publicó una cantidad numérica.</small>` : "";
+  const stockLabel = offer.stock_status === "in_stock" ? `${offer.stock_quantity} carretes` : offer.stock_status === "out_of_stock" ? "0" : "0*";
+  const reviewReason = offer.stock_status === "unknown" ? `<small class="review-reason">El proveedor seguramente no maneja esta variante.</small>` : "";
   return `
     <div class="offer">
       <div class="offer-main">

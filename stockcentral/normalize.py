@@ -84,6 +84,8 @@ COLOR_RULES = [
     ("DULCE DE LECHE", "Dulce de Leche"),
     ("VERDE AVIADOR", "Verde Aviador"),
     ("AZUL TRAFUL", "Azul Traful"),
+    ("AZUL DE PRUSIA", "Azul de Prusia"),
+    ("AZUL PRUSIA", "Azul de Prusia"),
     ("ROJO CARMIN", "Rojo Carmin"),
     ("VERDE LIMA", "Verde Lima"),
     ("GRIS ESPACIAL", "Gris Espacial"),

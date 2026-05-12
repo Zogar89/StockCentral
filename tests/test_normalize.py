@@ -96,6 +96,15 @@ def test_detects_compact_color_and_wide_diameters():
     assert carbon.diameter_mm == 1.75
 
 
+def test_keeps_color_variants_separate():
+    blue = normalize_record(raw("GRILON3 PLA 08_AZUL 1.75 MM X 1 KG", brand_hint="Grilon3"))
+    prussia = normalize_record(raw("GRILON3 PLA 23_AZUL DE PRUSIA 1.75 MM X 1 KG", brand_hint="Grilon3"))
+
+    assert blue.color == "Azul"
+    assert prussia.color == "Azul de Prusia"
+    assert build_product_id(blue) != build_product_id(prussia)
+
+
 def test_build_display_name_avoids_repeating_material_and_variant():
     fields = normalize_record(raw("3N3 PLA+ Rojo 1kg 1.75mm"))
 

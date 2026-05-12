@@ -56,6 +56,10 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "La fuente no publicó una cantidad numérica." in js
     assert "providerAnchorId" in js
     assert "proveedor-" in js
+    assert "sourceWhatsappUrl" in js
+    assert "whatsappMessage" in js
+    assert "contactContext" in js
+    assert "encodeURIComponent" in js
     assert "Rev." not in js
     assert "whatsappLink" not in js
 

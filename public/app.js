@@ -200,7 +200,7 @@ function renderFooter() {
 function sourceFooter(source) {
   const stats = source.stats || {};
   const actions = [
-    source.contact_whatsapp_url ? `<a href="${escapeAttribute(source.contact_whatsapp_url)}" target="_blank" rel="noopener">WhatsApp</a>` : "",
+    source.contact_whatsapp_url ? `<a href="${escapeAttribute(sourceWhatsappUrl(source))}" target="_blank" rel="noopener">WhatsApp</a>` : "",
     source.contact_phone ? `<a href="tel:${escapeAttribute(source.contact_phone.replaceAll(" ", ""))}">Teléfono</a>` : "",
     source.contact_email ? `<a href="mailto:${escapeAttribute(source.contact_email)}">Mail</a>` : "",
     source.source_url ? `<a href="${escapeAttribute(source.source_url)}" target="_blank" rel="noopener">Fuente</a>` : "",
@@ -214,6 +214,30 @@ function sourceFooter(source) {
       <div class="contact-actions">${actions}</div>
     </section>
   `;
+}
+
+function sourceWhatsappUrl(source) {
+  const separator = source.contact_whatsapp_url.includes("?") ? "&" : "?";
+  return `${source.contact_whatsapp_url}${separator}text=${encodeURIComponent(whatsappMessage())}`;
+}
+
+function whatsappMessage() {
+  const context = contactContext();
+  const suffix = context ? ` Estoy buscando ${context}.` : " Quería consultar disponibilidad y precio.";
+  return `Hola, vi su stock publicado en StockCentral.${suffix}`;
+}
+
+function contactContext() {
+  const parts = [
+    state.filters.query ? `"${state.filters.query}"` : "",
+    state.filters.material,
+    state.filters.variant,
+    state.filters.color,
+    state.filters.diameter ? `${state.filters.diameter} mm` : "",
+    state.filters.weight ? formatWeightLabel(state.filters.weight) : "",
+    state.filters.brand,
+  ].filter(Boolean);
+  return parts.join(", ");
 }
 
 function providerAnchorId(sourceId) {

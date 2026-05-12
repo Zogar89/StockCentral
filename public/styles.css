@@ -16,6 +16,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   background: var(--bg);
@@ -337,6 +341,13 @@ input {
   display: grid;
   gap: 6px;
   color: var(--muted);
+  scroll-margin-top: 16px;
+  border-radius: 8px;
+}
+
+.footer-provider:target {
+  outline: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  outline-offset: 6px;
 }
 
 .footer-provider h3 {

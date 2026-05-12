@@ -46,6 +46,8 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "offer-main" in js
     assert "A revisar" in js
     assert "La fuente no publicó una cantidad numérica." in js
+    assert "providerAnchorId" in js
+    assert "proveedor-" in js
     assert "Rev." not in js
     assert "whatsappLink" not in js
 
@@ -77,6 +79,8 @@ def test_styles_are_compact_and_responsive():
     assert "repeat(auto-fit, minmax(320px, 1fr))" in css
     assert ".offer-main" in css
     assert ".review-reason" in css
+    assert "scroll-behavior: smooth" in css
+    assert ".footer-provider:target" in css
     assert ".summary-group-row" in css
 
 

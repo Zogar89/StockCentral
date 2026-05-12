@@ -166,7 +166,7 @@ function offerTemplate(offer) {
   return `
     <div class="offer">
       <div class="offer-main">
-        <a href="${escapeAttribute(offer.provider_url)}" target="_blank" rel="noopener">${escapeHtml(offer.provider_name)}</a>
+        <a href="#${escapeAttribute(providerAnchorId(offer.source_id))}">${escapeHtml(offer.provider_name)}</a>
         <span>${escapeHtml(offer.provider_zone)}</span>
         <strong class="${stockClass}">${escapeHtml(stockLabel)}</strong>
       </div>
@@ -193,7 +193,7 @@ function sourceFooter(source) {
     source.source_url ? `<a href="${escapeAttribute(source.source_url)}" target="_blank" rel="noopener">Fuente</a>` : "",
   ].filter(Boolean).join("");
   return `
-    <section class="footer-provider">
+    <section class="footer-provider" id="${escapeAttribute(providerAnchorId(source.id))}">
       <h3><a href="${escapeAttribute(source.homepage_url)}" target="_blank" rel="noopener">${escapeHtml(source.name)}</a></h3>
       <p>${escapeHtml(source.zone)}${source.address ? ` · ${escapeHtml(source.address)}` : ""}</p>
       <p>${escapeHtml(stats.total_stock_units || 0)} carretes · ${escapeHtml(stats.product_count || 0)} productos</p>
@@ -201,6 +201,10 @@ function sourceFooter(source) {
       <div class="contact-actions">${actions}</div>
     </section>
   `;
+}
+
+function providerAnchorId(sourceId) {
+  return `proveedor-${sourceId}`;
 }
 
 function groupProducts(products) {

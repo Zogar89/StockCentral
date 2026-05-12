@@ -336,7 +336,7 @@ input {
 .offer-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2px 8px;
+  gap: 8px;
   align-items: baseline;
 }
 
@@ -346,15 +346,8 @@ input {
   overflow-wrap: anywhere;
 }
 
-.offer-main span {
-  grid-column: 1;
-  color: var(--muted);
-  font-size: 12px;
-}
-
 .offer-main strong {
   grid-column: 2;
-  grid-row: 1 / span 2;
   align-self: center;
   font-size: 13px;
   text-align: right;

@@ -313,11 +313,11 @@ function offerTemplate(offer) {
   const stockClass = offer.stock_status === "in_stock" ? "stock-in" : offer.stock_status === "out_of_stock" ? "stock-out" : "stock-unknown";
   const stockLabel = offer.stock_status === "in_stock" ? `${offer.stock_quantity} carretes` : offer.stock_status === "out_of_stock" ? "0" : "0*";
   const reviewReason = offer.stock_status === "unknown" ? `<small class="review-reason">El proveedor seguramente no maneja esta variante.</small>` : "";
+  const providerTitle = `${offer.provider_name} · ${offer.provider_zone}`;
   return `
-    <div class="offer">
+    <div class="offer" title="${escapeAttribute(providerTitle)}">
       <div class="offer-main">
-        <a href="#${escapeAttribute(providerAnchorId(offer.source_id))}">${escapeHtml(offer.provider_name)}</a>
-        <span>${escapeHtml(offer.provider_zone)}</span>
+        <a href="#${escapeAttribute(providerAnchorId(offer.source_id))}" title="${escapeAttribute(providerTitle)}">${escapeHtml(offer.provider_name)}</a>
         <strong class="${stockClass}">${escapeHtml(stockLabel)}</strong>
       </div>
       <small>${escapeHtml(offer.original_name)}</small>

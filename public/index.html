@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>StockCentral</title>
+    <meta name="description" content="Stock de filamentos 3D del AMBA en una vista centralizada.">
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">AMBA · filamentos 3D</p>
+          <h1>StockCentral</h1>
+        </div>
+        <div class="topbar-actions">
+          <a class="nav-link active" href="index.html">Catálogo</a>
+          <a class="nav-link" href="resumen.html">Resumen</a>
+        </div>
+      </header>
+
+      <section class="status-strip">
+        <span id="last-update">Actualizando...</span>
+        <button id="pla-shortcut" class="soft-button" type="button">PLA</button>
+      </section>
+
+      <section class="filters" aria-label="Filtros">
+        <label class="search-field">
+          <span>Buscar</span>
+          <input id="search-input" type="search" placeholder="negro, pla+, grilon, 1kg">
+        </label>
+        <select id="material-filter" aria-label="Material"></select>
+        <select id="variant-filter" aria-label="Variante"></select>
+        <select id="color-filter" aria-label="Color"></select>
+        <select id="diameter-filter" aria-label="Diámetro"></select>
+        <select id="weight-filter" aria-label="Peso"></select>
+        <select id="brand-filter" aria-label="Marca"></select>
+        <select id="provider-filter" aria-label="Proveedor"></select>
+        <select id="stock-filter" aria-label="Stock"></select>
+      </section>
+
+      <section class="result-meta">
+        <strong id="result-count">0 productos</strong>
+      </section>
+
+      <section id="product-list" class="product-list" aria-live="polite"></section>
+    </main>
+
+    <footer id="site-footer" class="site-footer"></footer>
+  </body>
+</html>

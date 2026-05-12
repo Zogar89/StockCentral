@@ -13,6 +13,8 @@ El MVP sera un sitio estatico servido con GitHub Pages. Python correra en GitHub
 - Publicar una pagina simple y rapida para consultar stock de filamentos.
 - Centralizar proveedores de Zona Sur, Zona Oeste y Zona Norte.
 - Mostrar todos los productos, incluidos los que no tienen stock.
+- Linkear cada producto a la pagina oficial del fabricante cuando exista.
+- Mostrar imagen del filamento siempre que este disponible.
 - Priorizar la experiencia de busqueda por filtros, con PLA destacado porque es el caso de uso mayoritario.
 - Mantener la ingesta y normalizacion separadas del frontend para facilitar una futura migracion a backend si hace falta.
 
@@ -83,6 +85,7 @@ El JSON publico tendra dos secciones principales:
 
 - `products`: productos agrupados para mostrar en la UI.
 - `sources`: metadata por proveedor.
+- `manufacturers`: metadata opcional por fabricante/marca.
 
 ### Producto agrupado
 
@@ -95,6 +98,10 @@ Campos esperados:
 - `diameter_mm`: diametro detectado, principalmente `1.75`.
 - `weight_g`: peso detectado, principalmente `1000`.
 - `brand`: marca del filamento, por ejemplo `3N3` o `Grilon3`.
+- `manufacturer_name`: fabricante/marca oficial cuando se pueda determinar.
+- `manufacturer_product_url`: pagina oficial del fabricante para ese producto, si existe.
+- `image_url`: imagen del filamento, si esta disponible.
+- `image_source`: origen de la imagen, por ejemplo `manufacturer` o `provider`.
 - `display_name`: nombre legible para la UI.
 - `offers`: lista de ofertas/proveedores para ese producto.
 
@@ -126,6 +133,21 @@ Campos esperados:
 - `status`: `ok` o `error`.
 - `error_message`: mensaje corto si fallo la ultima actualizacion.
 
+### Metadata de fabricantes
+
+Campos esperados:
+
+- `id`.
+- `name`.
+- `official_site_url`.
+- `products_url`.
+- `has_official_product_pages`.
+
+Fabricantes iniciales:
+
+- `Grilon3`: tiene sitio oficial y catalogo de productos en `https://grilon3.com.ar/productos/`. Cuando un producto normalizado corresponda a Grilon3 y se pueda matchear con confianza, el producto debe linkear a su pagina oficial e incorporar su imagen si esta disponible.
+- `3N3`: no tiene sitio oficial confirmado para el MVP. Sus productos no deben inventar link de fabricante; se mostraran sin `manufacturer_product_url` salvo que aparezca una fuente oficial futura.
+
 ## Normalizacion y agrupacion
 
 El agrupamiento principal sera por:
@@ -135,6 +157,13 @@ El agrupamiento principal sera por:
 El MVP prioriza productos de `1.75 mm` y `1 kg`. Otros formatos, como 500 g, 750 g, 2.5 kg o 5 kg, se muestran pero no se fuerzan dentro del mismo grupo si eso puede confundir al usuario.
 
 La normalizacion debe ser conservadora. Si un producto no se puede clasificar con confianza, se muestra como producto separado usando su nombre original o un nombre derivado simple. Es preferible duplicar visualmente un caso dudoso antes que mezclar mal colores, pesos o variantes.
+
+Ademas de normalizar stock, el pipeline intentara enriquecer productos con informacion oficial del fabricante:
+
+- Para Grilon3, usar el catalogo oficial de productos como fuente de paginas oficiales e imagenes.
+- Para productos sin pagina oficial de fabricante, dejar `manufacturer_product_url` vacio.
+- Para imagenes, priorizar imagen oficial del fabricante. Si no existe, se puede usar una imagen del proveedor solo si la fuente la entrega de manera estable y confiable.
+- Si no hay imagen disponible, la UI debe mostrar el producto sin imagen o con un placeholder neutral, sin romper el layout.
 
 ## Interfaz
 
@@ -148,6 +177,8 @@ Comportamiento inicial:
 - Mostrar productos sin stock con estado claro.
 - No mostrar precios.
 - Mostrar zona junto al proveedor, sin filtro por zona.
+- Mostrar imagen del filamento cuando exista.
+- Linkear el nombre del producto a la pagina oficial del fabricante cuando exista.
 - Mostrar ultima actualizacion general y, cuando este disponible, por proveedor.
 
 Filtros del MVP:
@@ -166,7 +197,9 @@ La UI tambien tendra busqueda de texto simple para encontrar rapidamente termino
 Cada producto agrupado mostrara:
 
 - Nombre normalizado.
+- Imagen del filamento cuando exista.
 - Atributos principales.
+- Link oficial del fabricante cuando exista.
 - Lista de proveedores/ofertas.
 - Stock por proveedor.
 - Nombre original de la fuente cuando ayude a verificar coincidencia.
@@ -191,6 +224,8 @@ Pruebas iniciales recomendadas:
 - Test de que productos sin stock se conservan.
 - Test de ordenamiento inicial con PLA primero.
 - Test de filtros principales sobre un dataset fixture.
+- Test de enriquecimiento para productos Grilon3 con URL oficial e imagen cuando exista.
+- Test de que productos 3N3 no reciban links de fabricante inventados.
 
 ## Decisiones aprobadas
 
@@ -206,3 +241,5 @@ Pruebas iniciales recomendadas:
 - Sin filtro por zona en el MVP.
 - Productos sin stock visibles.
 - Agrupacion normalizada por atributos del filamento.
+- Productos con link oficial del fabricante cuando exista.
+- Imagen del filamento siempre que este disponible.

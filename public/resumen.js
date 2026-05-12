@@ -61,7 +61,7 @@ function render() {
     <thead>
       <tr>
         <th>Filamento</th>
-        <th class="summary-weight">Kg</th>
+        <th class="summary-presentation">Presentación</th>
         ${state.sources.map(sourceHeader).join("")}
         <th class="summary-total">Total</th>
       </tr>
@@ -70,7 +70,7 @@ function render() {
     <tfoot>
       <tr>
         <th>Carretes por proveedor</th>
-        <td class="summary-weight"></td>
+        <td class="summary-presentation"></td>
         ${state.sources.map((source) => `<td class="summary-total">${formatInteger(providerTotals[source.id])}</td>`).join("")}
         <td class="summary-total">${formatInteger(grandTotal)}</td>
       </tr>
@@ -104,7 +104,7 @@ function groupTemplate(group) {
   return `
     <tr class="summary-group-row">
       <th>${escapeHtml(group.title)}</th>
-      <td class="summary-weight"></td>
+      <td class="summary-presentation"></td>
       ${state.sources.map((source) => `<td>${formatInteger(group.totals[source.id])}</td>`).join("")}
       <td class="summary-total">${formatInteger(group.total)}</td>
     </tr>
@@ -121,7 +121,7 @@ function rowTemplate(row) {
   return `
     <tr>
       <th>${productTitle(row.product)}</th>
-      <td class="summary-weight">${escapeHtml(formatWeightValue(row.product.weight_g))}</td>
+      <td class="summary-presentation">${escapeHtml(formatPresentation(row.product))}</td>
       ${state.sources.map((source) => cellTemplate(row.cells[source.id])).join("")}
       <td class="summary-total">${formatInteger(row.total)}</td>
     </tr>
@@ -208,9 +208,21 @@ function formatWeightLabel(weightG) {
   return `${Number(weightG) / 1000} kg`;
 }
 
-function formatWeightValue(weightG) {
-  if (!weightG) return "";
-  return String(Number(weightG) / 1000);
+function formatPresentation(product) {
+  const weight = formatWeightLabel(product.weight_g);
+  if (weight) return weight;
+
+  const samplerLength = samplerLengthLabel(product);
+  if (samplerLength) return `Sampler ${samplerLength}`;
+
+  return "";
+}
+
+function samplerLengthLabel(product) {
+  const names = (product.offers || []).map((offer) => offer.original_name).join(" ");
+  const match = names.match(/\bSAMPLER\b.*?\bX\s*(\d+(?:[,.]\d+)?)\s*M\b/i);
+  if (!match) return "";
+  return `${match[1].replace(",", ".")} m`;
 }
 
 function formatDate(value) {

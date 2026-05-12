@@ -17,6 +17,7 @@ class SourceConfig:
     gid: str = "0"
     brand_hint: str = ""
     contact_whatsapp_url: str = ""
+    contact_phone: str = ""
     contact_email: str = ""
     address: str = ""
     contact_url: str = ""
@@ -31,28 +32,39 @@ SOURCES: dict[str, SourceConfig] = {
         source_url="https://filamentos3d.com.ar/grilon3.php",
         connector="filamentos3d",
         brand_hint="Grilon3",
-        contact_url="https://filamentos3d.com.ar/",
+        contact_whatsapp_url="https://wa.me/5491154648121",
+        contact_phone="+54 9 11 5464-8121",
+        contact_email="info@filamentos3d.com.ar",
+        address="Av. H. Yrigoyen 9689, Lomas de Zamora, Buenos Aires",
+        contact_url="https://filamentos3d.com.ar/contactenos.php",
     ),
     "grupo_senz": SourceConfig(
         id="grupo_senz",
         name="Grupo Senz",
         zone="Zona Oeste",
-        homepage_url="https://docs.google.com/spreadsheets/d/14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM",
-        source_url="https://docs.google.com/spreadsheets/d/14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM",
+        homepage_url="https://gruposenz.com.ar/",
+        source_url="https://docs.google.com/spreadsheets/d/14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM/edit?gid=614179668#gid=614179668",
         connector="google_sheet",
         sheet_id="14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM",
-        gid="0",
+        gid="614179668",
+        contact_phone="+54 11 3605-9099",
+        contact_email="contacto@gruposenz.com.ar",
+        contact_url="https://gruposenz.com.ar/",
     ),
     "mundoinsumos": SourceConfig(
         id="mundoinsumos",
         name="MundoInsumos",
         zone="Zona Norte",
-        homepage_url="https://www.mundoinsumos.com.ar/",
+        homepage_url="https://mundoinsumos.com.ar/",
         source_url="https://docs.google.com/spreadsheets/d/1r-nKy4tRRtZ-5xwgxAcia8REDVW0Dv0h/edit?gid=1981641819#gid=1981641819",
         connector="google_sheet",
         sheet_id="1r-nKy4tRRtZ-5xwgxAcia8REDVW0Dv0h",
         gid="1981641819",
-        contact_url="https://www.mundoinsumos.com.ar/",
+        contact_whatsapp_url="https://wa.me/541165863008",
+        contact_phone="+54 11 6586-3008",
+        contact_email="info@mundoinsumos.com.ar",
+        address="Gral. Jose de San Martin 2345, Florida, Buenos Aires",
+        contact_url="https://mundoinsumos.com.ar/contacto/",
     ),
 }
 

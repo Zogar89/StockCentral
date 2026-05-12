@@ -48,6 +48,7 @@ def test_source_status_serializes_error_message():
         homepage_url="https://docs.google.com/spreadsheets/d/14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM",
         source_url="https://docs.google.com/spreadsheets/d/14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM",
         contact_whatsapp_url="https://wa.me/5491112345678",
+        contact_phone="+54 9 11 1234-5678",
         contact_email="ventas@example.com",
         address="Moron, Buenos Aires",
         contact_url="https://example.com/contacto",
@@ -69,4 +70,5 @@ def test_source_status_serializes_error_message():
     assert payload["status"] == "error"
     assert payload["error_message"] == "CSV export returned 403"
     assert payload["contact_whatsapp_url"].startswith("https://wa.me/")
+    assert payload["contact_phone"] == "+54 9 11 1234-5678"
     assert payload["stats"]["total_stock_kg"] == 12.0

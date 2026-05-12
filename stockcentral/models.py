@@ -90,6 +90,7 @@ class SourceStatus:
     homepage_url: str
     source_url: str
     contact_whatsapp_url: str
+    contact_phone: str
     contact_email: str
     address: str
     contact_url: str

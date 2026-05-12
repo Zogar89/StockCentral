@@ -103,6 +103,10 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert "samplerLengthLabel" in js
     assert "isSamplerProduct" in js
     assert "productSummaryName" in js
+    assert "summaryProductTemplate" in js
+    assert "summaryColorSwatchTemplate" in js
+    assert "colorSwatchStyle" in js
+    assert "product.pantone" in js
     assert "summary-group-row" in js
     assert "groupRows" in js
     assert "0*" in js
@@ -136,6 +140,9 @@ def test_styles_are_compact_and_responsive():
     assert "scroll-behavior: smooth" in css
     assert ".footer-provider:target" in css
     assert ".summary-presentation" in css
+    assert ".summary-product" in css
+    assert ".summary-color-swatch" in css
+    assert ".summary-product-name" in css
     assert ".summary-group-row" in css
     assert ".stock-note" in css
 

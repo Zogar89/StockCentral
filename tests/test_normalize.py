@@ -114,6 +114,10 @@ def test_keeps_provider_organized_color_variants_separate():
     verde_manzana = normalize_record(raw("GRILON3 PLA 19_VERDE MANZANA 1.75 MM X 1 KG", brand_hint="Grilon3"))
     kit_20 = normalize_record(raw("KIT LAPIZ 3D GRILON3 PLA 20 COLORES 10M POR COLOR (200M)", brand_hint="Grilon3"))
     kit_10 = normalize_record(raw("KIT LAPIZ 3D GRILON3 PLA 10 COLORES 10M POR COLOR (100M)", brand_hint="Grilon3"))
+    uva = normalize_record(raw("3NMAX PLA+ 24_UVA 1.75 MM X 1 KG", brand_hint=""))
+    uv_glow = normalize_record(raw("GRILON3 PLA 850 09_NARANJA UV GLOW 1.75 MM X 1 KG", brand_hint="Grilon3"))
+    praga = normalize_record(raw("GRILON3 PETG NARANJA PRAGA 1.75 MM X 1 KG", brand_hint="Grilon3"))
+    perla_calido = normalize_record(raw("GRILON3 BOUTIQUE PERLA  CALIDO 1.75 MM X 1 KG", brand_hint="Grilon3"))
 
     assert piel_162.color == "Piel 162"
     assert piel_720.color == "Piel 720"
@@ -123,6 +127,10 @@ def test_keeps_provider_organized_color_variants_separate():
     assert verde_manzana.color == "Verde Manzana"
     assert kit_20.color == "Kit 20 Colores"
     assert kit_10.color == "Kit 10 Colores"
+    assert uva.color == "Uva"
+    assert uv_glow.color == "Naranja UV Glow"
+    assert praga.color == "Naranja Praga"
+    assert perla_calido.color == "Perla Calido"
     assert len({
         build_product_id(piel_162),
         build_product_id(piel_720),
@@ -132,7 +140,11 @@ def test_keeps_provider_organized_color_variants_separate():
         build_product_id(verde_manzana),
         build_product_id(kit_20),
         build_product_id(kit_10),
-    }) == 8
+        build_product_id(uva),
+        build_product_id(uv_glow),
+        build_product_id(praga),
+        build_product_id(perla_calido),
+    }) == 12
 
 
 def test_build_display_name_avoids_repeating_material_and_variant():

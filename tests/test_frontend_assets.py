@@ -1,3 +1,5 @@
+import json
+from collections import Counter
 from pathlib import Path
 
 
@@ -67,3 +69,24 @@ def test_styles_are_compact_and_responsive():
     assert "border-radius: 8px" in css
     assert ".group-section" in css
     assert ".summary-group-row" in css
+
+
+def test_generated_stock_data_has_one_offer_per_provider_per_card():
+    payload = json.loads((PUBLIC / "data" / "stock.json").read_text(encoding="utf-8"))
+
+    for product in payload["products"]:
+        provider_counts = Counter(offer["provider_name"] for offer in product["offers"])
+        repeated_providers = [provider for provider, count in provider_counts.items() if count > 1]
+
+        assert repeated_providers == [], product["display_name"]
+
+
+def test_generated_stock_data_has_no_stocked_products_without_color():
+    payload = json.loads((PUBLIC / "data" / "stock.json").read_text(encoding="utf-8"))
+    stocked_without_color = [
+        product["display_name"]
+        for product in payload["products"]
+        if product["color"] == "Sin color" and product["offers"]
+    ]
+
+    assert stocked_without_color == []

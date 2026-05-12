@@ -72,6 +72,9 @@ COLOR_RULES = [
     ("GRIS PLOMO", "Gris Plomo"),
     ("AMARILLO FLUO", "Amarillo Fluo"),
     ("NARANJA FLUO", "Naranja Fluo"),
+    ("NARANJA UV GLOW", "Naranja UV Glow"),
+    ("VERDE UV GLOW", "Verde UV Glow"),
+    ("NARANJA PRAGA", "Naranja Praga"),
     ("VERDE FLUO", "Verde Fluo"),
     ("CLEAR AMARILLO", "Clear Amarillo"),
     ("CLEAR AZUL", "Clear Azul"),
@@ -117,6 +120,7 @@ COLOR_RULES = [
     ("ROBY", "Roby"),
     ("JADE", "Jade"),
     ("ORO", "Oro"),
+    ("UVA", "Uva"),
     ("CARBON", "Carbon"),
     ("RUBI", "Rubi"),
     ("ARENA", "Arena"),
@@ -279,7 +283,8 @@ def _detect_brand(text: str, brand_hint: str) -> str:
 
 
 def _contains_token(text: str, token: str) -> bool:
-    return re.search(rf"(?<![A-Z0-9]){re.escape(token)}(?![A-Z])", text) is not None
+    token_pattern = re.escape(token).replace(r"\ ", r"\s+")
+    return re.search(rf"(?<![A-Z0-9]){token_pattern}(?![A-Z])", text) is not None
 
 
 def _matches_rule(text: str, token: str) -> bool:

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
+import unicodedata
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -57,14 +59,9 @@ def build_payload(
                 "fields": fields,
                 "enrichment": enrichment,
                 "offers": [],
-                "offer_keys": set(),
             }
 
-        offer_key = (item.source_id, item.original_name, item.stock_quantity)
-        if offer_key in grouped[product_id]["offer_keys"]:  # type: ignore[operator]
-            continue
-        grouped[product_id]["offer_keys"].add(offer_key)  # type: ignore[union-attr]
-        grouped[product_id]["offers"].append(_offer_from_raw(item))  # type: ignore[index, union-attr]
+        _add_offer_to_group(grouped[product_id], _offer_from_raw(item))
 
     for product_id, catalog_product in (catalog_products or {}).items():
         if product_id in grouped:
@@ -91,7 +88,6 @@ def build_payload(
                 "image_source": "manufacturer" if catalog_product.image_url else "",
             },
             "offers": [],
-            "offer_keys": set(),
         }
 
     products = [
@@ -202,6 +198,30 @@ def _offer_from_raw(item: RawStockItem) -> Offer:
         source_url=item.source_url,
         updated_at=item.updated_at,
     )
+
+
+def _add_offer_to_group(group: dict[str, object], offer: Offer) -> None:
+    offers = group["offers"]  # type: ignore[assignment]
+    for index, existing_offer in enumerate(offers):
+        if not _is_same_provider_alias(existing_offer, offer):
+            continue
+        offers[index] = _preferred_offer(existing_offer, offer)
+        return
+    offers.append(offer)
+
+
+def _is_same_provider_alias(left: Offer, right: Offer) -> bool:
+    return (
+        left.source_id == right.source_id
+        and left.provider_name == right.provider_name
+        and _canonical_offer_name(left.original_name) == _canonical_offer_name(right.original_name)
+    )
+
+
+def _preferred_offer(left: Offer, right: Offer) -> Offer:
+    left_quantity = left.stock_quantity if left.stock_quantity is not None else -1
+    right_quantity = right.stock_quantity if right.stock_quantity is not None else -1
+    return right if right_quantity > left_quantity else left
 
 
 def _product_from_group(product_id: str, data: Mapping[str, object]) -> ProductGroup:
@@ -332,6 +352,13 @@ def _validate_unique_provider_offers(product_id: str, offers: list[Offer]) -> No
         f"This usually means different products were normalized together. "
         f"{'; '.join(details)}"
     )
+
+
+def _canonical_offer_name(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value)
+    without_marks = "".join(char for char in normalized if not unicodedata.combining(char))
+    folded = without_marks.upper()
+    return re.sub(r"\s+", " ", folded).strip()
 
 
 def _now() -> str:

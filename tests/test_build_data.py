@@ -120,6 +120,21 @@ def test_build_payload_deduplicates_repeated_provider_rows():
     assert len(payload["products"][0]["offers"]) == 1
 
 
+def test_build_payload_deduplicates_provider_alias_rows_after_normalization():
+    payload = build_payload(
+        [
+            raw("grupo_senz", "Grupo Senz", "Zona Oeste", "GRILON3 BOUTIQUE PERLA CÁLIDO 1.75 MM X 1 KG", 19, "Grilon3"),
+            raw("grupo_senz", "Grupo Senz", "Zona Oeste", "GRILON3 BOUTIQUE PERLA  CALIDO 1.75 MM X 1 KG", 0, "Grilon3"),
+        ],
+        sources=SOURCES,
+        manufacturers=MANUFACTURERS,
+        generated_at="2026-05-12T13:00:00-03:00",
+    )
+
+    assert len(payload["products"][0]["offers"]) == 1
+    assert payload["products"][0]["offers"][0]["stock_quantity"] == 19
+
+
 def test_build_payload_rejects_repeated_provider_inside_product_card():
     with pytest.raises(ValueError, match="repeated provider offers"):
         build_payload(

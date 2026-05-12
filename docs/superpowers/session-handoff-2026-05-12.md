@@ -2,82 +2,64 @@
 
 Fecha: 2026-05-12
 
-## Estado al cerrar
+## Estado actual
 
-- El repo local esta inicializado en git y con working tree limpio antes de publicar.
-- Se definio el MVP como sitio estatico publico en GitHub Pages.
-- Python va a correr en GitHub Actions para leer fuentes, normalizar stock y generar `public/data/stock.json`.
-- El frontend va a ser HTML/CSS/JS estatico, en espanol argentino, pensado para AMBA.
-- No hay codigo de aplicacion implementado todavia; por ahora quedaron spec y plan de ejecucion.
-- Ultimo commit local antes de este handoff: `376d226 docs: add pivot summary view requirements`.
+- Repo publico creado: `https://github.com/Zogar89/StockCentral`.
+- Rama de trabajo: `codex/stockcentral-mvp-foundation`.
+- Ya existe scaffold Python con modelos, configuracion de proveedores, normalizacion conservadora y conector CSV para Google Sheets.
+- Tests actuales relevantes pasan para modelos, proveedores, normalizacion y Google Sheets.
+- El frontend estatico, build completo, scraper Filamentos3D, enriquecimiento/cache de imagenes Grilon3 y workflows de GitHub Actions siguen pendientes.
+- GitHub Pages debe quedar activado con GitHub Actions como source cuando el workflow de Pages este creado.
 
 ## Decisiones tomadas
 
 - Proveedores iniciales:
-  - Filamentos3D, Zona Sur, fuente HTML: `https://filamentos3d.com.ar/grilon3.php`.
-  - Grupo Senz, Zona Oeste, fuente Google Sheet: `https://docs.google.com/spreadsheets/d/14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM`.
   - MundoInsumos, Zona Norte, fuente Google Sheet gid `1981641819`: `https://docs.google.com/spreadsheets/d/1r-nKy4tRRtZ-5xwgxAcia8REDVW0Dv0h/edit?gid=1981641819#gid=1981641819`.
-- Sitio publico, actualizacion 2 a 4 veces por dia en horario de oficina.
+  - Grupo Senz, Zona Oeste, fuente Google Sheet gid `614179668`: `https://docs.google.com/spreadsheets/d/14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM/edit?gid=614179668#gid=614179668`.
+  - Filamentos3D, Zona Sur, fuente HTML: `https://filamentos3d.com.ar/grilon3.php`.
+- Orden manual de proveedores para la vista resumen: Zona Norte, Zona Oeste, Zona Sur.
+- Las planillas de Grupo Senz y MundoInsumos tienen una sola hoja relevante para el MVP y son exportables como CSV publico.
+- Stock significa carretes disponibles; mostrar stock como cantidad de carretes, no como kilos.
+- En la vista resumen, una celda sin stock confiable debe verse como `0` cuando el dato es cero real.
+- Valores negativos, vacios, formulas con error o raros se tratan como `unknown`/dato a revisar y no suman stock.
 - Sin precios en el MVP.
 - Sin filtro por zona por ahora.
+- Sin filtro de cantidad minima en el MVP.
 - Productos sin stock siempre visibles.
 - Filtros del catalogo: material, variante, color, diametro, peso/kg, marca, proveedor y estado de stock.
 - PLA queda destacado porque es el caso principal de busqueda.
 - Producto agrupado por `material + variant + color + diameter_mm + weight_g + brand`.
+- Colores especiales se mantienen separados.
 - Productos Grilon3 deben linkear a pagina oficial cuando exista y traer imagen disponible desde `https://grilon3.com.ar/productos/`.
+- Imagenes: cachearlas/copiar URLs durante el build; evitar depender de hotlinks cuando sea posible.
 - 3N3 queda sin sitio oficial por ahora; no inventar links.
+- Si no hay link oficial de fabricante, el titulo del producto queda sin link.
 - Diseno minimalista estilo Apple como inspiracion: claro, compacto, rapido, sin copiar marca ni assets.
-- Footer con fuentes, contactos disponibles, ultima actualizacion y estadisticas por proveedor.
-- Valores negativos o raros de stock se publican como `unknown`, no como stock positivo y no suman unidades ni kg.
-- Se agrego segunda pagina `resumen.html`: tabla tipo dinamica con filamentos por fila, proveedores por columna, total por producto a la derecha y kg por proveedor abajo.
+- Footer con fuentes, contactos disponibles, ultima actualizacion y estadisticas por proveedor en carretes.
+- Boton de WhatsApp por proveedor/oferta con mensaje prearmado es una buena idea para implementar.
+- El repositorio puede cambiar de nombre en el futuro, pero por ahora se sigue con `StockCentral`.
+
+## Contactos oficiales encontrados
+
+- Filamentos3D: `https://filamentos3d.com.ar/contactenos.php`, WhatsApp `+54 9 11 5464-8121`, mail `info@filamentos3d.com.ar`, direccion `Av. H. Yrigoyen 9689, Lomas de Zamora, Buenos Aires`.
+- Grupo Senz: `https://gruposenz.com.ar/`, telefono `+54 11 3605-9099`, mail `contacto@gruposenz.com.ar`.
+- MundoInsumos: `https://mundoinsumos.com.ar/contacto/`, WhatsApp filamentos `+54 11 6586-3008`, mail `info@mundoinsumos.com.ar`, direccion `Gral. Jose de San Martin 2345, Florida, Buenos Aires`.
 
 ## Archivos importantes
 
 - `docs/superpowers/specs/2026-05-12-stockcentral-design.md`: especificacion de producto.
 - `docs/superpowers/plans/2026-05-12-stockcentral-mvp.md`: plan ejecutable task-by-task para implementar el MVP.
 - `docs/superpowers/session-handoff-2026-05-12.md`: este handoff.
+- `stockcentral/providers.py`: configuracion de fuentes, gids y contactos.
+- `stockcentral/connectors/google_sheet.py`: export/parsing CSV de Google Sheets.
+- `tests/test_google_sheet.py`: fixtures y cobertura de parsing defensivo de sheets.
 
-## Preguntas para cuando vuelvas
+## Preguntas abiertas
 
-1. Contactos de proveedores:
-   - Filamentos3D: WhatsApp, mail, direccion exacta o zona publica, pagina de contacto.
-   - Grupo Senz: sitio oficial si existe, WhatsApp, mail, direccion o zona publica.
-   - MundoInsumos: WhatsApp, mail, direccion o zona publica.
-
-2. Fuentes:
-   - Confirmar que las planillas de Grupo Senz y MundoInsumos quedan publicas o al menos exportables como CSV sin login.
-   - Confirmar si cada planilla tiene una sola hoja relevante o si hay que leer varios `gid`.
-   - Confirmar cuales son las columnas reales de producto, stock, marca, diametro y peso si no son obvias.
-
-3. Stock:
-   - Confirmar que `stock` significa unidades/bobinas disponibles.
-   - Confirmar que una unidad de 1 kg debe sumar 1 kg, 500 g suma 0,5 kg, etc.
-   - Confirmar si los valores negativos deben mostrarse como `Stock a revisar` o directamente como `Sin dato`.
-
-4. Super resumen:
-   - Confirmar si las celdas por proveedor deben mostrar solo unidades, o unidades + kg.
-   - Confirmar si el total derecho debe ser unidades totales, kg totales, o ambos.
-   - Confirmar el orden preferido de proveedores: Zona Sur/Oeste/Norte, alfabetico, o manual.
-   - Confirmar si una celda sin stock debe verse como `0`, `Sin stock`, o quedar visualmente tenue.
-
-5. Normalizacion:
-   - Confirmar sinonimos y variantes que conviene reconocer desde el inicio: PLA+, Silk, Mate, Pro, Flex, Wood, Galaxy, Boutique, Astra.
-   - Confirmar si colores especiales deben agruparse o mantenerse separados: natural/transparente/cristal, gris/plata, multicolor/rainbow.
-   - Confirmar si productos de distinta marca pero mismo material/color/peso deben quedar separados como ahora, o si alguna vista debe agruparlos juntos.
-
-6. Imagenes y links:
-   - Confirmar si esta bien usar imagenes remotas oficiales del fabricante, o si preferis cachearlas/copiar URLs al build.
-   - Confirmar si cuando no hay link oficial del fabricante el titulo del producto debe linkear a la fuente/proveedor, o quedar sin link.
-
-7. Flujo del usuario impresor 3D:
-   - Si alguien necesita 4 kg del mismo color, conviene agregar un filtro rapido de cantidad minima?
-   - Si no hay stock exacto, conviene sugerir variantes cercanas del mismo color/material?
-   - Conviene mostrar un boton de WhatsApp por proveedor con mensaje prearmado tipo "Hola, vi en StockCentral que tenes PLA Negro..."?
-
-8. Publicacion:
-   - Confirmar si el repositorio `StockCentral` queda como nombre definitivo.
-   - Cuando haya app implementada, confirmar si activamos GitHub Pages desde GitHub Actions en la configuracion del repo.
+- Ver si conviene sugerir variantes cercanas cuando no hay stock exacto del color/material.
+- Definir cuando aparezcan datos de Zona Norte/otros proveedores si se agrega filtro por zona o se mantiene solo como etiqueta.
+- Confirmar mas adelante si el nombre publico queda `StockCentral` o se renombra el repo/producto.
 
 ## Proximo paso sugerido
 
-Implementar desde `docs/superpowers/plans/2026-05-12-stockcentral-mvp.md`, empezando por Task 1: scaffold Python, modelos y tests. Despues avanzar en orden hasta llegar al frontend y recien ahi validar visualmente en browser.
+Seguir con el plan desde el conector HTML de Filamentos3D, luego enriquecimiento/cache de Grilon3, `build_data.py`, frontend estatico y workflows de GitHub Actions + Pages.

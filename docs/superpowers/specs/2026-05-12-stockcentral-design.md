@@ -15,7 +15,7 @@ El MVP sera un sitio estatico servido con GitHub Pages. Python correra en GitHub
 - Centralizar proveedores de Zona Sur, Zona Oeste y Zona Norte.
 - Mostrar todos los productos, incluidos los que no tienen stock.
 - Linkear cada producto a la pagina oficial del fabricante cuando exista.
-- Mostrar imagen del filamento siempre que este disponible.
+- Mostrar imagen cacheada/copiada del filamento siempre que este disponible.
 - Priorizar la experiencia de busqueda por filtros, con PLA destacado porque es el caso de uso mayoritario.
 - Usar una direccion visual minimalista estilo Apple: clara, liviana, precisa y enfocada en el producto.
 - Incluir un footer informativo con fuentes, contactos de proveedores, ultima actualizacion y estadisticas simples por proveedor.
@@ -51,13 +51,16 @@ El frontend no consulta directamente las fuentes de los proveedores. Solo consum
 - Fuente de stock: `https://filamentos3d.com.ar/grilon3.php`.
 - Tipo de conector: scraping HTML.
 - Link visible del proveedor: sitio/fuente publica del proveedor.
+- Contacto publico oficial: `https://filamentos3d.com.ar/contactenos.php`, WhatsApp `+54 9 11 5464-8121`, mail `info@filamentos3d.com.ar`, direccion `Av. H. Yrigoyen 9689, Lomas de Zamora, Buenos Aires`.
 
 ### Grupo Senz
 
 - Zona: Zona Oeste.
-- Fuente de stock: Google Sheet `https://docs.google.com/spreadsheets/d/14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM`.
+- Fuente de stock: Google Sheet `https://docs.google.com/spreadsheets/d/14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM/edit?gid=614179668#gid=614179668`.
+- GID relevante confirmado: `614179668`.
 - Tipo de conector: exportacion CSV de Google Sheets si esta disponible publicamente.
-- Link visible del proveedor: fuente o sitio publico disponible.
+- Link visible del proveedor: `https://gruposenz.com.ar/`.
+- Contacto publico oficial: telefono `+54 11 3605-9099`, mail `contacto@gruposenz.com.ar`.
 
 ### MundoInsumos
 
@@ -65,7 +68,8 @@ El frontend no consulta directamente las fuentes de los proveedores. Solo consum
 - Fuente de stock: Google Sheet `https://docs.google.com/spreadsheets/d/1r-nKy4tRRtZ-5xwgxAcia8REDVW0Dv0h/edit?gid=1981641819#gid=1981641819`.
 - GID inicial: `1981641819`.
 - Tipo de conector: exportacion CSV de Google Sheets si esta disponible publicamente.
-- Link visible del proveedor: `https://www.mundoinsumos.com.ar/`.
+- Link visible del proveedor: `https://mundoinsumos.com.ar/`.
+- Contacto publico oficial: `https://mundoinsumos.com.ar/contacto/`, WhatsApp filamentos `+54 11 6586-3008`, mail `info@mundoinsumos.com.ar`, direccion `Gral. Jose de San Martin 2345, Florida, Buenos Aires`.
 
 ## Actualizacion
 
@@ -132,6 +136,7 @@ Campos esperados:
 - `homepage_url`.
 - `source_url`.
 - `contact_whatsapp_url`.
+- `contact_phone`.
 - `contact_email`.
 - `address`.
 - `contact_url`.
@@ -151,7 +156,7 @@ Campos esperados dentro de `sources[].stats`:
 - `in_stock_product_count`: cantidad de productos/ofertas con stock mayor a cero.
 - `out_of_stock_product_count`: cantidad de productos/ofertas sin stock.
 
-Si un producto no tiene peso normalizado o stock numerico confiable, no debe aportar a `total_stock_kg`. La UI puede mostrar el total como estimado.
+Si un producto no tiene peso normalizado o stock numerico confiable, no debe aportar a `total_stock_kg`. Para el MVP, la UI visible debe priorizar carretes/unidades; los kilos pueden quedar como dato tecnico interno o futuro, pero no como el resumen principal.
 
 ## Valores raros de stock
 
@@ -161,7 +166,7 @@ Los conectores deben parsear stock de manera defensiva:
 - Celdas vacias, textos ambiguos, formulas con error, valores no numericos o formatos inesperados tambien deben publicarse como `unknown`.
 - Un cero explicito debe publicarse como `stock_quantity: 0` y `stock_status: out_of_stock`.
 - Un numero positivo debe publicarse como `stock_quantity: N` y `stock_status: in_stock`.
-- Los valores `unknown` deben mantener visible el producto, pero no deben sumar unidades ni kilos en las estadisticas del footer.
+- Los valores `unknown` deben mantener visible el producto, pero no deben sumar unidades ni kilos en las estadisticas del footer. En tablas de stock, un cero confiable se muestra como `0`; un valor raro o negativo se muestra como dato a revisar.
 
 Esta politica evita mostrar disponibilidad falsa por valores administrativos, ajustes negativos o errores de planilla.
 
@@ -194,7 +199,7 @@ Ademas de normalizar stock, el pipeline intentara enriquecer productos con infor
 
 - Para Grilon3, usar el catalogo oficial de productos como fuente de paginas oficiales e imagenes.
 - Para productos sin pagina oficial de fabricante, dejar `manufacturer_product_url` vacio.
-- Para imagenes, priorizar imagen oficial del fabricante. Si no existe, se puede usar una imagen del proveedor solo si la fuente la entrega de manera estable y confiable.
+- Para imagenes, priorizar imagen oficial del fabricante y cachearla/copiarla durante el build para evitar hotlinking. Si no existe, se puede cachear una imagen del proveedor solo si la fuente la entrega de manera estable y confiable.
 - Si no hay imagen disponible, la UI debe mostrar el producto sin imagen o con un placeholder neutral, sin romper el layout.
 
 ## Interfaz
@@ -222,7 +227,7 @@ Comportamiento inicial:
 - No mostrar precios.
 - Mostrar zona junto al proveedor, sin filtro por zona.
 - Mostrar imagen del filamento cuando exista.
-- Linkear el nombre del producto a la pagina oficial del fabricante cuando exista.
+- Linkear el nombre del producto a la pagina oficial del fabricante cuando exista. Si no existe pagina oficial de fabricante, el titulo del producto queda sin link.
 - Mostrar ultima actualizacion general y, cuando este disponible, por proveedor.
 
 Filtros del MVP:
@@ -246,9 +251,10 @@ Ademas del catalogo normal, el sitio tendra una pagina separada de resumen, por 
 - Cada columna intermedia representa un proveedor.
 - Cada celda muestra el stock numerico de ese filamento en ese proveedor, cuando sea confiable.
 - La ultima columna derecha muestra la sumatoria de stock total de ese filamento entre todos los proveedores.
-- La ultima fila inferior muestra la sumatoria estimada de kilos disponibles por proveedor.
-- La celda inferior derecha muestra el total general estimado en kilos.
-- Valores negativos, vacios o `unknown` se muestran como `Revisar` o equivalente corto, pero no suman unidades ni kilos.
+- La ultima fila inferior muestra la sumatoria de carretes disponibles por proveedor.
+- La celda inferior derecha muestra el total general de carretes disponibles.
+- Las columnas de proveedores se ordenan manualmente como Zona Norte, Zona Oeste y Zona Sur.
+- Un proveedor sin stock confiable para ese filamento se muestra como `0` cuando el cero es confiable; valores negativos, vacios o `unknown` se muestran como `Revisar` o equivalente corto, pero no suman unidades ni kilos.
 - Productos sin stock siguen apareciendo para que el usuario pueda verificar que encontro el color/material correcto y que no hay disponibilidad.
 - La tabla debe ser rapida, compacta y compatible con celular mediante scroll horizontal cuidado, encabezado sticky y primera columna sticky.
 - Los numeros deben ser faciles de escanear, idealmente con cifras tabulares.
@@ -272,9 +278,9 @@ El footer mostrara:
 - Datos de contacto de cada proveedor cuando esten disponibles: WhatsApp, mail, direccion, sitio/contacto.
 - Ultima fecha de actualizacion general.
 - Ultima actualizacion y estado por proveedor.
-- Estadisticas pequenas por proveedor, especialmente kilos estimados disponibles.
+- Estadisticas pequenas por proveedor, especialmente carretes disponibles.
 
-El footer debe mantener el mismo lenguaje visual minimalista: informacion compacta, clara y secundaria. Los botones de WhatsApp/mail deben aparecer solo cuando exista el dato configurado para ese proveedor. No se deben inventar contactos ni direcciones.
+El footer debe mantener el mismo lenguaje visual minimalista: informacion compacta, clara y secundaria. Los botones de WhatsApp/mail deben aparecer solo cuando exista el dato configurado para ese proveedor. El boton de WhatsApp debe poder incluir un mensaje prearmado con el producto consultado cuando venga desde una oferta. No se deben inventar contactos ni direcciones.
 
 ## Manejo de errores
 
@@ -298,10 +304,10 @@ Pruebas iniciales recomendadas:
 - Test de filtros principales sobre un dataset fixture.
 - Test de enriquecimiento para productos Grilon3 con URL oficial e imagen cuando exista.
 - Test de que productos 3N3 no reciban links de fabricante inventados.
-- Test de calculo de estadisticas por proveedor, incluyendo kilos estimados.
+- Test de calculo de estadisticas por proveedor, priorizando carretes disponibles en la UI.
 - Test de parsing defensivo para stock negativo, celdas vacias y valores raros.
 - Test de que el footer renderice fuentes, contactos disponibles y ultima actualizacion.
-- Test de que la vista resumen renderice filas por filamento, columnas por proveedor, total por producto y total inferior de kilos por proveedor.
+- Test de que la vista resumen renderice filas por filamento, columnas por proveedor, total por producto y total inferior de carretes por proveedor.
 - Revision visual manual de la UI para validar estilo minimalista, legibilidad mobile y ausencia de ruido visual.
 
 ## Decisiones aprobadas
@@ -323,3 +329,7 @@ Pruebas iniciales recomendadas:
 - Direccion visual minimalista estilo Apple, sin copiar marca ni assets.
 - Footer con fuentes, contactos disponibles, ultima actualizacion y estadisticas por proveedor.
 - Segunda pagina de super resumen tipo tabla dinamica con proveedores como columnas y totales por producto/proveedor.
+- Stock visible expresado como carretes disponibles; sin filtro de cantidad minima en el MVP.
+- Colores especiales separados, sin agrupar natural/transparente/cristal, gris/plata o multicolor/rainbow salvo regla futura explicita.
+- Imagenes cacheadas/copiadas durante el build.
+- Orden de proveedores en resumen: Zona Norte, Zona Oeste, Zona Sur.

@@ -10,6 +10,23 @@
 
 ---
 
+## Amendments From User Decisions
+
+These decisions override older snippets in this plan if there is a conflict:
+
+- Visible stock is expressed as carretes/unidades only. Keep kg calculations only if useful internally, but catalog, footer and resumen should not use kg as the main visible metric.
+- The resumen page orders provider columns manually as Zona Norte, Zona Oeste, Zona Sur: MundoInsumos, Grupo Senz, Filamentos3D.
+- Empty/out-of-stock cells in the resumen show `0` when stock is confidently zero. Negative, blank, formula-error or weird values remain `unknown`/`Revisar` and do not add to totals.
+- Grupo Senz uses the single relevant sheet gid `614179668`; MundoInsumos uses gid `1981641819`.
+- Source contacts come from public official pages and now include `contact_phone` in addition to WhatsApp, mail, address and contact URL.
+- Images must be cached/copied during the build instead of hotlinked directly when possible.
+- Products without official manufacturer page stay unlinked. Do not link product titles to providers as a fallback.
+- Special colors stay separate; do not merge natural/transparente/cristal, gris/plata, multicolor/rainbow unless a future rule says so.
+- Do not add a minimum-quantity filter to the MVP. Add WhatsApp actions with a prefilled product/provider message where practical.
+- GitHub Pages should be activated with GitHub Actions as the source. The repo name may change later, so keep deploy docs generic.
+
+---
+
 ## File Structure
 
 - Create `pyproject.toml`: Python package metadata, dependencies, pytest config.

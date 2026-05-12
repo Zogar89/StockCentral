@@ -169,6 +169,16 @@ input {
   font: inherit;
 }
 
+select[multiple] {
+  height: 86px;
+  padding: 6px;
+}
+
+select[multiple] option {
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
 .product-list {
   display: grid;
   gap: 14px;

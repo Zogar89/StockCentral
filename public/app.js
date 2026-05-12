@@ -3,14 +3,14 @@ const state = {
   sources: [],
   filters: {
     query: "",
-    material: "",
-    variant: "",
-    color: "",
-    diameter: "",
-    weight: "",
-    brand: "",
-    provider: "",
-    stock: "all",
+    material: [],
+    variant: [],
+    color: [],
+    diameter: [],
+    weight: [],
+    brand: [],
+    provider: [],
+    stock: [],
   },
 };
 
@@ -72,7 +72,7 @@ function setupFilters() {
   setSelect("weight", valuesFor("weight_g").map((value) => [String(value), `${Number(value) / 1000} kg`]), "Peso");
   setSelect("brand", valuesFor("brand"), "Marca");
   setSelect("provider", providerValues(), "Proveedor");
-  setSelect("stock", [["all", "Todos"], ["in_stock", "Con stock"], ["out_of_stock", "Sin stock"], ["unknown", "A revisar"]]);
+  setSelect("stock", [["in_stock", "Con stock"], ["out_of_stock", "Sin stock"], ["unknown", "A revisar"]], "Stock");
   renderQuickLines();
   updateLineHelp();
 
@@ -82,14 +82,14 @@ function setupFilters() {
   });
   Object.entries(filterIds).forEach(([key, id]) => {
     document.getElementById(id).addEventListener("change", (event) => {
-      state.filters[key] = event.target.value;
+      state.filters[key] = selectedValues(event.target);
       if (key === "variant") updateLineHelp();
       render();
     });
   });
   document.getElementById("pla-shortcut").addEventListener("click", () => {
-    state.filters.material = "PLA";
-    document.getElementById("material-filter").value = "PLA";
+    state.filters.material = ["PLA"];
+    setSelectedValues(document.getElementById("material-filter"), state.filters.material);
     render();
   });
 }
@@ -112,15 +112,27 @@ function matchesFilters(product) {
   ].join(" ").toLowerCase();
 
   if (state.filters.query && !queryText.includes(state.filters.query)) return false;
-  if (state.filters.material && product.material !== state.filters.material) return false;
-  if (state.filters.variant && lineLabel(product) !== state.filters.variant) return false;
-  if (state.filters.color && product.color !== state.filters.color) return false;
-  if (state.filters.diameter && String(product.diameter_mm) !== state.filters.diameter) return false;
-  if (state.filters.weight && String(product.weight_g) !== state.filters.weight) return false;
-  if (state.filters.brand && product.brand !== state.filters.brand) return false;
-  if (state.filters.provider && !(product.offers || []).some((offer) => offer.provider_name === state.filters.provider)) return false;
-  if (state.filters.stock !== "all" && !(product.offers || []).some((offer) => offer.stock_status === state.filters.stock)) return false;
+  if (!matchesAny(state.filters.material, product.material)) return false;
+  if (!matchesAny(state.filters.variant, lineLabel(product))) return false;
+  if (!matchesAny(state.filters.color, product.color)) return false;
+  if (!matchesAny(state.filters.diameter, String(product.diameter_mm))) return false;
+  if (!matchesAny(state.filters.weight, String(product.weight_g))) return false;
+  if (!matchesAny(state.filters.brand, product.brand)) return false;
+  if (!matchesProviderFilter(product)) return false;
+  if (!matchesStockFilter(product)) return false;
   return true;
+}
+
+function matchesAny(selected, value) {
+  return !selected.length || selected.includes(String(value));
+}
+
+function matchesProviderFilter(product) {
+  return !state.filters.provider.length || (product.offers || []).some((offer) => state.filters.provider.includes(offer.provider_name));
+}
+
+function matchesStockFilter(product) {
+  return !state.filters.stock.length || (product.offers || []).some((offer) => state.filters.stock.includes(offer.stock_status));
 }
 
 function productTemplate(product) {
@@ -292,12 +304,26 @@ function brandRank(brand) {
 
 function setSelect(key, values, emptyLabel = "") {
   const select = document.getElementById(filterIds[key]);
+  select.multiple = true;
+  select.size = Math.min(4, Math.max(3, values.length + (emptyLabel ? 1 : 0)));
   const normalized = values.map((value) => {
     if (Array.isArray(value)) return value;
     return [value, key === "variant" ? lineOptionLabel(value) : value];
   });
-  const options = emptyLabel ? [["", emptyLabel], ...normalized] : normalized;
-  select.innerHTML = options.map(([value, label]) => `<option value="${escapeAttribute(value)}">${escapeHtml(label)}</option>`).join("");
+  const options = emptyLabel ? [["", emptyLabel, true], ...normalized] : normalized;
+  select.innerHTML = options.map(([value, label, disabled]) => {
+    return `<option value="${escapeAttribute(value)}"${disabled ? " disabled" : ""}>${escapeHtml(label)}</option>`;
+  }).join("");
+}
+
+function selectedValues(select) {
+  return [...select.selectedOptions].map((option) => option.value).filter(Boolean);
+}
+
+function setSelectedValues(select, values) {
+  [...select.options].forEach((option) => {
+    option.selected = values.includes(option.value);
+  });
 }
 
 function valuesFor(field) {
@@ -323,10 +349,14 @@ function lineRank(line) {
 }
 
 function updateLineHelp() {
-  const line = state.filters.variant;
+  const line = state.filters.variant.length === 1 ? state.filters.variant[0] : "";
   const help = document.getElementById("line-help");
-  if (!line) {
+  if (!state.filters.variant.length) {
     help.textContent = "Líneas más usadas: PLA Standard, PLA+, PETG y flexibles. Algunas líneas especiales tienen descripción para elegir sin adivinar.";
+    return;
+  }
+  if (!line) {
+    help.textContent = `${state.filters.variant.length} líneas seleccionadas.`;
     return;
   }
   help.textContent = lineMeta[line]?.help || `${line}: línea/material detectado desde las fuentes de stock.`;
@@ -340,8 +370,8 @@ function renderQuickLines() {
   document.getElementById("quick-lines").innerHTML = buttons.join("");
   document.querySelectorAll(".quick-line").forEach((button) => {
     button.addEventListener("click", () => {
-      state.filters.variant = button.dataset.line || "";
-      document.getElementById("variant-filter").value = state.filters.variant;
+      state.filters.variant = [button.dataset.line || ""].filter(Boolean);
+      setSelectedValues(document.getElementById("variant-filter"), state.filters.variant);
       updateLineHelp();
       render();
     });

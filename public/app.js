@@ -28,6 +28,7 @@ const filterIds = {
 const lineMeta = {
   "PLA Standard": { label: "PLA Standard", help: "El PLA común: fácil de imprimir y el más buscado para piezas generales.", rank: 10 },
   "PLA+": { label: "PLA+", help: "PLA modificado: suele buscarse por mejor resistencia o terminación que el PLA común.", rank: 20 },
+  "PLA Flexible": { label: "PLA Flexible", help: "PLA+ flexible de 3N3/3NFLEX: para piezas con algo de elasticidad sin irse a TPU puro.", rank: 25 },
   "PETG": { label: "PETG", help: "Más tenaz y resistente a temperatura que PLA; útil para piezas funcionales.", rank: 30 },
   "ABS": { label: "ABS", help: "Material técnico para piezas resistentes; suele requerir cama caliente y buena ventilación.", rank: 40 },
   "TPU": { label: "TPU", help: "Flexible/elástico, usado para piezas que necesitan doblarse o absorber impacto.", rank: 50 },
@@ -50,7 +51,7 @@ const lineMeta = {
   "Sampler / lápiz 3D": { label: "Sampler / lápiz 3D", help: "Muestras cortas en metros, pensadas para lápiz 3D o prueba de material; no son bobinas.", rank: 130 },
 };
 
-const quickLineValues = ["PLA Standard", "PLA+", "PETG", "PLA Astra", "PLA Silk", "TPU"];
+const quickLineValues = ["PLA Standard", "PLA+", "PLA Flexible", "PETG", "PLA Astra", "PLA Silk", "TPU"];
 
 document.addEventListener("DOMContentLoaded", init);
 

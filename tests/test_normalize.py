@@ -81,9 +81,11 @@ def test_normalizes_grilon3_official_lines():
 def test_normalizes_epet_as_recycled_pet_and_3n_subbrands_as_3n3():
     fields = normalize_record(raw("3nEPET AZUL TRAFUL 1KG", brand_hint=""))
     flex = normalize_record(raw("3nFLEX BLANCO 500G", brand_hint="Grilon3"))
+    pla_flex = normalize_record(raw("3NFLEX PLA+ 06_AMARILLO 1.75 MM X 1 KG", brand_hint=""))
 
     assert (fields.material, fields.variant, fields.color, fields.brand) == ("PET", "E-PET", "Azul Traful", "3N3")
     assert (flex.material, flex.variant, flex.brand) == ("TPU", "Flex", "3N3")
+    assert (pla_flex.material, pla_flex.variant, pla_flex.color, pla_flex.brand) == ("PLA", "PLA Flexible", "Amarillo", "3N3")
 
 
 def test_detects_compact_color_and_wide_diameters():

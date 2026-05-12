@@ -224,6 +224,8 @@ def build_display_name(fields: NormalizedFields) -> str:
 
 
 def _detect_material(text: str) -> str:
+    if "3NFLEX" in text and _matches_rule(text, "PLA+"):
+        return "PLA"
     padded = f" {text} "
     for token, value in MATERIAL_RULES:
         if _matches_rule(padded, token):
@@ -232,6 +234,8 @@ def _detect_material(text: str) -> str:
 
 
 def _detect_variant(text: str) -> str:
+    if "3NFLEX" in text and _matches_rule(text, "PLA+"):
+        return "PLA Flexible"
     for token, value in VARIANT_RULES:
         if _matches_rule(text, token):
             return value

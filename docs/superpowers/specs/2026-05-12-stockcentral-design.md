@@ -51,7 +51,7 @@ El frontend no consulta directamente las fuentes de los proveedores. Solo consum
 - Fuente de stock: `https://filamentos3d.com.ar/grilon3.php`.
 - Tipo de conector: scraping HTML.
 - Link visible del proveedor: sitio/fuente publica del proveedor.
-- Contacto publico oficial: `https://filamentos3d.com.ar/contactenos.php`, WhatsApp `+54 9 11 5464-8121`, mail `info@filamentos3d.com.ar`, direccion `Av. H. Yrigoyen 9689, Lomas de Zamora, Buenos Aires`.
+- Contacto publico oficial: `https://filamentos3d.com.ar/contactenos`, WhatsApp `+54 9 11 5464-8121`, mail `info@filamentos3d.com.ar`, direccion `Gonzalez Balcarce 2121 PB, Florencio Varela, Buenos Aires`.
 
 ### Grupo Senz
 
@@ -60,7 +60,7 @@ El frontend no consulta directamente las fuentes de los proveedores. Solo consum
 - GID relevante confirmado: `614179668`.
 - Tipo de conector: exportacion CSV de Google Sheets si esta disponible publicamente.
 - Link visible del proveedor: `https://gruposenz.com.ar/`.
-- Contacto publico oficial: telefono `+54 11 3605-9099`, mail `contacto@gruposenz.com.ar`.
+- Contacto publico oficial: telefono `+54 11 3605-9099`, mail `info@gruposenz.com.ar`, direccion `Polo Comercial K41, Moreno, Buenos Aires`.
 
 ### MundoInsumos
 
@@ -68,8 +68,8 @@ El frontend no consulta directamente las fuentes de los proveedores. Solo consum
 - Fuente de stock: Google Sheet `https://docs.google.com/spreadsheets/d/1r-nKy4tRRtZ-5xwgxAcia8REDVW0Dv0h/edit?gid=1981641819#gid=1981641819`.
 - GID inicial: `1981641819`.
 - Tipo de conector: exportacion CSV de Google Sheets si esta disponible publicamente.
-- Link visible del proveedor: `https://mundoinsumos.com.ar/`.
-- Contacto publico oficial: `https://mundoinsumos.com.ar/contacto/`, WhatsApp filamentos `+54 11 6586-3008`, mail `info@mundoinsumos.com.ar`, direccion `Gral. Jose de San Martin 2345, Florida, Buenos Aires`.
+- Link visible del proveedor: `https://www.mundoinsumos.com.ar/`.
+- Contacto publico oficial: `https://www.mundoinsumos.com.ar/`, WhatsApp filamentos `+54 11 6586-3008`, mail `info@mundoinsumos.com.ar`, direccion `Fray Mamerto Esquiu 2273, Munro, Vicente Lopez, Buenos Aires`.
 
 ## Actualizacion
 

@@ -42,9 +42,9 @@ Fecha: 2026-05-12
 
 ## Contactos oficiales encontrados
 
-- Filamentos3D: `https://filamentos3d.com.ar/contactenos.php`, WhatsApp `+54 9 11 5464-8121`, mail `info@filamentos3d.com.ar`, direccion `Av. H. Yrigoyen 9689, Lomas de Zamora, Buenos Aires`.
-- Grupo Senz: `https://gruposenz.com.ar/`, telefono `+54 11 3605-9099`, mail `contacto@gruposenz.com.ar`.
-- MundoInsumos: `https://mundoinsumos.com.ar/contacto/`, WhatsApp filamentos `+54 11 6586-3008`, mail `info@mundoinsumos.com.ar`, direccion `Gral. Jose de San Martin 2345, Florida, Buenos Aires`.
+- Filamentos3D: `https://filamentos3d.com.ar/contactenos`, WhatsApp `+54 9 11 5464-8121`, mail `info@filamentos3d.com.ar`, direccion `Gonzalez Balcarce 2121 PB, Florencio Varela, Buenos Aires`.
+- Grupo Senz: `https://gruposenz.com.ar/`, telefono `+54 11 3605-9099`, mail `info@gruposenz.com.ar`, direccion `Polo Comercial K41, Moreno, Buenos Aires`.
+- MundoInsumos: `https://www.mundoinsumos.com.ar/`, WhatsApp filamentos `+54 11 6586-3008`, mail `info@mundoinsumos.com.ar`, direccion `Fray Mamerto Esquiu 2273, Munro, Vicente Lopez, Buenos Aires`.
 
 ## Archivos importantes
 

@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from stockcentral.thumbnails import ensure_thumbnail_for_url
+
 
 IMAGE_KEYS = ("image_remote_url", "image_url")
 METADATA_KEYS = ("pantone", "sku", "ean")
@@ -62,10 +64,15 @@ def update_stock_payload(
         }
         if not source:
             continue
-        if source.get("image_url") and product.get("image_url") != source["image_url"]:
-            product["image_url"] = source["image_url"]
-            product["image_source"] = "manufacturer"
-            changes += 1
+        if source.get("image_url"):
+            thumbnail_url = ensure_thumbnail_for_url(source["image_url"])
+            if product.get("image_url") != source["image_url"]:
+                product["image_url"] = source["image_url"]
+                product["image_source"] = "manufacturer"
+                changes += 1
+            if product.get("thumbnail_url", "") != thumbnail_url:
+                product["thumbnail_url"] = thumbnail_url
+                changes += 1
         for key in METADATA_KEYS:
             if source.get(key) and not product.get(key):
                 product[key] = source[key]

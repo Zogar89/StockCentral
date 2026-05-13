@@ -21,6 +21,7 @@ from stockcentral.models import (
 )
 from stockcentral.normalize import COLOR_RULES, build_display_name, build_product_id, normalize_record
 from stockcentral.providers import MANUFACTURERS, SOURCES, SourceConfig
+from stockcentral.thumbnails import thumbnail_url_for
 
 GRILON3_METADATA_CACHE = Path("stockcentral/data/grilon3_metadata.json")
 FILAMENTOS3D_METADATA_CACHE = Path("stockcentral/data/filamentos3d_metadata.json")
@@ -438,6 +439,7 @@ def _product_from_group(product_id: str, data: Mapping[str, object]) -> ProductG
         manufacturer_name=fields.manufacturer_name,
         manufacturer_product_url=str(enrichment["manufacturer_product_url"]),
         image_url=str(enrichment["image_url"]),
+        thumbnail_url=thumbnail_url_for(str(enrichment["image_url"])),
         image_source=enrichment["image_source"],  # type: ignore[arg-type]
         pantone=str(enrichment["pantone"]),
         sku=str(enrichment["sku"]),

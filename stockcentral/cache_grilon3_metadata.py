@@ -17,6 +17,7 @@ from stockcentral.connectors.grilon3_catalog import (
 from stockcentral.models import RawStockItem
 from stockcentral.normalize import build_product_id, normalize_record
 from stockcentral.providers import MANUFACTURERS
+from stockcentral.thumbnails import ensure_thumbnail_for_url
 
 GRILON3_IMAGE_ASSETS_DIR = Path("public/assets/grilon3")
 GRILON3_IMAGE_PUBLIC_PREFIX = "assets/grilon3"
@@ -117,6 +118,7 @@ def download_grilon3_images(
         if public_path:
             clean["image_remote_url"] = remote_url
             clean["image_url"] = public_path
+            ensure_thumbnail_for_url(public_path)
         updated[key] = clean
 
     return updated

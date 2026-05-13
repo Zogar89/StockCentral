@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from stockcentral.build_data import FILAMENTOS3D_METADATA_CACHE, load_filamentos3d_metadata
+from stockcentral.thumbnails import ensure_thumbnail_for_url
 
 DEFAULT_STOCK_PATH = Path("public/data/stock.json")
 
@@ -27,10 +28,12 @@ def apply_filamentos3d_images(
         if not image_url:
             if product.get("image_source") == "provider":
                 product["image_url"] = ""
+                product["thumbnail_url"] = ""
                 product["image_source"] = ""
                 updated_count += 1
             continue
         product["image_url"] = image_url
+        product["thumbnail_url"] = ensure_thumbnail_for_url(image_url)
         product["image_source"] = "provider"
         if data.get("sku"):
             product["sku"] = data["sku"]

@@ -66,6 +66,7 @@
       ],
       "pantone": "",
       "sku": "M17IAQ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-acqua-600x600-241d2a74.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -170,6 +171,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-amarillo-x1kg-2d2b4b25.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -222,6 +224,7 @@
       ],
       "pantone": "Pantone Yellow",
       "sku": "M10IAM175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-amarillo-600x600-535755a6.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -274,6 +277,7 @@
       ],
       "pantone": "Pantone Yellow",
       "sku": "M10IAM175C4",
+      "thumbnail_url": "assets/thumbs/grilon3/megafill-amarillo2-a4b176d0.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -304,6 +308,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-amarillo-97296be5.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -386,6 +391,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-amarillo-175mm-x1kg-3d2717c0.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -438,6 +444,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-amarillo-fluo-x1kg-a3c5d1ce.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -490,6 +497,7 @@
       ],
       "pantone": "Pantone 388",
       "sku": "M10IAF175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-amarillo-fluo-600x600-81c10d4c.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -542,6 +550,7 @@
       ],
       "pantone": "",
       "sku": "M17IAR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-arena-1-600x600-075f8ebd.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -594,6 +603,7 @@
       ],
       "pantone": "",
       "sku": "M10IGE175CJ-1-3-1",
+      "thumbnail_url": "assets/thumbs/grilon3/silk-dorado-350x350-d3787093.webp",
       "variant": "PLA Silk",
       "weight_g": 1000
     },
@@ -676,6 +686,7 @@
       ],
       "pantone": "",
       "sku": "M16IZB175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/zeta-azabache2-600x600-c72f29a0.webp",
       "variant": "PLA Zeta",
       "weight_g": 1000
     },
@@ -728,6 +739,7 @@
       ],
       "pantone": "",
       "sku": "M11IAZ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-850-azul-ml-17d120d8.webp",
       "variant": "PLA 850",
       "weight_g": 1000
     },
@@ -780,6 +792,7 @@
       ],
       "pantone": "",
       "sku": "M11IAZ175C2",
+      "thumbnail_url": "assets/thumbs/grilon3/petg-maxicarrete-blanco1-350x350-006d487d.webp",
       "variant": "PLA 850",
       "weight_g": 2500
     },
@@ -884,6 +897,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-azul-x1kg-049c1621.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -936,6 +950,7 @@
       ],
       "pantone": "Pantone 286",
       "sku": "M10IAZ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-azul-600x600-cef91203.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -954,6 +969,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/pla285-azul2-a04feed6.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -1006,6 +1022,7 @@
       ],
       "pantone": "Pantone 286",
       "sku": "M10IAZ175C4",
+      "thumbnail_url": "assets/thumbs/grilon3/megafill-azul2-600x600-632b4bc2.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -1058,6 +1075,7 @@
       ],
       "pantone": "",
       "sku": "M10IGE175CJ-1-1",
+      "thumbnail_url": "assets/thumbs/grilon3/silk-azul-600x600-7502dda7.webp",
       "variant": "PLA Silk",
       "weight_g": 1000
     },
@@ -1170,6 +1188,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-azul-175mm-x1kg-ca51d57a.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -1222,6 +1241,7 @@
       ],
       "pantone": "Pantone 3015",
       "sku": "M10IAF175CJ-1",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-azul-prusia-600x600-924c7f41.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -1252,6 +1272,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-azul-prusia-48ad2d22.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -1304,6 +1325,7 @@
       ],
       "pantone": "",
       "sku": "M11IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-850-blanco-ml-507ee82e.webp",
       "variant": "PLA 850",
       "weight_g": 1000
     },
@@ -1356,6 +1378,7 @@
       ],
       "pantone": "",
       "sku": "M11IBL175C2",
+      "thumbnail_url": "assets/thumbs/grilon3/petg-maxicarrete-blanco1-350x350-006d487d.webp",
       "variant": "PLA 850",
       "weight_g": 2500
     },
@@ -1512,6 +1535,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-blanco-x1kg-0b0b107c.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -1564,6 +1588,7 @@
       ],
       "pantone": "",
       "sku": "M10IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-blanco-1-600x600-466d0cd2.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -1582,6 +1607,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-285-blanco2-ce4d11dc.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -1634,6 +1660,7 @@
       ],
       "pantone": "",
       "sku": "M10IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-blanco-1-600x600-466d0cd2.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -1664,6 +1691,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-blanco-2c1c1d1b.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -1746,6 +1774,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-blanco-175mm-x1kg-33057e11.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -1798,6 +1827,7 @@
       ],
       "pantone": "",
       "sku": "M10IGE175CJ-1-2",
+      "thumbnail_url": "assets/thumbs/grilon3/silk-blanco-600x600-ccbfae2b.webp",
       "variant": "PLA Silk",
       "weight_g": 1000
     },
@@ -2192,6 +2222,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-bronce-x1kg-da93c066.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -2244,6 +2275,7 @@
       ],
       "pantone": "",
       "sku": "M11IBR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-850-bronce-600x600-4a74034e.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -2367,6 +2399,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-bronce-175mm-x1kg-8a7facdd.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -2419,6 +2452,7 @@
       ],
       "pantone": "Pantone 320",
       "sku": "M22ICA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/astra-calipso-web-600x600-ea3a0024.webp",
       "variant": "PLA Astra",
       "weight_g": 1000
     },
@@ -2501,6 +2535,7 @@
       ],
       "pantone": "",
       "sku": "M20ICA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/wood-caoba-1-600x600-0cb08d3d.webp",
       "variant": "PLA Wood",
       "weight_g": 1000
     },
@@ -2583,6 +2618,7 @@
       ],
       "pantone": "",
       "sku": "M17ICB175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-carbon-1-600x600-d61e6f92.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -2635,6 +2671,7 @@
       ],
       "pantone": "",
       "sku": "M17ICA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-caribe-1-600x600-f0aa3711.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -2687,6 +2724,7 @@
       ],
       "pantone": "Pantone 7510",
       "sku": "M10ICA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-carpincho-web-277f0647.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -2791,6 +2829,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-celeste-x1kg-b600d95c.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -2843,6 +2882,7 @@
       ],
       "pantone": "Pantone 2925",
       "sku": "M10ICE175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-celeste-600x600-e8f3c4bd.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -2925,6 +2965,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-celeste-175mm-x1kg-d5137688.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -2977,6 +3018,7 @@
       ],
       "pantone": "",
       "sku": "M20ICE175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/wood-pino-350x350-e1932119.webp",
       "variant": "PLA Wood",
       "weight_g": 1000
     },
@@ -3059,6 +3101,7 @@
       ],
       "pantone": "",
       "sku": "M17ICH175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-chocolate-1-600x600-2615c921.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -3141,6 +3184,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-chocolate-175mm-x1kg-4bc27edd.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -3245,6 +3289,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-cobre-x1kg-40b8a334.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -3297,6 +3342,7 @@
       ],
       "pantone": "Pantone 160",
       "sku": "M10ICO175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-cobre-600x600-cda8b5b5.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -3349,6 +3395,7 @@
       ],
       "pantone": "",
       "sku": "M10IGE175CJ-1-3-2",
+      "thumbnail_url": "assets/thumbs/grilon3/silk-cobre-600x600-f42df4ff.webp",
       "variant": "PLA Silk",
       "weight_g": 1000
     },
@@ -3431,6 +3478,7 @@
       ],
       "pantone": "",
       "sku": "M17ICI175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-cremadelcielo-1-600x600-1e9b96ca.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -3483,6 +3531,7 @@
       ],
       "pantone": "Pantone 419",
       "sku": "M22IDA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/astra-dark3-600x600-15bb7915.webp",
       "variant": "PLA Astra",
       "weight_g": 1000
     },
@@ -3565,6 +3614,7 @@
       ],
       "pantone": "Pantone 143",
       "sku": "M10IDO175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-dorado-600x600-6888bb8e.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -3617,6 +3667,7 @@
       ],
       "pantone": "",
       "sku": "M10IGE175CJ-1",
+      "thumbnail_url": "assets/thumbs/grilon3/silk-dorado-600x600-1e261111.webp",
       "variant": "PLA Silk",
       "weight_g": 1000
     },
@@ -3751,6 +3802,7 @@
       ],
       "pantone": "",
       "sku": "M17IES175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-esmeralda-1-600x600-b3c267b2.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -3803,6 +3855,7 @@
       ],
       "pantone": "",
       "sku": "M17IFR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-frutilla-1-600x600-1f3e53ed.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -3907,6 +3960,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-fucsia-x1kg-91ca98b0.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -3959,6 +4013,7 @@
       ],
       "pantone": "Pantone 232",
       "sku": "M10IFU175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-fucsia-600x600-a51838d0.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -4011,6 +4066,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-gris-acero-x1kg-1cc0630f.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -4063,6 +4119,7 @@
       ],
       "pantone": "Pantone Cool Gray 3",
       "sku": "M10IGE175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-gris-600x600-c08fa17b.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -4115,6 +4172,7 @@
       ],
       "pantone": "",
       "sku": "M11IGR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-850-grisplata2-537a11d1.webp",
       "variant": "PLA 850",
       "weight_g": 1000
     },
@@ -4167,6 +4225,7 @@
       ],
       "pantone": "",
       "sku": "M11IGR175C2",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-maxicarrete-negro-web-350x350-f949f286.webp",
       "variant": "PLA 850",
       "weight_g": 2500
     },
@@ -4271,6 +4330,7 @@
       ],
       "pantone": "Pantone Cool Gray 9",
       "sku": "M10IGR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-grisplata-8aa114c1.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -4289,6 +4349,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-285-grisplata2-5af2a96c.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -4341,6 +4402,7 @@
       ],
       "pantone": "Pantone Cool Gray 9",
       "sku": "M10IGR175C4",
+      "thumbnail_url": "assets/thumbs/grilon3/megafill-grisplata2-600x600-500a9452.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -4371,6 +4433,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-gris-plomo-9a5dbeb4.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -4475,6 +4538,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-gris-plomo-x1kg-659de7e6.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -4557,6 +4621,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-gris-plomo-175mm-x1kg-e6a01240.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -4609,6 +4674,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-habano-x1kg-c708350f.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -4661,6 +4727,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-hueso-x1kg-15d0200c.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -4713,6 +4780,7 @@
       ],
       "pantone": "Pantone 3305",
       "sku": "M22IJA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/astra-jade3-600x600-30d4d015.webp",
       "variant": "PLA Astra",
       "weight_g": 1000
     },
@@ -4877,6 +4945,7 @@
       ],
       "pantone": "",
       "sku": "M17ILA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-lavanda-1-600x600-6f3b8c95.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -4959,6 +5028,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-lila-175mm-x1kg-d5c1e606.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -5011,6 +5081,7 @@
       ],
       "pantone": "Pantone 226",
       "sku": "M10IMF175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-magenta-880128a2.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -5052,6 +5123,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-naranja-8823032b.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -5156,6 +5228,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-naranja-x1kg-52dcea6a.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -5238,6 +5311,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-naranja-175mm-x1kg-6857962c.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -5290,6 +5364,7 @@
       ],
       "pantone": "Pantone 172",
       "sku": "M10INF175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-naranja-fluo-600x600-d033d93e.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -5446,6 +5521,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-natural-x1kg-88e72d4f.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -5498,6 +5574,7 @@
       ],
       "pantone": "",
       "sku": "M10INT175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-natural-5ccd971a.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -5550,6 +5627,7 @@
       ],
       "pantone": "Pantone Violet",
       "sku": "M22INE175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/astra-nebula3-600x600-6cfd46bb.webp",
       "variant": "PLA Astra",
       "weight_g": 1000
     },
@@ -5632,6 +5710,7 @@
       ],
       "pantone": "",
       "sku": "M11ING175C",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-850-negro-ml-bffee702.webp",
       "variant": "PLA 850",
       "weight_g": 1000
     },
@@ -5684,6 +5763,7 @@
       ],
       "pantone": "",
       "sku": "M11ING175C2",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-maxicarrete-turquesa-web-350x350-cb1ad28b.webp",
       "variant": "PLA 850",
       "weight_g": 2500
     },
@@ -5777,6 +5857,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-negro-94f37f32.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -5881,6 +5962,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-negro-x1kg-3583212a.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -5933,6 +6015,7 @@
       ],
       "pantone": "Pantone Black",
       "sku": "M10ING175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-negro-1-600x600-be7e9893.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -5951,6 +6034,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-285-negro2-1fa9df5e.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -6003,6 +6087,7 @@
       ],
       "pantone": "Pantone Black",
       "sku": "M10ING175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-negro-1-600x600-be7e9893.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -6085,6 +6170,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-negro-175mm-x1kg-29b36680.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -6137,6 +6223,7 @@
       ],
       "pantone": "Pantone 2747",
       "sku": "M22INO175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/astra-noche3-600x600-7ffb3493.webp",
       "variant": "PLA Astra",
       "weight_g": 1000
     },
@@ -6219,6 +6306,7 @@
       ],
       "pantone": "",
       "sku": "M20INO175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/wood-nogal-600x600-5dcc902b.webp",
       "variant": "PLA Wood",
       "weight_g": 1000
     },
@@ -6301,6 +6389,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-oro-x1kg-6a44158b.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -6331,6 +6420,7 @@
       ],
       "pantone": "Pantone Perla",
       "sku": "M17IPE175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-perla2-864d1665.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -6372,6 +6462,7 @@
       ],
       "pantone": "Pantone Perla",
       "sku": "M17IPE175C4",
+      "thumbnail_url": "assets/thumbs/grilon3/megafill-grisplata2-350x350-54df10ca.webp",
       "variant": "PLA Boutique",
       "weight_g": 4000
     },
@@ -6454,6 +6545,7 @@
       ],
       "pantone": "",
       "sku": "M17IPE175CJ-1",
+      "thumbnail_url": "assets/thumbs/grilon3/boutique-perla-frio2-600x600-214e0a5b.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -6484,6 +6576,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-piel162-42fb7d30.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -6536,6 +6629,7 @@
       ],
       "pantone": "Pantone 162",
       "sku": "M10IPI175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-piel162-600x600-f83aee7b.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -6588,6 +6682,7 @@
       ],
       "pantone": "Pantone Piel 162",
       "sku": "M10IPI175C4",
+      "thumbnail_url": "assets/thumbs/grilon3/megafill-piel2-600x600-3ec73a19.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -6629,6 +6724,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-piel720-e7e59613.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -6681,6 +6777,7 @@
       ],
       "pantone": "Pantone 720",
       "sku": "M10IPI175CJ-1",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-piel720-600x600-ef75b622.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -6733,6 +6830,7 @@
       ],
       "pantone": "Pantone 720",
       "sku": "M10IPI175CJ-1",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-piel720-600x600-ef75b622.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -6785,6 +6883,7 @@
       ],
       "pantone": "",
       "sku": "M20IPI175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/wood-pino-600x600-77c6580b.webp",
       "variant": "PLA Wood",
       "weight_g": 1000
     },
@@ -6867,6 +6966,7 @@
       ],
       "pantone": "",
       "sku": "M10IGE175CJ-1-3-2-1",
+      "thumbnail_url": "assets/thumbs/grilon3/silk-platino-600x600-44b3505a.webp",
       "variant": "PLA Silk",
       "weight_g": 1000
     },
@@ -6949,6 +7049,7 @@
       ],
       "pantone": "Pantone 200",
       "sku": "M22IRO175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/astra-roby3-600x600-1d307948.webp",
       "variant": "PLA Astra",
       "weight_g": 1000
     },
@@ -7031,6 +7132,7 @@
       ],
       "pantone": "",
       "sku": "M11IRJ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-850-rojo2-26d3ca6c.webp",
       "variant": "PLA 850",
       "weight_g": 1000
     },
@@ -7083,6 +7185,7 @@
       ],
       "pantone": "",
       "sku": "M11IRJ175C2",
+      "thumbnail_url": "assets/thumbs/grilon3/petg-maxicarrete-blanco1-350x350-006d487d.webp",
       "variant": "PLA 850",
       "weight_g": 2500
     },
@@ -7124,6 +7227,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-rojo-2c15b125.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -7228,6 +7332,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-rojo-x1kg-656cc556.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -7280,6 +7385,7 @@
       ],
       "pantone": "Pantone 485",
       "sku": "M10IRJ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-rojo-bea352ed.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -7298,6 +7404,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-285-rojo2-d4723f5b.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -7350,6 +7457,7 @@
       ],
       "pantone": "Pantone 485",
       "sku": "M10IRJ175C4",
+      "thumbnail_url": "assets/thumbs/grilon3/megafill-rojo2-600x600-5bf500c1.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -7432,6 +7540,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-rojo-175mm-x1kg-102de89e.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -7462,6 +7571,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-rosa-e719dcb1.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -7514,6 +7624,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-rosa-x1kg-ad11ef2d.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -7566,6 +7677,7 @@
       ],
       "pantone": "Pantone 211",
       "sku": "M10IRS175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-rosa-600x600-2bfa7de9.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -7648,6 +7760,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-rosa-175mm-x1kg-6ada8e67.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -7700,6 +7813,7 @@
       ],
       "pantone": "",
       "sku": "M17IRU175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-rubi-600x600-c100a7cf.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -7752,6 +7866,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-rustico-x1kg-ffe00f16.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -7804,6 +7919,7 @@
       ],
       "pantone": "",
       "sku": "M17ISA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-salmon-1-600x600-92bcac0e.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -7834,6 +7950,7 @@
       ],
       "pantone": "Pantone 7510",
       "sku": "M10ICA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-carpincho-web2-600x600-76466412.webp",
       "variant": "",
       "weight_g": null
     },
@@ -7886,6 +8003,7 @@
       ],
       "pantone": "",
       "sku": "M11ITU175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-850-turquesa2-2f51ffde.webp",
       "variant": "PLA 850",
       "weight_g": 1000
     },
@@ -7990,6 +8108,7 @@
       ],
       "pantone": "Pantone 313",
       "sku": "M10ITU175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-turquesa-350x350-cd184f30.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -8042,6 +8161,7 @@
       ],
       "pantone": "Pantone 313",
       "sku": "M10ITU175C4",
+      "thumbnail_url": "assets/thumbs/grilon3/megafill-turquesa2-600x600-7a748bbb.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -8094,6 +8214,7 @@
       ],
       "pantone": "",
       "sku": "M10IGE175CJ-1-3-2-1-1",
+      "thumbnail_url": "assets/thumbs/grilon3/silk-tuttifrutti-600x600-6ec143cf.webp",
       "variant": "PLA Silk",
       "weight_g": 1000
     },
@@ -8195,6 +8316,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-uva-175mm-x1kg-a009a4f6.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -8225,6 +8347,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-verde-53c5ebc8.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -8277,6 +8400,7 @@
       ],
       "pantone": "",
       "sku": "M10IGE175CJ-1-3",
+      "thumbnail_url": "assets/thumbs/grilon3/silk-verde-600x600-69a9d28d.webp",
       "variant": "PLA Silk",
       "weight_g": 1000
     },
@@ -8359,6 +8483,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-verde-x1kg-6184cf34.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -8411,6 +8536,7 @@
       ],
       "pantone": "Pantone 347",
       "sku": "M10IVR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-verde-600x600-d35c2c94.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -8429,6 +8555,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-285-verde2-63dcf230.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -8511,6 +8638,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nmax-pla-verde-175mm-x1kg-66f95ee9.webp",
       "variant": "PLA+",
       "weight_g": 1000
     },
@@ -8563,6 +8691,7 @@
       ],
       "pantone": "",
       "sku": "M17IVA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-verde-aviador-600x600-c1fedaa9.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -8667,6 +8796,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-verde-fluo-x1kg-afa159bc.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -8719,6 +8849,7 @@
       ],
       "pantone": "",
       "sku": "M10IVF175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-verde-fluo-600x600-6e07d19f.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -8749,6 +8880,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3nflex-pla-175mm-verde-manzana-eb2261e1.webp",
       "variant": "PLA Flexible",
       "weight_g": 1000
     },
@@ -8801,6 +8933,7 @@
       ],
       "pantone": "Pantone 375",
       "sku": "M10IVM175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-verde-manzana-600x600-ee11e00f.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -8905,6 +9038,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-box-pla-175mm-violeta-x1kg-c7214eea.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -8957,6 +9091,7 @@
       ],
       "pantone": "Pantone 2603",
       "sku": "M10IVI175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-verde-voleta-600x600-fe28807a.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9009,6 +9144,7 @@
       ],
       "pantone": "",
       "sku": "M17IZA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-boutique-zafiro-600x600-510fbb0e.webp",
       "variant": "PLA Boutique",
       "weight_g": 1000
     },
@@ -9061,6 +9197,7 @@
       ],
       "pantone": "Pantone Yellow",
       "sku": "M09IAM175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-amarillo-350x350-465ea125.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9113,6 +9250,7 @@
       ],
       "pantone": "Pantone 286",
       "sku": "M09IAZ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-azul1-350x350-23dc6e38.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9165,6 +9303,7 @@
       ],
       "pantone": "",
       "sku": "M09IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-blanco-350x350-753a7f8f.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9183,6 +9322,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-285-blanco2-5cf8de72.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9235,6 +9375,7 @@
       ],
       "pantone": "",
       "sku": "M09IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-blanco-350x350-753a7f8f.webp",
       "variant": "",
       "weight_g": 2500
     },
@@ -9287,6 +9428,7 @@
       ],
       "pantone": "Pantone 2385",
       "sku": "M09IFU175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-fucsia1-350x350-5b1c4fdf.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9339,6 +9481,7 @@
       ],
       "pantone": "Pantone Cool Gray 9",
       "sku": "M09IGR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-gris-plata-350x350-e167b618.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9391,6 +9534,7 @@
       ],
       "pantone": "Pantone 179",
       "sku": "M09INF175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-naranja-fluo1-350x350-1d1a7232.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9443,6 +9587,7 @@
       ],
       "pantone": "",
       "sku": "M09INT175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-natural-350x350-d1e8e6a0.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9495,6 +9640,7 @@
       ],
       "pantone": "Pantone Black",
       "sku": "M09ING175C",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-negro-350x350-1ca3d6b8.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9513,6 +9659,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-285-negro-1-c3adc4ce.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9565,6 +9712,7 @@
       ],
       "pantone": "Pantone Black",
       "sku": "M09ING175C",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-negro-350x350-1ca3d6b8.webp",
       "variant": "",
       "weight_g": 2500
     },
@@ -9617,6 +9765,7 @@
       ],
       "pantone": "Pantone 485",
       "sku": "M09IRJ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-rojo-350x350-70725d3a.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9669,6 +9818,7 @@
       ],
       "pantone": "",
       "sku": "M09IFU175CJ-1-1-1",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-maxicarrete-turquesa-web-600x600-939ad319.webp",
       "variant": "",
       "weight_g": 2500
     },
@@ -9721,6 +9871,7 @@
       ],
       "pantone": "Pantone 347",
       "sku": "M09IVR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-verde-350x350-7c9296f6.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -9833,6 +9984,7 @@
       ],
       "pantone": "",
       "sku": "M03IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/acetal-blanco-600x600-2e8a15e2.webp",
       "variant": "Acetal-POM",
       "weight_g": 1000
     },
@@ -9915,6 +10067,7 @@
       ],
       "pantone": "",
       "sku": "M03IGA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/acetal-gris-acero-600x600-a5e5adcf.webp",
       "variant": "Acetal-POM",
       "weight_g": 1000
     },
@@ -10079,6 +10232,7 @@
       ],
       "pantone": "",
       "sku": "M03ING175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/acetal-negro-600x600-d3d3df13.webp",
       "variant": "Acetal-POM",
       "weight_g": 1000
     },
@@ -10161,6 +10315,7 @@
       ],
       "pantone": "",
       "sku": "M03IRJ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/acetal-rojo-600x600-ccbd8868.webp",
       "variant": "Acetal-POM",
       "weight_g": 1000
     },
@@ -10221,6 +10376,7 @@
       ],
       "pantone": "Pantone 286",
       "sku": "M08ING175CJ-2-1",
+      "thumbnail_url": "assets/thumbs/grilon3/hips-azul-l1-600x600-02291584.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -10273,6 +10429,7 @@
       ],
       "pantone": "",
       "sku": "M08IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/hips-blanco1-600x600-e23fd379.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -10325,6 +10482,7 @@
       ],
       "pantone": "",
       "sku": "M08INT175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/hips-natural1-600x600-ae3fcb41.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -10377,6 +10535,7 @@
       ],
       "pantone": "Pantone Black",
       "sku": "M08ING175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/hips-negro1-600x600-47f49229.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -10407,6 +10566,7 @@
       ],
       "pantone": "Pantone 485",
       "sku": "M08ING175CJ-2",
+      "thumbnail_url": "assets/thumbs/grilon3/hips-rojo1-600x600-3d1ec8b8.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -10437,6 +10597,7 @@
       ],
       "pantone": "Pantone 347",
       "sku": "M08ING175CJ-1",
+      "thumbnail_url": "assets/thumbs/grilon3/hips-verde1-600x600-753cfdf4.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -10467,6 +10628,7 @@
       ],
       "pantone": "",
       "sku": "M12IAZ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/nylon6-optico-350x350-52415f1e.webp",
       "variant": "Nylon 12",
       "weight_g": 1000
     },
@@ -10549,6 +10711,7 @@
       ],
       "pantone": "",
       "sku": "M12IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/acetal-negro-350x350-41a76d38.webp",
       "variant": "Nylon 12",
       "weight_g": 1000
     },
@@ -10631,6 +10794,7 @@
       ],
       "pantone": "",
       "sku": "M01IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/nylon6-blanco-600x600-aabb7d5e.webp",
       "variant": "Nylon 6",
       "weight_g": 1000
     },
@@ -10713,6 +10877,7 @@
       ],
       "pantone": "Pantone Orange 021",
       "sku": "M01INF175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/nylon6-blanco-350x350-dc792f8d.webp",
       "variant": "Nylon 6",
       "weight_g": 1000
     },
@@ -10795,6 +10960,7 @@
       ],
       "pantone": "",
       "sku": "M12INT175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/nylon6-negro-350x350-af828d4d.webp",
       "variant": "Nylon 12",
       "weight_g": 1000
     },
@@ -10959,6 +11125,7 @@
       ],
       "pantone": "",
       "sku": "M12ING175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/acetal-rojo-350x350-7bfeb732.webp",
       "variant": "Nylon 12",
       "weight_g": 1000
     },
@@ -11041,6 +11208,7 @@
       ],
       "pantone": "Pantone Black",
       "sku": "M01ING175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/nylon6-negro-600x600-0e56c1d3.webp",
       "variant": "Nylon 6",
       "weight_g": 1000
     },
@@ -11123,6 +11291,7 @@
       ],
       "pantone": "",
       "sku": "M01IOT175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/nylon6-optico-600x600-6a56a529.webp",
       "variant": "Nylon 6",
       "weight_g": 1000
     },
@@ -11183,6 +11352,7 @@
       ],
       "pantone": "",
       "sku": "M12ITI175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/nylon6-negro-350x350-af828d4d.webp",
       "variant": "Nylon 12",
       "weight_g": 1000
     },
@@ -11265,6 +11435,7 @@
       ],
       "pantone": "Pantone 375",
       "sku": "M01IVF175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/nylon6-600x600-3778f508.webp",
       "variant": "Nylon 6",
       "weight_g": 1000
     },
@@ -11355,6 +11526,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-epet-azul-traful-175mm-x1kg-9dab3b84.webp",
       "variant": "E-PET",
       "weight_g": 1000
     },
@@ -11415,6 +11587,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-epet-blanco-175mm-x1kg-4978b250.webp",
       "variant": "E-PET",
       "weight_g": 1000
     },
@@ -11475,6 +11648,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-epet-gris-espacial-175mm-x1kg-fb59d281.webp",
       "variant": "E-PET",
       "weight_g": 1000
     },
@@ -11535,6 +11709,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-epet-negro-175mm-x1kg-dcba0c9e.webp",
       "variant": "E-PET",
       "weight_g": 1000
     },
@@ -11595,6 +11770,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-epet-rojo-carmin-175mm-x1kg-71790198.webp",
       "variant": "E-PET",
       "weight_g": 1000
     },
@@ -11655,6 +11831,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-epet-verde-lima-175mm-x1kg-7eb831e1.webp",
       "variant": "E-PET",
       "weight_g": 1000
     },
@@ -11707,6 +11884,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-petg-175mm-azul-x1kg-b60940cc.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -11759,6 +11937,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-petg-175mm-blanco-x1kg-dc796345.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -11811,6 +11990,7 @@
       ],
       "pantone": "",
       "sku": "M77IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-rojo-350x350-b39ac945.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -11829,6 +12009,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/petg-285-blanco2-94534e8a.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -11911,6 +12092,7 @@
       ],
       "pantone": "",
       "sku": "M77IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-rojo-350x350-b39ac945.webp",
       "variant": "",
       "weight_g": 2500
     },
@@ -11952,6 +12134,7 @@
       ],
       "pantone": "",
       "sku": "M77IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-rojo-350x350-b39ac945.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -12004,6 +12187,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-petg-175mm-bronce-x1kg-28986b25.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -12056,6 +12240,7 @@
       ],
       "pantone": "Pantone 477",
       "sku": "M77ICH175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-rojo-350x350-b39ac945.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -12168,6 +12353,7 @@
       ],
       "pantone": "Pantone 107",
       "sku": "M77IAM175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-verde-350x350-2fc2b7f6.webp",
       "variant": "PETG Clear",
       "weight_g": 1000
     },
@@ -12250,6 +12436,7 @@
       ],
       "pantone": "Pantone 716",
       "sku": "M77IAM175CJ-1",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-rojo-350x350-70725d3a.webp",
       "variant": "PETG Clear",
       "weight_g": 1000
     },
@@ -12332,6 +12519,7 @@
       ],
       "pantone": "Pantone Reflex Blue",
       "sku": "M77IAZ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-rojo-350x350-70725d3a.webp",
       "variant": "PETG Clear",
       "weight_g": 1000
     },
@@ -12384,6 +12572,7 @@
       ],
       "pantone": "Pantone 200",
       "sku": "M77IRJ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-amarillo-fluo-350x350-8dc65e25.webp",
       "variant": "PETG Clear",
       "weight_g": 1000
     },
@@ -12466,6 +12655,7 @@
       ],
       "pantone": "Pantone 369",
       "sku": "M77IVR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-cobre-350x350-92ff5396.webp",
       "variant": "PETG Clear",
       "weight_g": 1000
     },
@@ -12589,6 +12779,7 @@
       ],
       "pantone": "Pantone 432",
       "sku": "M77IGA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-amarillo-fluo-350x350-8dc65e25.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -12671,6 +12862,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-petg-175mm-gris-espacial-x1kg-76aeec2c.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -12723,6 +12915,7 @@
       ],
       "pantone": "Pantone Cool Gray 10",
       "sku": "M77IGA175CJ-1",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-bronce-350x350-5d2ad9bf.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -12805,6 +12998,7 @@
       ],
       "pantone": "Pantone Orange 021",
       "sku": "M77INP175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-turquesa-350x350-cd184f30.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -12887,6 +13081,7 @@
       ],
       "pantone": "",
       "sku": "M77INT175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/pla-turquesa-350x350-cd184f30.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -12969,6 +13164,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-petg-175mm-negro-x1kg-e6bad019.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -13021,6 +13217,7 @@
       ],
       "pantone": "Pantone Black",
       "sku": "M77ING175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/petg-negro2-8218e01d.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -13039,6 +13236,7 @@
       "offers": [],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/grilon3/petg-285-negro2-e6ff87c9.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -13121,6 +13319,7 @@
       ],
       "pantone": "",
       "sku": "M77IBL175CJ-1-1",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-maxicarrete-turquesa-web-350x350-cb1ad28b.webp",
       "variant": "",
       "weight_g": 2500
     },
@@ -13173,6 +13372,7 @@
       ],
       "pantone": "",
       "sku": "M77IBL175CJ-1-1",
+      "thumbnail_url": "assets/thumbs/grilon3/abs-maxicarrete-turquesa-web-350x350-cb1ad28b.webp",
       "variant": "",
       "weight_g": 4000
     },
@@ -13307,6 +13507,7 @@
       ],
       "pantone": "",
       "sku": "",
+      "thumbnail_url": "assets/thumbs/filamentos3d/3n3-petg-175mm-rojo-x1kg-f8d83939.webp",
       "variant": "",
       "weight_g": 1000
     },
@@ -13348,6 +13549,7 @@
       ],
       "pantone": "",
       "sku": "M04IAM175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/ppt-amarillo-67e2e0b9.webp",
       "variant": "PP-T",
       "weight_g": 1000
     },
@@ -13430,6 +13632,7 @@
       ],
       "pantone": "",
       "sku": "M04IAZ175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/ppt-azul-6a5e1c89.webp",
       "variant": "PP-T",
       "weight_g": 1000
     },
@@ -13676,6 +13879,7 @@
       ],
       "pantone": "",
       "sku": "M04INT175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/polipropileno1-9cb231ff.webp",
       "variant": "PP-T",
       "weight_g": 1000
     },
@@ -13911,6 +14115,7 @@
       ],
       "pantone": "",
       "sku": "M04IVR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/ppt-verde-77cb9ea8.webp",
       "variant": "PP-T",
       "weight_g": 1000
     },
@@ -14146,6 +14351,7 @@
       ],
       "pantone": "",
       "sku": "M13IBL175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/simpliflex-blanco-600x600-eff26d67.webp",
       "variant": "Simpliflex",
       "weight_g": 1000
     },
@@ -14269,6 +14475,7 @@
       ],
       "pantone": "Pantone 2925",
       "sku": "M13ICE175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/simpliflex-celeste-600x600-bd049947.webp",
       "variant": "Simpliflex",
       "weight_g": 1000
     },
@@ -14422,6 +14629,7 @@
       ],
       "pantone": "Pantone 172",
       "sku": "M13INA175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/simpliflex-naranja-600x600-0d42c35b.webp",
       "variant": "Simpliflex",
       "weight_g": 1000
     },
@@ -14504,6 +14712,7 @@
       ],
       "pantone": "",
       "sku": "M13INT175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/simpliflex-natural-600x600-90555472.webp",
       "variant": "Simpliflex",
       "weight_g": 1000
     },
@@ -14616,6 +14825,7 @@
       ],
       "pantone": "Pantone Black",
       "sku": "M13ING175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/simpliflex-negro-600x600-d65e3792.webp",
       "variant": "Simpliflex",
       "weight_g": 1000
     },
@@ -14739,6 +14949,7 @@
       ],
       "pantone": "",
       "sku": "M13INV175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/simpliflex-blanco-350x350-74815da6.webp",
       "variant": "Simpliflex",
       "weight_g": 1000
     },
@@ -14922,6 +15133,7 @@
       ],
       "pantone": "Pantone 347",
       "sku": "M13IVR175CJ",
+      "thumbnail_url": "assets/thumbs/grilon3/simpliflex-verde-600x600-b9b2212c.webp",
       "variant": "Simpliflex",
       "weight_g": 1000
     },

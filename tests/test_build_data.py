@@ -17,6 +17,7 @@ from stockcentral.build_data import (
 from stockcentral.connectors.grilon3_catalog import CatalogProduct
 from stockcentral.models import RawStockItem
 from stockcentral.providers import MANUFACTURERS, SOURCES
+from stockcentral.thumbnails import apply_thumbnails_to_stock, thumbnail_url_for
 from stockcentral.update_filamentos3d_images import apply_filamentos3d_images
 
 
@@ -86,6 +87,7 @@ def test_build_payload_groups_products_and_keeps_unknown_stock_visible():
     assert payload["products"][0]["id"] == "pla-negro-175-1000-grilon3"
     assert payload["products"][0]["manufacturer_product_url"] == "https://grilon3.com.ar/producto/catalog-product/"
     assert payload["products"][0]["image_url"] == "assets/grilon3/catalog-product.jpg"
+    assert payload["products"][0]["thumbnail_url"] == "assets/thumbs/grilon3/catalog-product.webp"
     assert [offer["provider_name"] for offer in payload["products"][0]["offers"]] == [
         "MundoInsumos",
         "Filamentos3D",
@@ -328,6 +330,7 @@ def test_build_payload_can_render_3n3_provider_image_without_official_link(monke
 
     product = payload["products"][0]
     assert product["image_url"] == "assets/filamentos3d/3n3-negro.jpg"
+    assert product["thumbnail_url"] == "assets/thumbs/filamentos3d/3n3-negro.webp"
     assert product["image_source"] == "provider"
     assert product["manufacturer_product_url"] == ""
 
@@ -399,13 +402,56 @@ def test_apply_filamentos3d_images_updates_existing_public_payload_without_stock
     payload = json.loads(stock.read_text(encoding="utf-8"))
     assert updated_count == 2
     assert payload["products"][0]["image_url"] == "assets/filamentos3d/3n3-negro.jpg"
+    assert payload["products"][0]["thumbnail_url"] == ""
     assert payload["products"][0]["image_source"] == "provider"
     assert payload["products"][0]["sku"] == "F3D-PLA-NEGRO"
     assert payload["products"][0]["offers"][0]["stock_quantity"] == 7
     assert payload["products"][1]["image_url"] == ""
     assert payload["products"][2]["image_url"] == ""
+    assert payload["products"][2]["thumbnail_url"] == ""
     assert payload["products"][2]["image_source"] == ""
     assert payload["products"][2]["offers"][0]["stock_quantity"] == 2
+
+
+def test_thumbnail_url_for_maps_local_assets_to_webp_thumb_path():
+    assert thumbnail_url_for("assets/grilon3/pla-negro.jpg") == "assets/thumbs/grilon3/pla-negro.webp"
+    assert thumbnail_url_for("assets/filamentos3d/3n3-negro.png") == "assets/thumbs/filamentos3d/3n3-negro.webp"
+    assert thumbnail_url_for("https://example.com/image.jpg") == ""
+
+
+def test_apply_thumbnails_to_stock_generates_webp_and_updates_payload(tmp_path):
+    from PIL import Image
+
+    public_dir = tmp_path / "public"
+    asset = public_dir / "assets" / "grilon3" / "pla-negro.jpg"
+    stock = public_dir / "data" / "stock.json"
+    asset.parent.mkdir(parents=True)
+    stock.parent.mkdir(parents=True)
+    Image.new("RGB", (640, 480), color="#111111").save(asset)
+    stock.write_text(
+        json.dumps(
+            {
+                "products": [
+                    {
+                        "id": "pla-negro-175-1000-grilon3",
+                        "image_url": "assets/grilon3/pla-negro.jpg",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    changes = apply_thumbnails_to_stock(stock, public_dir)
+
+    payload = json.loads(stock.read_text(encoding="utf-8"))
+    thumbnail = public_dir / "assets" / "thumbs" / "grilon3" / "pla-negro.webp"
+    assert changes == 1
+    assert payload["products"][0]["thumbnail_url"] == "assets/thumbs/grilon3/pla-negro.webp"
+    assert thumbnail.exists()
+    with Image.open(thumbnail) as image:
+        assert image.width <= 160
+        assert image.height <= 160
 
 
 def test_build_grilon3_enrichments_uses_local_metadata_cache(monkeypatch):

@@ -63,6 +63,8 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "productVisualTemplate" in js
     assert "setupImagePreview" in js
     assert "data-preview-src" in js
+    assert "thumbnail_url" in js
+    assert "const thumbnailUrl = imageProduct.thumbnail_url || imageProduct.image_url" in js
     assert 'loading="lazy"' in js
     assert 'decoding="async"' in js
     assert "positionImagePreview" in js
@@ -307,3 +309,27 @@ def test_generated_stock_data_has_official_metadata_for_technical_grilon3_lines(
     assert any("/producto/" in url for url in urls)
     assert any("/categoria-producto/tecnicos/" in url for url in urls)
     assert non_manufacturer_images == []
+
+
+def test_generated_stock_data_uses_local_thumbnails_for_local_images():
+    payload = json.loads((PUBLIC / "data" / "stock.json").read_text(encoding="utf-8"))
+    products_with_images = [
+        product
+        for product in payload["products"]
+        if product.get("image_url", "").startswith("assets/")
+    ]
+    missing_or_broken = []
+
+    assert products_with_images
+    for product in products_with_images:
+        thumbnail_url = product.get("thumbnail_url", "")
+        thumbnail_path = PUBLIC / thumbnail_url
+        if (
+            not thumbnail_url.startswith("assets/thumbs/")
+            or thumbnail_url == product["image_url"]
+            or not thumbnail_path.exists()
+            or thumbnail_path.suffix != ".webp"
+        ):
+            missing_or_broken.append((product["id"], product["image_url"], thumbnail_url))
+
+    assert missing_or_broken == []

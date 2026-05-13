@@ -60,6 +60,7 @@ class ProductGroup:
     manufacturer_name: str
     manufacturer_product_url: str
     image_url: str
+    thumbnail_url: str
     image_source: ImageSource
     pantone: str
     sku: str

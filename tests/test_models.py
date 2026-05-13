@@ -25,6 +25,7 @@ def test_product_group_serializes_for_public_json():
         manufacturer_name="Grilon3",
         manufacturer_product_url="https://grilon3.com.ar/producto/pla-negro/",
         image_url="https://grilon3.com.ar/wp-content/uploads/pla-negro.jpg",
+        thumbnail_url="assets/thumbs/grilon3/pla-negro.webp",
         image_source="manufacturer",
         pantone="Pantone Black 6 C",
         sku="M09INE175CJ",
@@ -40,6 +41,7 @@ def test_product_group_serializes_for_public_json():
     assert payload["offers"][0]["provider_zone"] == "Zona Sur"
     assert payload["offers"][0]["stock_status"] == "in_stock"
     assert payload["manufacturer_product_url"].startswith("https://grilon3.com.ar/")
+    assert payload["thumbnail_url"] == "assets/thumbs/grilon3/pla-negro.webp"
     assert payload["image_source"] == "manufacturer"
     assert payload["pantone"] == "Pantone Black 6 C"
     assert payload["sku"] == "M09INE175CJ"

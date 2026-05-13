@@ -21,6 +21,7 @@ Decisiones principales:
 python -m pip install -e ".[dev]"
 python -m pytest -v --basetemp C:\tmp\pytest-stockcentral
 python -m stockcentral.build_data --output public/data/stock.json
+python -m stockcentral.generate_thumbnails --stock-json public/data/stock.json
 python -m http.server 8000 -d public
 ```
 
@@ -51,6 +52,7 @@ Generar datos para el sitio estatico:
 
 ```bash
 python -m stockcentral.build_data --output public/data/stock.json
+python -m stockcentral.generate_thumbnails --stock-json public/data/stock.json
 ```
 
 Actualizar la cache local de metadatos e imagenes oficiales de Grilon3, solo cuando Grilon3 cambie o agregue filamentos:
@@ -58,6 +60,7 @@ Actualizar la cache local de metadatos e imagenes oficiales de Grilon3, solo cua
 ```bash
 python -m stockcentral.cache_grilon3_metadata --timeout-seconds 10 --max-workers 8
 python -m stockcentral.build_data --output public/data/stock.json
+python -m stockcentral.generate_thumbnails --stock-json public/data/stock.json
 ```
 
 Si solo hace falta volver a descargar imagenes usando la cache existente, sin leer otra vez las fichas de producto:
@@ -65,6 +68,7 @@ Si solo hace falta volver a descargar imagenes usando la cache existente, sin le
 ```bash
 python -m stockcentral.cache_grilon3_metadata --images-only --timeout-seconds 20
 python -m stockcentral.build_data --output public/data/stock.json
+python -m stockcentral.generate_thumbnails --stock-json public/data/stock.json
 ```
 
 Levantar servidor estatico local:
@@ -75,9 +79,13 @@ python -m http.server 8000 -d public
 
 ## Datos
 
-El frontend lee `public/data/stock.json`. En produccion, GitHub Actions genera ese archivo y publica `public/` en GitHub Pages.
+El frontend lee `public/data/stock.json`. En produccion, GitHub Actions genera ese archivo, genera las miniaturas y publica `public/` en GitHub Pages.
+
+`public/data/stock.json` es salida generada. Evitar editarlo a mano: los cambios persistentes van en normalizacion, fuentes o caches de metadata, y luego se regenera con los comandos anteriores.
 
 La cache `stockcentral/data/grilon3_metadata.json` se versiona en el repositorio. Guarda datos oficiales como Pantone, SKU, EAN y la ruta local de imagen. Las imagenes oficiales descargadas se versionan en `public/assets/grilon3/`. La actualizacion normal de stock no consulta las fichas individuales de Grilon3 ni descarga imagenes; solo lee esa cache local.
+
+Las imagenes originales quedan en `public/assets/grilon3/` y `public/assets/filamentos3d/`. El listado usa miniaturas WebP generadas en `public/assets/thumbs/`; el popup de imagen usa la imagen original para ver mejor el color.
 
 ## GitHub Pages
 

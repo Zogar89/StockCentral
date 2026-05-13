@@ -212,9 +212,10 @@ function productVisualTemplate(product, imageProduct, showPresentation = false) 
   const pantone = pantoneBadgeTemplate(product);
   const presentation = showPresentation ? `<small class="media-presentation">${escapeHtml(formatPresentation(imageProduct))}</small>` : "";
   if (imageProduct.image_url) {
+    const thumbnailUrl = imageProduct.thumbnail_url || imageProduct.image_url;
     return `
       <div class="product-image product-media" data-preview-src="${escapeAttribute(imageProduct.image_url)}" data-preview-title="${escapeAttribute(visualTitle)}" aria-label="${escapeAttribute(visualTitle)}" tabindex="0">
-        <img src="${escapeAttribute(imageProduct.image_url)}" alt="${escapeAttribute(productBaseName(imageProduct))}" loading="lazy" decoding="async">
+        <img src="${escapeAttribute(thumbnailUrl)}" alt="${escapeAttribute(productBaseName(imageProduct))}" loading="lazy" decoding="async">
         ${presentation}
         ${pantone}
       </div>

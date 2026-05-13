@@ -38,6 +38,9 @@ jobs:
       - name: Build stock data
         run: python -m stockcentral.build_data --output public/data/stock.json
 
+      - name: Generate thumbnails
+        run: python -m stockcentral.generate_thumbnails --stock-json public/data/stock.json
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 

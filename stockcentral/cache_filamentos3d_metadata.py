@@ -12,6 +12,7 @@ from stockcentral.connectors.filamentos3d_catalog import (
     enrich_filamentos3d_catalog_details,
     fetch_filamentos3d_catalog,
 )
+from stockcentral.thumbnails import ensure_thumbnail_for_url
 
 FILAMENTOS3D_METADATA_CACHE = Path("stockcentral/data/filamentos3d_metadata.json")
 FILAMENTOS3D_IMAGE_ASSETS_DIR = Path("public/assets/filamentos3d")
@@ -100,6 +101,7 @@ def download_filamentos3d_images(
         if public_path:
             clean["image_remote_url"] = remote_url
             clean["image_url"] = public_path
+            ensure_thumbnail_for_url(public_path)
         updated[key] = clean
 
     return updated

@@ -303,8 +303,8 @@
   },
   "pla-amarillo-175-1000-grilon3": {
     "ean": "7798049652832",
-    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_amarillo2.jpg",
-    "image_url": "assets/grilon3/pla-amarillo2-fbce7107.jpg",
+    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_amarillo-600x600.jpg",
+    "image_url": "assets/grilon3/pla-amarillo-600x600-535755a6.jpg",
     "manufacturer_product_url": "https://grilon3.com.ar/producto/filamento-3d-pla-amarillo/",
     "pantone": "Pantone Yellow",
     "sku": "M10IAM175CJ"
@@ -326,8 +326,8 @@
   },
   "pla-azul-175-1000-grilon3": {
     "ean": "7798049652856",
-    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_azul2.jpg",
-    "image_url": "assets/grilon3/pla-azul2-5dbfb9d5.jpg",
+    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_azul-600x600.jpg",
+    "image_url": "assets/grilon3/pla-azul-600x600-cef91203.jpg",
     "manufacturer_product_url": "https://grilon3.com.ar/producto/filamento-3d-pla-azul/",
     "pantone": "Pantone 286",
     "sku": "M10IAZ175CJ"
@@ -432,8 +432,8 @@
   },
   "pla-piel-162-175-1000-grilon3": {
     "ean": "7798049654577",
-    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_piel162_3.jpg",
-    "image_url": "assets/grilon3/pla-piel162-3-b41fef43.jpg",
+    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_piel162-600x600.jpg",
+    "image_url": "assets/grilon3/pla-piel162-600x600-f83aee7b.jpg",
     "manufacturer_product_url": "https://grilon3.com.ar/producto/filamento-3d-pla-piel/",
     "pantone": "Pantone 162",
     "sku": "M10IPI175CJ"
@@ -791,8 +791,8 @@
   },
   "pla-turquesa-175-1000-grilon3": {
     "ean": "7798049652931",
-    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_turquesa2.jpg",
-    "image_url": "assets/grilon3/pla-turquesa2-bc2bb633.jpg",
+    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_turquesa-350x350.jpg",
+    "image_url": "assets/grilon3/pla-turquesa-350x350-cd184f30.jpg",
     "manufacturer_product_url": "https://grilon3.com.ar/producto/filamento-3d-pla-turquesa/",
     "pantone": "Pantone 313",
     "sku": "M10ITU175CJ"

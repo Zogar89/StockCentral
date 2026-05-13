@@ -415,15 +415,13 @@ def _product_image_score(image_url: str) -> tuple[int, str]:
         score += 25
     if re.search(r"(?:^|[-_])wp[-_]post[-_]image(?:[-_.]|$)", filename):
         score -= 30
-    if re.search(r"[a-z]+2(?:-\d+x\d+)?\.", filename):
-        score += 12
-    if re.search(r"[a-z]+3(?:-\d+x\d+)?\.", filename):
-        score -= 4
+    if re.search(r"[a-z]+(?:2|3)(?:-\d+x\d+)?\.", filename):
+        score -= 12
     if re.search(r"\d+[-_]web", filename):
         score -= 8
     if re.search(r"\d+(?:[-_]\d+x\d+)?\.", filename):
         score -= 12
-    if any(token in filename for token in ["caja", "box", "leon", "dragon", "pieza", "textura", "packaging"]):
+    if any(token in filename for token in ["leon", "dragon", "pieza", "textura"]):
         score -= 50
     return (score, image_url)
 

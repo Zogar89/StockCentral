@@ -222,9 +222,24 @@ def test_generated_stock_data_keeps_presentation_specific_images():
     payload = json.loads((PUBLIC / "data" / "stock.json").read_text(encoding="utf-8"))
     products = {product["id"]: product for product in payload["products"]}
 
-    assert products["pla-amarillo-175-1000-grilon3"]["image_url"] == "assets/grilon3/pla-amarillo2-fbce7107.jpg"
+    assert products["pla-amarillo-175-1000-grilon3"]["image_url"] == "assets/grilon3/pla-amarillo-600x600-535755a6.jpg"
     assert products["pla-amarillo-175-4000-grilon3"]["image_url"] == "assets/grilon3/megafill-amarillo2-a4b176d0.jpg"
     assert products["pla-amarillo-175-1000-grilon3"]["image_url"] != products["pla-amarillo-175-4000-grilon3"]["image_url"]
+
+
+def test_generated_stock_data_prefers_boxed_grilon3_images_when_available():
+    payload = json.loads((PUBLIC / "data" / "stock.json").read_text(encoding="utf-8"))
+    products = {product["id"]: product for product in payload["products"]}
+
+    expected_boxed_images = {
+        "pla-amarillo-175-1000-grilon3": "assets/grilon3/pla-amarillo-600x600-535755a6.jpg",
+        "pla-azul-175-1000-grilon3": "assets/grilon3/pla-azul-600x600-cef91203.jpg",
+        "pla-piel-162-175-1000-grilon3": "assets/grilon3/pla-piel162-600x600-f83aee7b.jpg",
+        "pla-turquesa-175-1000-grilon3": "assets/grilon3/pla-turquesa-350x350-cd184f30.jpg",
+    }
+
+    for product_id, expected in expected_boxed_images.items():
+        assert products[product_id]["image_url"] == expected
 
 
 def test_generated_stock_data_does_not_use_large_spool_images_for_1kg_products():

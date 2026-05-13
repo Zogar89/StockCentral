@@ -1,6 +1,7 @@
 const state = {
   products: [],
   sources: [],
+  categoryOrder: "popular",
   filters: {
     query: "",
     material: "",
@@ -77,6 +78,7 @@ function setupFilters() {
   setSelect("stock", [["all", "Todos"], ["in_stock", "Con stock"], ["out_of_stock", "Sin stock"], ["unknown", "Sin cantidad"]]);
   renderQuickLines();
   updateLineHelp();
+  setupCategorySort();
 
   document.getElementById("search-input").addEventListener("input", (event) => {
     state.filters.query = event.target.value.toLowerCase().trim();
@@ -94,6 +96,7 @@ function setupFilters() {
 function render() {
   const products = state.products.filter(matchesFilters).sort(compareProducts);
   document.getElementById("result-count").textContent = `${products.length} productos`;
+  updateCategorySortButtons();
   document.getElementById("product-list").innerHTML = groupProducts(products).map(groupTemplate).join("");
   renderFooter();
 }
@@ -533,7 +536,19 @@ function groupProducts(products) {
     }
     groups.get(key).products.push(product);
   });
-  return [...groups.values()];
+  return [...groups.values()].sort(compareGroups);
+}
+
+function compareGroups(left, right) {
+  if (state.categoryOrder === "alpha") {
+    return [left.line, left.brand, left.diameter].join(" ").localeCompare([right.line, right.brand, right.diameter].join(" "), "es-AR");
+  }
+  return (
+    lineRank(left.line) - lineRank(right.line)
+    || brandRank(left.brand).localeCompare(brandRank(right.brand), "es-AR")
+    || left.diameter.localeCompare(right.diameter, "es-AR")
+    || left.line.localeCompare(right.line, "es-AR")
+  );
 }
 
 function groupTemplate(group) {
@@ -601,21 +616,32 @@ function diameterLabel(product) {
 }
 
 function compareProducts(left, right) {
+  const groupComparison = compareProductGroups(left, right);
+  if (groupComparison !== 0) return groupComparison;
   return [
-    brandRank(left.brand),
-    left.brand || "",
-    diameterLabel(left),
-    lineLabel(left),
     left.color || "",
     left.display_name,
   ].join(" ").localeCompare([
-    brandRank(right.brand),
-    right.brand || "",
-    diameterLabel(right),
-    lineLabel(right),
     right.color || "",
     right.display_name,
   ].join(" "), "es-AR");
+}
+
+function compareProductGroups(left, right) {
+  const leftLine = lineLabel(left);
+  const rightLine = lineLabel(right);
+  if (state.categoryOrder === "alpha") {
+    return [leftLine, left.brand || "", diameterLabel(left)].join(" ").localeCompare(
+      [rightLine, right.brand || "", diameterLabel(right)].join(" "),
+      "es-AR",
+    );
+  }
+  return (
+    lineRank(leftLine) - lineRank(rightLine)
+    || brandRank(left.brand).localeCompare(brandRank(right.brand), "es-AR")
+    || diameterLabel(left).localeCompare(diameterLabel(right), "es-AR")
+    || leftLine.localeCompare(rightLine, "es-AR")
+  );
 }
 
 function comparePresentations(left, right) {
@@ -695,6 +721,21 @@ function renderQuickLines() {
       updateLineHelp();
       render();
     });
+  });
+}
+
+function setupCategorySort() {
+  document.querySelectorAll("[data-category-order]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.categoryOrder = button.dataset.categoryOrder || "popular";
+      render();
+    });
+  });
+}
+
+function updateCategorySortButtons() {
+  document.querySelectorAll("[data-category-order]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.categoryOrder === state.categoryOrder);
   });
 }
 

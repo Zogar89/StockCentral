@@ -15,6 +15,8 @@ def test_static_frontend_files_exist_and_are_linked():
     assert 'href="resumen.html"' in index
     assert 'id="quick-lines"' in index
     assert 'id="line-help"' in index
+    assert 'data-category-order="popular"' in index
+    assert 'data-category-order="alpha"' in index
     assert '<script src="resumen.js" defer></script>' in resumen
     assert 'id="summary-table"' in resumen
     assert 'id="merge-brands-toggle"' in resumen
@@ -83,6 +85,11 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "presentationTemplate" in js
     assert "productBaseName" in js
     assert "quickLineValues" in js
+    assert "categoryOrder" in js
+    assert "setupCategorySort" in js
+    assert "updateCategorySortButtons" in js
+    assert "compareGroups" in js
+    assert "compareProductGroups" in js
     assert "sin stock online registrado" in js
     assert "offer-main" in js
     assert "providerTitle" in js
@@ -172,6 +179,7 @@ def test_styles_are_compact_and_responsive():
     assert ".summary-color-swatch" in css
     assert ".summary-product-name" in css
     assert ".summary-actions" in css
+    assert ".category-sort" in css
     assert ".soft-button.active" in css
     assert ".summary-group-row" in css
 

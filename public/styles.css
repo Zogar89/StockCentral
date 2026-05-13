@@ -97,11 +97,24 @@ input {
 .status-strip,
 .result-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin: 10px 0;
   color: var(--muted);
+}
+
+.category-sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.category-sort .soft-button {
+  padding: 6px 9px;
+  border-radius: 8px;
 }
 
 .quick-lines {

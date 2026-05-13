@@ -23,6 +23,7 @@ from stockcentral.normalize import build_display_name, build_product_id, normali
 from stockcentral.providers import MANUFACTURERS, SOURCES, SourceConfig
 
 GRILON3_METADATA_CACHE = Path("stockcentral/data/grilon3_metadata.json")
+FILAMENTOS3D_METADATA_CACHE = Path("stockcentral/data/filamentos3d_metadata.json")
 
 ZONE_ORDER = {
     "Zona Norte": 0,
@@ -175,6 +176,34 @@ def build_grilon3_enrichments(
     return enrichments
 
 
+def build_filamentos3d_enrichments(
+    raw_items: list[RawStockItem],
+    metadata: Mapping[str, dict[str, str]] | None = None,
+) -> dict[str, dict[str, str]]:
+    metadata = load_filamentos3d_metadata() if metadata is None else metadata
+    enrichments: dict[str, dict[str, str]] = {}
+
+    for item in raw_items:
+        fields = normalize_record(item)
+        if fields.brand != "3N3":
+            continue
+        product_id = build_product_id(fields)
+        cache_data = metadata.get(product_id, {})
+        image_url = cache_data.get("image_url", "")
+        if not image_url:
+            continue
+
+        enrichment = {
+            "image_url": image_url,
+            "image_source": "provider",
+        }
+        if cache_data.get("sku"):
+            enrichment["sku"] = cache_data["sku"]
+        enrichments[product_id] = enrichment
+
+    return enrichments
+
+
 def _is_sampler_or_3d_pen_item(item: RawStockItem) -> bool:
     text = f" {item.original_name.upper()} "
     return " SAMPLER " in text or "LAPIZ 3D" in text or "LÁPIZ 3D" in text
@@ -208,6 +237,25 @@ def load_grilon3_metadata(path: str | Path = GRILON3_METADATA_CACHE) -> dict[str
         clean = {
             key: str(data.get(key, ""))
             for key in ["manufacturer_product_url", "pantone", "sku", "ean", "image_url"]
+            if data.get(key)
+        }
+        if clean:
+            metadata[str(product_id)] = clean
+    return metadata
+
+
+def load_filamentos3d_metadata(path: str | Path = FILAMENTOS3D_METADATA_CACHE) -> dict[str, dict[str, str]]:
+    cache_path = Path(path)
+    if not cache_path.exists():
+        return {}
+    payload = json.loads(cache_path.read_text(encoding="utf-8"))
+    metadata = {}
+    for product_id, data in payload.items():
+        if not isinstance(data, dict):
+            continue
+        clean = {
+            key: str(data.get(key, ""))
+            for key in ["provider_product_url", "image_url", "image_remote_url", "sku", "line_code"]
             if data.get(key)
         }
         if clean:
@@ -279,7 +327,10 @@ def main() -> None:
     raw_items, source_errors = collect_raw_items()
     try:
         catalog_products = fetch_grilon3_catalog_products()
-        enrichments = build_grilon3_enrichments(raw_items, catalog_products)
+        enrichments = {
+            **build_filamentos3d_enrichments(raw_items),
+            **build_grilon3_enrichments(raw_items, catalog_products),
+        }
     except Exception:
         catalog_products = {}
         enrichments = {}

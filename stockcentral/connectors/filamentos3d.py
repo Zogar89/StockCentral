@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from html.parser import HTMLParser
 
-import requests
+from bs4 import BeautifulSoup
+import httpx
 
 from stockcentral.models import RawStockItem
 from stockcentral.providers import SourceConfig
@@ -18,13 +18,13 @@ def fetch_filamentos3d_items(
     updated_at: str,
     timeout_seconds: int = 30,
 ) -> list[RawStockItem]:
-    response = requests.get(source.source_url, timeout=timeout_seconds)
+    response = httpx.get(source.source_url, timeout=timeout_seconds, follow_redirects=True)
     response.raise_for_status()
     return parse_filamentos3d_html(response.text, source, updated_at)
 
 
 def parse_filamentos3d_html(html_text: str, source: SourceConfig, updated_at: str) -> list[RawStockItem]:
-    tables = _TableParser.parse(html_text)
+    tables = _parse_tables(html_text)
     items: list[RawStockItem] = []
 
     for table in tables:
@@ -61,46 +61,25 @@ def parse_filamentos3d_html(html_text: str, source: SourceConfig, updated_at: st
     return items
 
 
-class _TableParser(HTMLParser):
-    def __init__(self) -> None:
-        super().__init__()
-        self.tables: list[list[list[str]]] = []
-        self._current_table: list[list[str]] | None = None
-        self._current_row: list[str] | None = None
-        self._current_cell: list[str] | None = None
+def _parse_tables(html_text: str) -> list[list[list[str]]]:
+    soup = _soup(html_text)
+    tables: list[list[list[str]]] = []
+    for table in soup.find_all("table"):
+        rows: list[list[str]] = []
+        for row in table.find_all("tr"):
+            cells = [_clean_text(cell.get_text(" ", strip=True)) for cell in row.find_all(["td", "th"])]
+            if cells:
+                rows.append(cells)
+        if rows:
+            tables.append(rows)
+    return tables
 
-    @classmethod
-    def parse(cls, html_text: str) -> list[list[list[str]]]:
-        parser = cls()
-        parser.feed(html_text)
-        return parser.tables
 
-    def handle_starttag(self, tag: str, attrs) -> None:
-        if tag == "table":
-            self._current_table = []
-            return
-        if self._current_table is not None and tag == "tr":
-            self._current_row = []
-            return
-        if self._current_row is not None and tag in {"td", "th"}:
-            self._current_cell = []
-
-    def handle_endtag(self, tag: str) -> None:
-        if tag in {"td", "th"} and self._current_cell is not None and self._current_row is not None:
-            self._current_row.append(_clean_text(" ".join(self._current_cell)))
-            self._current_cell = None
-            return
-        if tag == "tr" and self._current_row is not None and self._current_table is not None:
-            self._current_table.append(self._current_row)
-            self._current_row = None
-            return
-        if tag == "table" and self._current_table is not None:
-            self.tables.append(self._current_table)
-            self._current_table = None
-
-    def handle_data(self, data: str) -> None:
-        if self._current_cell is not None:
-            self._current_cell.append(data)
+def _soup(html_text: str) -> BeautifulSoup:
+    try:
+        return BeautifulSoup(html_text, "lxml")
+    except Exception:
+        return BeautifulSoup(html_text, "html.parser")
 
 
 def _table_columns(table: list[list[str]]) -> dict[str, int | None]:

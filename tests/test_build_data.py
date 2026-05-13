@@ -5,16 +5,19 @@ import pytest
 
 from stockcentral.cache_grilon3_metadata import build_grilon3_metadata_cache, download_grilon3_images, load_metadata_cache
 from stockcentral.build_data import (
+    build_filamentos3d_enrichments,
     build_grilon3_enrichments,
     build_payload,
     collect_raw_items,
     fetch_grilon3_catalog_products,
     load_grilon3_metadata,
+    load_filamentos3d_metadata,
     write_payload,
 )
 from stockcentral.connectors.grilon3_catalog import CatalogProduct
 from stockcentral.models import RawStockItem
 from stockcentral.providers import MANUFACTURERS, SOURCES
+from stockcentral.update_filamentos3d_images import apply_filamentos3d_images
 
 
 def raw(
@@ -266,6 +269,143 @@ def test_build_grilon3_enrichments_indexes_raw_grilon_products(monkeypatch):
     )
 
     assert enrichments["pla-negro-175-1000-grilon3"]["manufacturer_product_url"] == "https://grilon3.com.ar/producto/pla-negro/"
+
+
+def test_build_filamentos3d_enrichments_uses_provider_images_for_3n3_only(monkeypatch):
+    monkeypatch.setattr(
+        "stockcentral.build_data.load_filamentos3d_metadata",
+        lambda: {
+            "pla-negro-175-1000-3n3": {
+                "provider_product_url": "https://filamentos3d.com.ar/3n3-negro.html",
+                "image_url": "assets/filamentos3d/3n3-negro.jpg",
+                "sku": "F3D-PLA-NEGRO",
+            },
+            "pla-negro-175-1000-grilon3": {
+                "provider_product_url": "https://filamentos3d.com.ar/grilon-negro.html",
+                "image_url": "assets/filamentos3d/grilon-negro.jpg",
+            },
+        },
+    )
+
+    enrichments = build_filamentos3d_enrichments(
+        [
+            raw("filamentos3d", "Filamentos3D", "Zona Sur", "3N3 Box PLA 1.75mm NEGRO x1KG", 4),
+            raw("filamentos3d", "Filamentos3D", "Zona Sur", "GRILON3 PLA Negro 1kg 1.75mm", 4, "Grilon3"),
+        ]
+    )
+
+    assert enrichments == {
+        "pla-negro-175-1000-3n3": {
+            "image_url": "assets/filamentos3d/3n3-negro.jpg",
+            "image_source": "provider",
+            "sku": "F3D-PLA-NEGRO",
+        }
+    }
+
+
+def test_build_payload_can_render_3n3_provider_image_without_official_link(monkeypatch):
+    monkeypatch.setattr(
+        "stockcentral.build_data.load_filamentos3d_metadata",
+        lambda: {
+            "pla-negro-175-1000-3n3": {
+                "provider_product_url": "https://filamentos3d.com.ar/3n3-negro.html",
+                "image_url": "assets/filamentos3d/3n3-negro.jpg",
+            }
+        },
+    )
+
+    payload = build_payload(
+        [
+            raw("filamentos3d", "Filamentos3D", "Zona Sur", "3N3 Box PLA 1.75mm NEGRO x1KG", 4),
+        ],
+        sources=SOURCES,
+        manufacturers=MANUFACTURERS,
+        generated_at="2026-05-12T13:00:00-03:00",
+        enrichments=build_filamentos3d_enrichments(
+            [raw("filamentos3d", "Filamentos3D", "Zona Sur", "3N3 Box PLA 1.75mm NEGRO x1KG", 4)]
+        ),
+    )
+
+    product = payload["products"][0]
+    assert product["image_url"] == "assets/filamentos3d/3n3-negro.jpg"
+    assert product["image_source"] == "provider"
+    assert product["manufacturer_product_url"] == ""
+
+
+def test_load_filamentos3d_metadata_reads_provider_cache(tmp_path):
+    cache = tmp_path / "filamentos3d_metadata.json"
+    cache.write_text(
+        '{"pla-negro-175-1000-3n3": {"provider_product_url": "https://filamentos3d.com.ar/3n3-negro.html", "image_url": "assets/filamentos3d/3n3-negro.jpg", "sku": "F3D-PLA-NEGRO"}, "empty": {}}',
+        encoding="utf-8",
+    )
+
+    assert load_filamentos3d_metadata(cache) == {
+        "pla-negro-175-1000-3n3": {
+            "provider_product_url": "https://filamentos3d.com.ar/3n3-negro.html",
+            "image_url": "assets/filamentos3d/3n3-negro.jpg",
+            "sku": "F3D-PLA-NEGRO",
+        }
+    }
+
+
+def test_apply_filamentos3d_images_updates_existing_public_payload_without_stock_refresh(tmp_path):
+    stock = tmp_path / "stock.json"
+    metadata = tmp_path / "filamentos3d_metadata.json"
+    stock.write_text(
+        json.dumps(
+            {
+                "products": [
+                    {
+                        "id": "pla-negro-175-1000-3n3",
+                        "brand": "3N3",
+                        "image_url": "",
+                        "image_source": "",
+                        "sku": "",
+                        "offers": [{"stock_quantity": 7}],
+                    },
+                    {
+                        "id": "pla-negro-175-1000-grilon3",
+                        "brand": "Grilon3",
+                        "image_url": "",
+                        "image_source": "",
+                        "offers": [{"stock_quantity": 9}],
+                    },
+                    {
+                        "id": "pla-bronce-175-1000-3n3",
+                        "brand": "3N3",
+                        "image_url": "assets/filamentos3d/old-placeholder.jpg",
+                        "image_source": "provider",
+                        "offers": [{"stock_quantity": 2}],
+                    },
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    metadata.write_text(
+        json.dumps(
+            {
+                "pla-negro-175-1000-3n3": {
+                    "image_url": "assets/filamentos3d/3n3-negro.jpg",
+                    "sku": "F3D-PLA-NEGRO",
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    updated_count = apply_filamentos3d_images(stock, metadata)
+
+    payload = json.loads(stock.read_text(encoding="utf-8"))
+    assert updated_count == 2
+    assert payload["products"][0]["image_url"] == "assets/filamentos3d/3n3-negro.jpg"
+    assert payload["products"][0]["image_source"] == "provider"
+    assert payload["products"][0]["sku"] == "F3D-PLA-NEGRO"
+    assert payload["products"][0]["offers"][0]["stock_quantity"] == 7
+    assert payload["products"][1]["image_url"] == ""
+    assert payload["products"][2]["image_url"] == ""
+    assert payload["products"][2]["image_source"] == ""
+    assert payload["products"][2]["offers"][0]["stock_quantity"] == 2
 
 
 def test_build_grilon3_enrichments_uses_local_metadata_cache(monkeypatch):

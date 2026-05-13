@@ -44,11 +44,11 @@ def test_fetch_filamentos3d_items_downloads_source_url(monkeypatch):
         def raise_for_status(self):
             calls.append("raise_for_status")
 
-    def fake_get(url, timeout):
+    def fake_get(url, timeout, follow_redirects=True):
         calls.append((url, timeout))
         return Response()
 
-    monkeypatch.setattr("stockcentral.connectors.filamentos3d.requests.get", fake_get)
+    monkeypatch.setattr("stockcentral.connectors.filamentos3d.httpx.get", fake_get)
 
     items = fetch_filamentos3d_items(source, updated_at, timeout_seconds=7)
 

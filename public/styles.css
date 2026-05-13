@@ -198,6 +198,14 @@ input {
 .group-section {
   display: grid;
   gap: 8px;
+  scroll-margin-top: 150px;
+  border-radius: 8px;
+  transition: background-color 240ms ease, box-shadow 240ms ease;
+}
+
+.group-section.quick-target {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 7%, transparent);
 }
 
 .group-heading {
@@ -641,6 +649,10 @@ input {
 
   .group-products {
     grid-template-columns: 1fr;
+  }
+
+  .group-section {
+    scroll-margin-top: 16px;
   }
 
   .product-image {

@@ -90,6 +90,12 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "updateCategorySortButtons" in js
     assert "compareGroups" in js
     assert "compareProductGroups" in js
+    assert "scrollToQuickLine" in js
+    assert "scrollIntoView" in js
+    assert "quick-target" in js
+    assert "groupTargetId" in js
+    assert "slugText" in js
+    assert "state.filters.variant = button.dataset.line" not in js
     assert "sin stock online registrado" in js
     assert "offer-main" in js
     assert "providerTitle" in js
@@ -158,6 +164,8 @@ def test_styles_are_compact_and_responsive():
     assert "grid-template-columns" in css
     assert "border-radius: 8px" in css
     assert ".group-section" in css
+    assert ".group-section.quick-target" in css
+    assert "scroll-margin-top" in css
     assert "repeat(auto-fit, minmax(320px, 1fr))" in css
     assert ".offer-main" in css
     assert ".presentation-list" in css

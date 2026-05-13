@@ -552,8 +552,9 @@ function compareGroups(left, right) {
 }
 
 function groupTemplate(group) {
+  const targetId = groupTargetId(group);
   return `
-    <section class="group-section">
+    <section class="group-section" id="${escapeAttribute(targetId)}" data-line="${escapeAttribute(group.line)}">
       <header class="group-heading">
         <span>${escapeHtml(group.brand)}</span>
         <span>${escapeHtml(group.diameter)}</span>
@@ -562,6 +563,10 @@ function groupTemplate(group) {
       <div class="group-products">${groupBaseProducts(group.products).map(productCardTemplate).join("")}</div>
     </section>
   `;
+}
+
+function groupTargetId(group) {
+  return `linea-${slugText([group.line, group.brand, group.diameter].join(" "))}`;
 }
 
 function groupBaseProducts(products) {
@@ -712,16 +717,29 @@ function renderQuickLines() {
   const available = new Set(lineValues());
   const buttons = quickLineValues
     .filter((line) => available.has(line))
-    .map((line) => `<button class="quick-line" type="button" data-line="${escapeAttribute(line)}">${escapeHtml(lineOptionLabel(line))}</button>`);
+    .map((line) => `<button class="quick-line" type="button" data-line="${escapeAttribute(line)}" title="Ir a ${escapeAttribute(lineOptionLabel(line))}">${escapeHtml(lineOptionLabel(line))}</button>`);
   document.getElementById("quick-lines").innerHTML = buttons.join("");
   document.querySelectorAll(".quick-line").forEach((button) => {
     button.addEventListener("click", () => {
-      state.filters.variant = button.dataset.line || "";
-      document.getElementById("variant-filter").value = state.filters.variant;
-      updateLineHelp();
-      render();
+      scrollToQuickLine(button.dataset.line || "");
     });
   });
+}
+
+function scrollToQuickLine(line) {
+  const target = [...document.querySelectorAll(".group-section")].find((section) => section.dataset.line === line);
+  const help = document.getElementById("line-help");
+  help.textContent = lineMeta[line]?.help || `${line}: línea/material detectado desde las fuentes de stock.`;
+
+  if (!target) {
+    help.textContent = `${help.textContent} No hay resultados visibles para esa línea con los filtros actuales.`;
+    return;
+  }
+
+  document.querySelectorAll(".group-section.quick-target").forEach((section) => section.classList.remove("quick-target"));
+  target.classList.add("quick-target");
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
+  window.setTimeout(() => target.classList.remove("quick-target"), 1400);
 }
 
 function setupCategorySort() {
@@ -755,4 +773,8 @@ function escapeHtml(value) {
 
 function escapeAttribute(value) {
   return escapeHtml(value);
+}
+
+function slugText(value) {
+  return foldText(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }

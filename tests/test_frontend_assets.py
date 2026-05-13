@@ -186,6 +186,7 @@ def test_styles_are_compact_and_responsive():
     assert ".group-heading" in css
     assert ".quick-line::before" in css
     assert ".quick-line-wood" in css
+    assert "scrollbar-width: none" in css
     assert "top: var(--quick-lines-height)" in css
     assert "scroll-margin-top" in css
     assert "repeat(auto-fit, minmax(320px, 1fr))" in css

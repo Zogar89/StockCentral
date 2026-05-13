@@ -164,6 +164,10 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert "renderQuickLines" in js
     assert "scrollToQuickLine" in js
     assert "summaryGroupTargetId" in js
+    assert "setupStickyGroupRows" in js
+    assert "updateStickyGroupRows" in js
+    assert "summaryStickyTop" in js
+    assert "is-stuck" in js
     assert "slugText" in js
     assert "groupRows" in js
     assert "0*" not in js
@@ -214,6 +218,8 @@ def test_styles_are_compact_and_responsive():
     assert ".soft-button.active" in css
     assert ".summary-group-row" in css
     assert ".summary-group-row.quick-target" in css
+    assert ".summary-group-row.is-stuck td" in css
+    assert "color: transparent" in css
     assert "top: calc(var(--quick-lines-height) + var(--summary-head-height))" in css
     assert ".summary-table tbody .summary-group-row th" in css
 

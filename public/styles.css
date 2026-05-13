@@ -700,6 +700,15 @@ input {
   background: color-mix(in srgb, var(--accent) 9%, #e9eef5);
 }
 
+.summary-group-row.is-stuck td {
+  color: transparent;
+}
+
+.summary-group-row.is-stuck td::before,
+.summary-group-row.is-stuck td::after {
+  color: transparent;
+}
+
 .summary-table thead th {
   position: sticky;
   top: var(--quick-lines-height);

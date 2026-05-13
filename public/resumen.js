@@ -6,6 +6,8 @@ const state = {
   categoryOrder: "popular",
 };
 
+let stickyGroupRowsReady = false;
+
 const lineRanks = {
   "PLA Standard": 10,
   "PLA+": 20,
@@ -119,6 +121,7 @@ function render() {
       </tr>
     </tfoot>
   `;
+  setupStickyGroupRows();
 }
 
 function groupRows(rows) {
@@ -247,6 +250,31 @@ function mobileProviderTotalsTemplate(totals, total) {
       <span class="summary-mobile-total"><b>Total</b> ${formatInteger(total)}</span>
     </span>
   `;
+}
+
+function setupStickyGroupRows() {
+  updateStickyGroupRows();
+  if (stickyGroupRowsReady) return;
+
+  stickyGroupRowsReady = true;
+  window.addEventListener("scroll", updateStickyGroupRows, { passive: true });
+  window.addEventListener("resize", updateStickyGroupRows);
+}
+
+function updateStickyGroupRows() {
+  const stickyTop = summaryStickyTop();
+  document.querySelectorAll(".summary-group-row").forEach((row) => {
+    const rect = row.getBoundingClientRect();
+    row.classList.toggle("is-stuck", rect.top <= stickyTop + 1 && rect.bottom > stickyTop);
+  });
+}
+
+function summaryStickyTop() {
+  const styles = getComputedStyle(document.documentElement);
+  const quickLinesHeight = parseFloat(styles.getPropertyValue("--quick-lines-height")) || 0;
+  const summaryHeadHeight = parseFloat(styles.getPropertyValue("--summary-head-height")) || 0;
+  if (window.matchMedia("(max-width: 820px)").matches) return quickLinesHeight;
+  return quickLinesHeight + summaryHeadHeight;
 }
 
 function sourceHeader(source) {

@@ -644,6 +644,27 @@ input {
   margin: 0;
 }
 
+.footer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  color: var(--muted);
+}
+
+.footer-meta h2 {
+  margin: 0 0 4px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.footer-meta p {
+  margin: 0;
+}
+
 .table-shell {
   margin-top: 10px;
   border: 1px solid var(--line);
@@ -817,6 +838,11 @@ input {
 
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+
+  .footer-meta {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .table-shell {

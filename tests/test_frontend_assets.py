@@ -15,12 +15,14 @@ def test_static_frontend_files_exist_and_are_linked():
     assert 'href="resumen.html"' in index
     assert 'id="quick-lines"' in index
     assert 'id="line-help"' in index
+    assert 'id="site-footer"' in index
     assert 'data-category-order="popular"' in index
     assert 'data-category-order="alpha"' in index
     assert '<script src="resumen.js" defer></script>' in resumen
     assert 'id="summary-table"' in resumen
     assert 'id="summary-quick-lines"' in resumen
     assert 'id="summary-line-help"' in resumen
+    assert 'id="site-footer"' in resumen
     assert 'id="merge-brands-toggle"' not in resumen
     assert "Fusionar Grilon3 + 3N3" not in resumen
 
@@ -120,6 +122,11 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "sourceWhatsappUrl" in js
     assert "whatsappMessage" in js
     assert "contactContext" in js
+    assert "siteMetaFooterTemplate" in js
+    assert "Creado por Gabriel" in js
+    assert "Reportar error" in js
+    assert "Sumar proveedor" in js
+    assert "https://github.com/Zogar89/StockCentral/issues/new" in js
     assert "encodeURIComponent" in js
     assert "Rev." not in js
     assert "whatsappLink" not in js
@@ -168,6 +175,11 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert "updateStickyGroupRows" in js
     assert "summaryStickyTop" in js
     assert "is-stuck" in js
+    assert "renderSiteFooter" in js
+    assert "Creado por Gabriel" in js
+    assert "Reportar error" in js
+    assert "Sumar proveedor" in js
+    assert "https://github.com/Zogar89/StockCentral/issues/new" in js
     assert "slugText" in js
     assert "groupRows" in js
     assert "0*" not in js
@@ -210,6 +222,7 @@ def test_styles_are_compact_and_responsive():
     assert "cursor: zoom-in" in css
     assert "scroll-behavior: smooth" in css
     assert ".footer-provider:target" in css
+    assert ".footer-meta" in css
     assert ".summary-presentation" in css
     assert ".summary-product" in css
     assert ".summary-color-swatch" in css

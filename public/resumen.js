@@ -53,6 +53,9 @@ const zoneOrder = {
   "Zona Sur": 2,
 };
 
+const siteContactUrl = "https://github.com/Zogar89/StockCentral/issues/new";
+const siteRepoUrl = "https://github.com/Zogar89/StockCentral";
+
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
@@ -71,6 +74,27 @@ async function init() {
   setupCategorySort();
   renderQuickLines();
   render();
+  renderSiteFooter();
+}
+
+function renderSiteFooter() {
+  const footer = document.getElementById("site-footer");
+  if (!footer) return;
+
+  footer.innerHTML = `
+    <section class="footer-meta" aria-label="Información del proyecto">
+      <div>
+        <h2>StockCentral</h2>
+        <p>Creado por Gabriel (Zogar89) para impresores 3D del AMBA.</p>
+        <p>Si encontrás un error de stock, una foto incorrecta o querés sumar tu proveedor al listado, avisame por GitHub.</p>
+      </div>
+      <div class="contact-actions">
+        <a href="${escapeAttribute(siteContactUrl)}" target="_blank" rel="noopener">Reportar error</a>
+        <a href="${escapeAttribute(siteContactUrl)}" target="_blank" rel="noopener">Sumar proveedor</a>
+        <a href="${escapeAttribute(siteRepoUrl)}" target="_blank" rel="noopener">Repositorio</a>
+      </div>
+    </section>
+  `;
 }
 
 function buildRows() {

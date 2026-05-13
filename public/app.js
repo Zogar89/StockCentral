@@ -54,6 +54,9 @@ const lineMeta = {
 
 const quickLineValues = ["PLA Standard", "PLA+", "PLA Flexible", "PETG", "PLA Astra", "PLA Silk", "PLA Wood", "TPU"];
 
+const siteContactUrl = "https://github.com/Zogar89/StockCentral/issues/new";
+const siteRepoUrl = "https://github.com/Zogar89/StockCentral";
+
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
@@ -478,6 +481,7 @@ function renderFooter() {
     <div class="footer-grid">
       ${state.sources.map(sourceFooter).join("")}
     </div>
+    ${siteMetaFooterTemplate()}
   `;
 }
 
@@ -496,6 +500,23 @@ function sourceFooter(source) {
       <p>${escapeHtml(stats.total_stock_units || 0)} carretes · ${escapeHtml(stats.product_count || 0)} productos</p>
       <p>Actualizado: ${escapeHtml(formatDate(source.last_success_at || source.last_attempt_at))}</p>
       <div class="contact-actions">${actions}</div>
+    </section>
+  `;
+}
+
+function siteMetaFooterTemplate() {
+  return `
+    <section class="footer-meta" aria-label="Información del proyecto">
+      <div>
+        <h2>StockCentral</h2>
+        <p>Creado por Gabriel (Zogar89) para impresores 3D del AMBA.</p>
+        <p>Si encontrás un error de stock, una foto incorrecta o querés sumar tu proveedor al listado, avisame por GitHub.</p>
+      </div>
+      <div class="contact-actions">
+        <a href="${escapeAttribute(siteContactUrl)}" target="_blank" rel="noopener">Reportar error</a>
+        <a href="${escapeAttribute(siteContactUrl)}" target="_blank" rel="noopener">Sumar proveedor</a>
+        <a href="${escapeAttribute(siteRepoUrl)}" target="_blank" rel="noopener">Repositorio</a>
+      </div>
     </section>
   `;
 }

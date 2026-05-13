@@ -287,6 +287,7 @@ function samplerLengthLabel(product) {
 function colorSwatchStyle(product) {
   const color = product.color || "";
   const folded = foldText(color);
+  const variant = foldText(product.variant || "");
   if (folded.includes("KIT") || folded.includes("TUTTI") || folded.includes("SERIE LIMITADA")) {
     return "background: linear-gradient(135deg, #e53935, #fdd835 28%, #43a047 52%, #1e88e5 76%, #8e24aa);";
   }
@@ -296,7 +297,7 @@ function colorSwatchStyle(product) {
   if (folded.includes("FLUO") || folded.includes("UV GLOW")) {
     return `background: ${fluorescentSwatch(folded)};`;
   }
-  if (folded.includes("ASTRA") || ["DARK", "JADE", "NEBULA", "NOCHE", "NOVA", "ROBY"].includes(folded)) {
+  if (variant.includes("ASTRA") || folded.includes("ASTRA") || ["DARK", "JADE", "NEBULA", "NOCHE", "NOVA", "ROBY"].includes(folded)) {
     return `background: ${glitterSwatch(baseColorFor(folded))};`;
   }
   return `background: ${baseColorFor(folded)};`;

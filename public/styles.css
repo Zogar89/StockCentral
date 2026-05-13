@@ -65,9 +65,15 @@ h1 {
   line-height: 1.05;
 }
 
-.topbar-actions {
-  display: flex;
-  gap: 8px;
+.view-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid color-mix(in srgb, var(--line) 86%, black);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 86%, var(--surface-soft));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
 }
 
 .nav-link,
@@ -87,11 +93,33 @@ input {
   cursor: pointer;
 }
 
+.view-switch .nav-link {
+  min-width: 112px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  text-align: center;
+}
+
 .nav-link.active,
 .soft-button.active,
 .soft-button:hover {
   background: var(--text);
   color: white;
+}
+
+.view-switch .nav-link:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.view-switch .nav-link.active {
+  background: var(--text);
+  color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .16);
 }
 
 .status-strip,
@@ -673,6 +701,15 @@ input {
   .topbar {
     align-items: start;
     flex-direction: column;
+  }
+
+  .view-switch {
+    width: 100%;
+  }
+
+  .view-switch .nav-link {
+    flex: 1;
+    min-width: 0;
   }
 
   .filters {

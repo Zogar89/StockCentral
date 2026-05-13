@@ -212,6 +212,7 @@ def test_styles_are_compact_and_responsive():
     assert ".quick-line-wood" in css
     assert ".quick-line-nylon" in css
     assert "flex-wrap: wrap" in css
+    assert "justify-content: center" in css
     assert "max-height: var(--quick-lines-height)" in css
     assert "scrollbar-width: none" in css
     assert "top: var(--quick-lines-height)" in css

@@ -149,7 +149,8 @@ input {
 
 .filters {
   display: grid;
-  grid-template-columns: minmax(220px, 2fr) repeat(7, minmax(112px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
   gap: 8px;
   padding: 10px;
   background: var(--surface);
@@ -167,8 +168,13 @@ input {
   grid-template-columns: 1fr;
 }
 
+.filters.one-line .search-field {
+  grid-column: 1 / -1;
+}
+
 .search-field {
   display: grid;
+  grid-column: span 2;
   gap: 4px;
 }
 

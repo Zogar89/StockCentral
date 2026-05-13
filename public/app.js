@@ -487,6 +487,7 @@ function renderFooter() {
 
 function sourceFooter(source) {
   const stats = source.stats || {};
+  const stockDelta = stockDeltaTemplate(stats);
   const actions = [
     source.contact_whatsapp_url ? `<a href="${escapeAttribute(sourceWhatsappUrl(source))}" target="_blank" rel="noopener">WhatsApp</a>` : "",
     source.contact_phone ? `<a href="tel:${escapeAttribute(source.contact_phone.replaceAll(" ", ""))}">Teléfono</a>` : "",
@@ -497,11 +498,22 @@ function sourceFooter(source) {
     <section class="footer-provider" id="${escapeAttribute(providerAnchorId(source.id))}">
       <h3><a href="${escapeAttribute(source.homepage_url)}" target="_blank" rel="noopener">${escapeHtml(source.name)}</a></h3>
       <p>${escapeHtml(source.zone)}${source.address ? ` · ${escapeHtml(source.address)}` : ""}</p>
-      <p>${escapeHtml(stats.total_stock_units || 0)} carretes · ${escapeHtml(stats.product_count || 0)} productos</p>
+      <p class="provider-stock-line">
+        <span>${escapeHtml(stats.total_stock_units || 0)} carretes · ${escapeHtml(stats.product_count || 0)} productos</span>
+        ${stockDelta}
+      </p>
       <p>Actualizado: ${escapeHtml(formatDate(source.last_success_at || source.last_attempt_at))}</p>
       <div class="contact-actions">${actions}</div>
     </section>
   `;
+}
+
+function stockDeltaTemplate(stats) {
+  const delta = Number(stats.stock_delta_units);
+  if (!Number.isFinite(delta)) return "";
+  const label = delta > 0 ? `+${delta}` : `${delta}`;
+  const tone = delta > 0 ? "up" : delta < 0 ? "down" : "flat";
+  return `<span class="stock-delta stock-delta-${tone}">${escapeHtml(label)} vs ayer</span>`;
 }
 
 function siteMetaFooterTemplate() {

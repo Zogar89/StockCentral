@@ -80,3 +80,15 @@ def test_source_status_serializes_error_message():
     assert payload["contact_whatsapp_url"].startswith("https://wa.me/")
     assert payload["contact_phone"] == "+54 9 11 1234-5678"
     assert payload["stats"]["total_stock_kg"] == 12.0
+
+
+def test_provider_stats_omits_stock_delta_when_missing():
+    payload = ProviderStats(
+        total_stock_units=12,
+        total_stock_kg=12.0,
+        product_count=3,
+        in_stock_product_count=1,
+        out_of_stock_product_count=1,
+    ).to_dict()
+
+    assert "stock_delta_units" not in payload

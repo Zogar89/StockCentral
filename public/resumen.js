@@ -85,6 +85,9 @@ function renderSiteFooter() {
   if (!footer) return;
 
   footer.innerHTML = `
+    <div class="footer-grid">
+      ${state.sources.map(sourceFooter).join("")}
+    </div>
     <section class="footer-meta" aria-label="Información del proyecto">
       <div>
         <h2>StockCentral</h2>
@@ -98,6 +101,44 @@ function renderSiteFooter() {
       </div>
     </section>
   `;
+}
+
+function sourceFooter(source) {
+  const stats = source.stats || {};
+  const stockDelta = stockDeltaTemplate(stats);
+  const actions = [
+    source.contact_whatsapp_url ? `<a href="${escapeAttribute(sourceWhatsappUrl(source))}" target="_blank" rel="noopener">WhatsApp</a>` : "",
+    source.contact_phone ? `<a href="tel:${escapeAttribute(source.contact_phone.replaceAll(" ", ""))}">Teléfono</a>` : "",
+    source.contact_email ? `<a href="mailto:${escapeAttribute(source.contact_email)}">Mail</a>` : "",
+    source.source_url ? `<a href="${escapeAttribute(source.source_url)}" target="_blank" rel="noopener">Fuente</a>` : "",
+  ].filter(Boolean).join("");
+  return `
+    <section class="footer-provider" id="${escapeAttribute(providerAnchorId(source.id))}">
+      <h3><a href="${escapeAttribute(source.homepage_url)}" target="_blank" rel="noopener">${escapeHtml(source.name)}</a></h3>
+      <p>${escapeHtml(source.zone)}${source.address ? ` · ${escapeHtml(source.address)}` : ""}</p>
+      <p class="provider-stock-line">
+        <span>${escapeHtml(stats.total_stock_units || 0)} carretes · ${escapeHtml(stats.product_count || 0)} productos</span>
+        ${stockDelta}
+      </p>
+      <p>Actualizado: ${escapeHtml(formatDate(source.last_success_at || source.last_attempt_at))}</p>
+      <div class="contact-actions">${actions}</div>
+    </section>
+  `;
+}
+
+function sourceWhatsappUrl(source) {
+  const separator = source.contact_whatsapp_url.includes("?") ? "&" : "?";
+  return `${source.contact_whatsapp_url}${separator}text=${encodeURIComponent(whatsappMessage())}`;
+}
+
+function whatsappMessage() {
+  const context = contactContext();
+  const suffix = context ? ` Estoy buscando ${context}.` : " Quería consultar disponibilidad y precio.";
+  return `Hola, vi su stock publicado en StockCentral.${suffix}`;
+}
+
+function contactContext() {
+  return state.query ? `"${state.query}"` : "";
 }
 
 function buildRows() {
@@ -309,6 +350,14 @@ function sourceHeader(source) {
   return `<th><a href="${escapeAttribute(source.homepage_url)}" target="_blank" rel="noopener" title="${formatInteger(total)} carretes">${escapeHtml(source.name)}</a></th>`;
 }
 
+function stockDeltaTemplate(stats) {
+  const delta = Number(stats.stock_delta_units);
+  if (!Number.isFinite(delta)) return "";
+  const label = delta > 0 ? `+${delta}` : `${delta}`;
+  const tone = delta > 0 ? "up" : delta < 0 ? "down" : "flat";
+  return `<small class="stock-delta stock-delta-${tone}">${escapeHtml(label)} vs ayer</small>`;
+}
+
 function rowTemplate(row) {
   return `
     <tr>
@@ -340,6 +389,10 @@ function groupTitle(product) {
 
 function summaryGroupTargetId(group) {
   return `resumen-linea-${slugText(group.title)}`;
+}
+
+function providerAnchorId(sourceId) {
+  return `proveedor-${sourceId}`;
 }
 
 function cellTemplate(cell, source) {

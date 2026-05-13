@@ -7,7 +7,7 @@ on:
     - cron: "0 12,15,18,21 * * 1-5"
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -37,6 +37,18 @@ jobs:
 
       - name: Build stock data
         run: python -m stockcentral.build_data --output public/data/stock.json
+
+      - name: Persist daily snapshot
+        run: |
+          if [ -z "$(git status --porcelain -- stockcentral/data/daily_provider_stock_snapshot.json)" ]; then
+            echo "No daily snapshot changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stockcentral/data/daily_provider_stock_snapshot.json
+          git commit -m "Update daily provider stock snapshot"
+          git push
 
       - name: Generate thumbnails
         run: python -m stockcentral.generate_thumbnails --stock-json public/data/stock.json

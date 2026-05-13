@@ -83,6 +83,8 @@ El frontend lee `public/data/stock.json`. En produccion, GitHub Actions genera e
 
 `public/data/stock.json` es salida generada. Evitar editarlo a mano: los cambios persistentes van en normalizacion, fuentes o caches de metadata, y luego se regenera con los comandos anteriores.
 
+La cache `stockcentral/data/daily_provider_stock_snapshot.json` se actualiza en la corrida de las 09 hs Argentina. Guarda la captura diaria por proveedor y la captura anterior para mostrar la diferencia de carretes `vs ayer`.
+
 La cache `stockcentral/data/grilon3_metadata.json` se versiona en el repositorio. Guarda datos oficiales como Pantone, SKU, EAN y la ruta local de imagen. Las imagenes oficiales descargadas se versionan en `public/assets/grilon3/`. La actualizacion normal de stock no consulta las fichas individuales de Grilon3 ni descarga imagenes; solo lee esa cache local.
 
 Las imagenes originales quedan en `public/assets/grilon3/` y `public/assets/filamentos3d/`. El listado usa miniaturas WebP generadas en `public/assets/thumbs/`; el popup de imagen usa la imagen original para ver mejor el color.

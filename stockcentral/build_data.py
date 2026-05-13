@@ -25,6 +25,7 @@ from stockcentral.thumbnails import thumbnail_url_for
 
 GRILON3_METADATA_CACHE = Path("stockcentral/data/grilon3_metadata.json")
 FILAMENTOS3D_METADATA_CACHE = Path("stockcentral/data/filamentos3d_metadata.json")
+DAILY_PROVIDER_STOCK_SNAPSHOT = Path("stockcentral/data/daily_provider_stock_snapshot.json")
 
 ZONE_ORDER = {
     "Zona Norte": 0,
@@ -126,6 +127,64 @@ def write_payload(payload: Mapping[str, object], output_path: str | Path) -> Non
         json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+
+
+def load_daily_provider_stock_snapshot(path: str | Path = DAILY_PROVIDER_STOCK_SNAPSHOT) -> dict[str, object]:
+    snapshot_path = Path(path)
+    if not snapshot_path.exists():
+        return {}
+    payload = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    return payload if isinstance(payload, dict) else {}
+
+
+def apply_provider_stock_deltas(payload: dict[str, object], snapshot: Mapping[str, object]) -> None:
+    previous_counts = _provider_counts_for_delta(snapshot, str(payload.get("generated_at", "")))
+    if not previous_counts:
+        return
+
+    for source in payload.get("sources", []):
+        if not isinstance(source, dict):
+            continue
+        source_id = str(source.get("id", ""))
+        if source_id not in previous_counts:
+            continue
+        stats = source.get("stats")
+        if not isinstance(stats, dict):
+            continue
+        current_stock = _safe_int(stats.get("total_stock_units"))
+        if current_stock is None:
+            continue
+        stats["stock_delta_units"] = current_stock - previous_counts[source_id]
+
+
+def maybe_update_daily_provider_stock_snapshot(
+    payload: Mapping[str, object],
+    path: str | Path = DAILY_PROVIDER_STOCK_SNAPSHOT,
+    snapshot_hour: int = 9,
+) -> bool:
+    generated_at = str(payload.get("generated_at", ""))
+    generated = _parse_datetime(generated_at)
+    if generated is None or generated.hour != snapshot_hour:
+        return False
+
+    snapshot_path = Path(path)
+    previous_snapshot = load_daily_provider_stock_snapshot(snapshot_path)
+    if _date_part(str(previous_snapshot.get("captured_at", ""))) == generated.date().isoformat():
+        return False
+
+    current_providers = _provider_counts_from_payload(payload)
+    next_snapshot = {
+        "captured_at": generated_at,
+        "providers": current_providers,
+        "previous_captured_at": str(previous_snapshot.get("captured_at", "")),
+        "previous_providers": _clean_provider_counts(previous_snapshot.get("providers", {})),
+    }
+    snapshot_path.parent.mkdir(parents=True, exist_ok=True)
+    snapshot_path.write_text(
+        json.dumps(next_snapshot, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return True
 
 
 def collect_raw_items(
@@ -363,6 +422,8 @@ def _slug(value: str) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build public StockCentral JSON data.")
     parser.add_argument("--output", default="public/data/stock.json")
+    parser.add_argument("--daily-snapshot", default=str(DAILY_PROVIDER_STOCK_SNAPSHOT))
+    parser.add_argument("--snapshot-hour", type=int, default=9)
     args = parser.parse_args()
 
     raw_items, source_errors = collect_raw_items()
@@ -381,6 +442,9 @@ def main() -> None:
         source_errors=source_errors,
         catalog_products=catalog_products,
     )
+    snapshot = load_daily_provider_stock_snapshot(args.daily_snapshot)
+    apply_provider_stock_deltas(payload, snapshot)
+    maybe_update_daily_provider_stock_snapshot(payload, args.daily_snapshot, args.snapshot_hour)
     write_payload(payload, args.output)
 
 
@@ -516,6 +580,65 @@ def _provider_stats(items: list[RawStockItem]) -> ProviderStats:
         in_stock_product_count=in_stock_product_count,
         out_of_stock_product_count=out_of_stock_product_count,
     )
+
+
+def _provider_counts_for_delta(snapshot: Mapping[str, object], generated_at: str) -> dict[str, int]:
+    captured_date = _date_part(str(snapshot.get("captured_at", "")))
+    generated_date = _date_part(generated_at)
+    if captured_date and generated_date and captured_date == generated_date:
+        previous_counts = _clean_provider_counts(snapshot.get("previous_providers", {}))
+        if previous_counts:
+            return previous_counts
+    return _clean_provider_counts(snapshot.get("providers", {}))
+
+
+def _provider_counts_from_payload(payload: Mapping[str, object]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for source in payload.get("sources", []):
+        if not isinstance(source, dict):
+            continue
+        stats = source.get("stats")
+        if not isinstance(stats, dict):
+            continue
+        total = _safe_int(stats.get("total_stock_units"))
+        if total is None:
+            continue
+        counts[str(source.get("id", ""))] = total
+    return counts
+
+
+def _clean_provider_counts(value: object) -> dict[str, int]:
+    if not isinstance(value, dict):
+        return {}
+    counts: dict[str, int] = {}
+    for source_id, total in value.items():
+        parsed = _safe_int(total)
+        if parsed is not None:
+            counts[str(source_id)] = parsed
+    return counts
+
+
+def _safe_int(value: object) -> int | None:
+    if isinstance(value, bool):
+        return None
+    try:
+        return int(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return None
+
+
+def _date_part(value: str) -> str:
+    parsed = _parse_datetime(value)
+    return parsed.date().isoformat() if parsed is not None else ""
+
+
+def _parse_datetime(value: str) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value)
+    except ValueError:
+        return None
 
 
 def _stock_status(stock_quantity: int | None) -> StockStatus:

@@ -81,9 +81,13 @@ class ProviderStats:
     product_count: int
     in_stock_product_count: int
     out_of_stock_product_count: int
+    stock_delta_units: int | None = None
 
     def to_dict(self) -> dict[str, object]:
-        return asdict(self)
+        payload = asdict(self)
+        if self.stock_delta_units is None:
+            payload.pop("stock_delta_units")
+        return payload
 
 
 @dataclass(frozen=True)

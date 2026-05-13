@@ -125,6 +125,9 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "sourceWhatsappUrl" in js
     assert "whatsappMessage" in js
     assert "contactContext" in js
+    assert "stockDeltaTemplate" in js
+    assert "stock_delta_units" in js
+    assert "vs ayer" in js
     assert "siteMetaFooterTemplate" in js
     assert "Creado por Gabriel" in js
     assert "Reportar error" in js
@@ -182,6 +185,11 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert "summaryStickyTop" in js
     assert "is-stuck" in js
     assert "renderSiteFooter" in js
+    assert "footer-grid" in js
+    assert "sourceFooter" in js
+    assert "sourceWhatsappUrl" in js
+    assert "whatsappMessage" in js
+    assert "contactContext" in js
     assert "Creado por Gabriel" in js
     assert "Reportar error" in js
     assert "Sumar proveedor" in js
@@ -193,6 +201,10 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert "A revisar" not in js
     assert "Rev." not in js
     assert "total_stock_units" in js
+    assert "stockDeltaTemplate" in js
+    assert "stock_delta_units" in js
+    assert "vs ayer" in js
+    assert "const stockDelta = stockDeltaTemplate(source.stats || {});" not in js
     assert "total_stock_kg" not in js
 
 
@@ -234,6 +246,9 @@ def test_styles_are_compact_and_responsive():
     assert "cursor: zoom-in" in css
     assert "scroll-behavior: smooth" in css
     assert ".footer-provider:target" in css
+    assert ".stock-delta" in css
+    assert ".stock-delta-up" in css
+    assert ".stock-delta-down" in css
     assert ".footer-meta" in css
     assert ".summary-presentation" in css
     assert ".summary-product" in css

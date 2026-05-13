@@ -26,6 +26,8 @@ from stockcentral.thumbnails import thumbnail_url_for
 GRILON3_METADATA_CACHE = Path("stockcentral/data/grilon3_metadata.json")
 FILAMENTOS3D_METADATA_CACHE = Path("stockcentral/data/filamentos3d_metadata.json")
 DAILY_PROVIDER_STOCK_SNAPSHOT = Path("stockcentral/data/daily_provider_stock_snapshot.json")
+PROVIDER_STOCK_HISTORY = Path("stockcentral/data/provider_stock_history.json")
+PUBLIC_PROVIDER_STOCK_HISTORY = Path("public/data/provider_stock_history.json")
 
 ZONE_ORDER = {
     "Zona Norte": 0,
@@ -185,6 +187,68 @@ def maybe_update_daily_provider_stock_snapshot(
         encoding="utf-8",
     )
     return True
+
+
+def load_provider_stock_history(path: str | Path = PROVIDER_STOCK_HISTORY) -> dict[str, object]:
+    history_path = Path(path)
+    if not history_path.exists():
+        return {"days": []}
+    payload = json.loads(history_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        return {"days": []}
+    days = payload.get("days", [])
+    return {"days": days if isinstance(days, list) else []}
+
+
+def maybe_update_provider_stock_history(
+    payload: Mapping[str, object],
+    path: str | Path = PROVIDER_STOCK_HISTORY,
+    snapshot_hour: int = 9,
+    max_days: int = 30,
+) -> bool:
+    generated_at = str(payload.get("generated_at", ""))
+    generated = _parse_datetime(generated_at)
+    if generated is None or generated.hour != snapshot_hour:
+        return False
+
+    history_path = Path(path)
+    history = load_provider_stock_history(history_path)
+    days = _history_days(history)
+    capture = {
+        "date": generated.date().isoformat(),
+        "captured_at": generated_at,
+        "providers": _provider_counts_from_payload(payload),
+    }
+    days = [day for day in days if day.get("date") != capture["date"]]
+    days.append(capture)
+    days = _trim_history_days(days, max_days)
+    next_history = {"days": days}
+
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    history_path.write_text(
+        json.dumps(next_history, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return True
+
+
+def write_public_provider_stock_history(
+    history: Mapping[str, object],
+    payload: Mapping[str, object],
+    output_path: str | Path = PUBLIC_PROVIDER_STOCK_HISTORY,
+    max_days: int = 30,
+) -> None:
+    path = Path(output_path)
+    public_payload = {
+        "generated_at": str(payload.get("generated_at", "")),
+        "providers": _provider_metadata_from_payload(payload),
+        "days": _trim_history_days(_history_days(history), max_days),
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(public_payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def collect_raw_items(
@@ -423,6 +487,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Build public StockCentral JSON data.")
     parser.add_argument("--output", default="public/data/stock.json")
     parser.add_argument("--daily-snapshot", default=str(DAILY_PROVIDER_STOCK_SNAPSHOT))
+    parser.add_argument("--provider-history", default=str(PROVIDER_STOCK_HISTORY))
+    parser.add_argument("--public-provider-history", default=str(PUBLIC_PROVIDER_STOCK_HISTORY))
     parser.add_argument("--snapshot-hour", type=int, default=9)
     args = parser.parse_args()
 
@@ -445,6 +511,9 @@ def main() -> None:
     snapshot = load_daily_provider_stock_snapshot(args.daily_snapshot)
     apply_provider_stock_deltas(payload, snapshot)
     maybe_update_daily_provider_stock_snapshot(payload, args.daily_snapshot, args.snapshot_hour)
+    maybe_update_provider_stock_history(payload, args.provider_history, args.snapshot_hour)
+    history = load_provider_stock_history(args.provider_history)
+    write_public_provider_stock_history(history, payload, args.public_provider_history)
     write_payload(payload, args.output)
 
 
@@ -605,6 +674,33 @@ def _provider_counts_from_payload(payload: Mapping[str, object]) -> dict[str, in
             continue
         counts[str(source.get("id", ""))] = total
     return counts
+
+
+def _provider_metadata_from_payload(payload: Mapping[str, object]) -> list[dict[str, str]]:
+    providers: list[dict[str, str]] = []
+    for source in payload.get("sources", []):
+        if not isinstance(source, dict):
+            continue
+        providers.append(
+            {
+                "id": str(source.get("id", "")),
+                "name": str(source.get("name", "")),
+                "zone": str(source.get("zone", "")),
+            }
+        )
+    return providers
+
+
+def _history_days(history: Mapping[str, object]) -> list[dict[str, object]]:
+    days = history.get("days", [])
+    if not isinstance(days, list):
+        return []
+    return [dict(day) for day in days if isinstance(day, dict) and day.get("date")]
+
+
+def _trim_history_days(days: list[dict[str, object]], max_days: int) -> list[dict[str, object]]:
+    sorted_days = sorted(days, key=lambda day: str(day.get("date", "")))
+    return sorted_days[-max_days:]
 
 
 def _clean_provider_counts(value: object) -> dict[str, int]:

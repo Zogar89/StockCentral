@@ -40,14 +40,14 @@ jobs:
 
       - name: Persist daily snapshot
         run: |
-          if [ -z "$(git status --porcelain -- stockcentral/data/daily_provider_stock_snapshot.json)" ]; then
-            echo "No daily snapshot changes"
+          if [ -z "$(git status --porcelain -- stockcentral/data/daily_provider_stock_snapshot.json stockcentral/data/provider_stock_history.json)" ]; then
+            echo "No daily snapshot or provider history changes"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add stockcentral/data/daily_provider_stock_snapshot.json
-          git commit -m "Update daily provider stock snapshot"
+          git add stockcentral/data/daily_provider_stock_snapshot.json stockcentral/data/provider_stock_history.json
+          git commit -m "Update daily provider stock history"
           git push
 
       - name: Generate thumbnails

@@ -9,6 +9,8 @@ PUBLIC = Path("public")
 def test_static_frontend_files_exist_and_are_linked():
     index = (PUBLIC / "index.html").read_text(encoding="utf-8")
     resumen = (PUBLIC / "resumen.html").read_text(encoding="utf-8")
+    internal = (PUBLIC / "estadisticas.html").read_text(encoding="utf-8")
+    flags = json.loads((PUBLIC / "data" / "feature_flags.json").read_text(encoding="utf-8"))
 
     assert '<script src="app.js" defer></script>' in index
     assert 'href="styles.css"' in index
@@ -25,6 +27,14 @@ def test_static_frontend_files_exist_and_are_linked():
     assert 'id="site-footer"' in resumen
     assert 'id="merge-brands-toggle"' not in resumen
     assert "Fusionar Grilon3 + 3N3" not in resumen
+    assert "estadisticas.html" not in index
+    assert "estadisticas.html" not in resumen
+    assert "vendedores-interno.html" not in index
+    assert "vendedores-interno.html" not in resumen
+    assert '<script src="estadisticas.js" defer></script>' in internal
+    assert 'id="vendor-dashboard"' in internal
+    assert 'id="vendor-disabled"' in internal
+    assert flags["vendorStatsEnabled"] is True
 
 
 def test_catalog_script_fetches_json_and_supports_required_filters():
@@ -208,6 +218,21 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert "total_stock_kg" not in js
 
 
+def test_internal_vendor_script_uses_feature_flag_and_30_day_history():
+    js = (PUBLIC / "estadisticas.js").read_text(encoding="utf-8")
+
+    assert "data/feature_flags.json" in js
+    assert "data/provider_stock_history.json" in js
+    assert "vendorStatsEnabled" in js
+    assert "slice(-30)" in js
+    assert "deltaForProvider" in js
+    assert "vs dia anterior" in js
+    assert "vendor-dashboard" in js
+    assert "vendor-disabled" in js
+    assert "Cantidad por dia" in js
+    assert "Variacion" in js
+
+
 def test_styles_are_compact_and_responsive():
     css = (PUBLIC / "styles.css").read_text(encoding="utf-8")
 
@@ -262,6 +287,11 @@ def test_styles_are_compact_and_responsive():
     assert "color: transparent" in css
     assert "top: calc(var(--quick-lines-height) + var(--summary-head-height))" in css
     assert ".summary-table tbody .summary-group-row th" in css
+    assert ".internal-shell" in css
+    assert ".vendor-stat-grid" in css
+    assert ".vendor-history-table" in css
+    assert ".delta-positive" in css
+    assert ".delta-negative" in css
 
 
 def test_generated_stock_data_has_one_offer_per_provider_per_card():

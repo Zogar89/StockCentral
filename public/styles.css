@@ -712,6 +712,135 @@ input {
   overflow: visible;
 }
 
+.internal-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 18px 12px 32px;
+}
+
+.internal-empty {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.internal-empty h2 {
+  margin: 0 0 4px;
+  color: var(--text);
+  font-size: 16px;
+}
+
+.internal-empty p {
+  margin: 0;
+}
+
+.vendor-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.vendor-stat-card {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--surface);
+}
+
+.vendor-stat-card header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.vendor-stat-card h2 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.vendor-stat-card p {
+  margin: 3px 0 0;
+  color: var(--muted);
+}
+
+.vendor-stat-card header strong {
+  white-space: nowrap;
+}
+
+.vendor-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.vendor-kpis div {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.vendor-kpis dt {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.vendor-kpis dd {
+  margin: 4px 0 0;
+  font-weight: 800;
+}
+
+.vendor-table-wrap {
+  overflow-x: auto;
+}
+
+.vendor-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.vendor-history-table th,
+.vendor-history-table td {
+  padding: 7px 6px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.vendor-history-table th:first-child,
+.vendor-history-table td:first-child {
+  text-align: left;
+}
+
+.delta-badge,
+.delta-muted {
+  font-weight: 800;
+}
+
+.delta-positive {
+  color: var(--ok);
+}
+
+.delta-negative {
+  color: var(--out);
+}
+
+.delta-flat,
+.delta-muted {
+  color: var(--muted);
+}
+
 .summary-table {
   width: 100%;
   border-collapse: separate;

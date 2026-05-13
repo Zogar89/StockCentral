@@ -3,7 +3,6 @@ const state = {
   sources: [],
   rows: [],
   query: "",
-  mergeBrands: false,
 };
 
 const zoneOrder = {
@@ -27,10 +26,6 @@ async function init() {
     state.query = event.target.value.toLowerCase().trim();
     render();
   });
-  document.getElementById("merge-brands-toggle").addEventListener("click", () => {
-    state.mergeBrands = !state.mergeBrands;
-    render();
-  });
   render();
 }
 
@@ -52,7 +47,7 @@ function buildRows() {
 }
 
 function render() {
-  const rows = displayRows().filter(matchesQuery);
+  const rows = state.rows.filter(matchesQuery);
   const providerTotals = Object.fromEntries(state.sources.map((source) => [source.id, 0]));
   rows.forEach((row) => {
     state.sources.forEach((source) => {
@@ -61,7 +56,6 @@ function render() {
   });
   const grandTotal = Object.values(providerTotals).reduce((sum, value) => sum + value, 0);
   const groupedRows = groupRows(rows);
-  updateMergeButton();
   document.getElementById("summary-count").textContent = `${rows.length} filamentos`;
   document.getElementById("summary-table").innerHTML = `
     <thead>
@@ -82,66 +76,6 @@ function render() {
       </tr>
     </tfoot>
   `;
-}
-
-function displayRows() {
-  if (!state.mergeBrands) return state.rows;
-  return mergeCompatibleBrands(state.rows);
-}
-
-function mergeCompatibleBrands(rows) {
-  const merged = new Map();
-  rows.forEach((row) => {
-    const key = mergeRowKey(row.product);
-    if (!merged.has(key)) {
-      merged.set(key, {
-        product: row.product,
-        products: [],
-        cells: Object.fromEntries(state.sources.map((source) => [source.id, { units: 0, unknown: false }])),
-        total: 0,
-      });
-    }
-    const target = merged.get(key);
-    target.products.push(row.product);
-    state.sources.forEach((source) => {
-      const sourceCell = row.cells[source.id];
-      const targetCell = target.cells[source.id];
-      targetCell.units += sourceCell?.units || 0;
-      targetCell.unknown = targetCell.unknown || Boolean(sourceCell?.unknown);
-    });
-  });
-
-  return [...merged.values()].map((row) => {
-    row.products.sort(compareProducts);
-    row.product = row.products[0];
-    row.brands = [...new Set(row.products.map((product) => product.brand).filter(Boolean))].sort(compareBrands);
-    row.total = Object.values(row.cells).reduce((sum, cell) => sum + cell.units, 0);
-    return row;
-  }).sort((a, b) => compareProducts(a.product, b.product));
-}
-
-function mergeRowKey(product) {
-  return [
-    mergedBrandKey(product.brand),
-    product.diameter_mm ? `${product.diameter_mm} mm` : "Sin diámetro",
-    product.material || "Sin material",
-    product.variant || "",
-    lineLabel(product),
-    product.color || "Sin color",
-    formatPresentation(product),
-  ].join("||");
-}
-
-function mergedBrandKey(brand) {
-  if (brand === "Grilon3" || brand === "3N3") return "Grilon3 + 3N3";
-  return brand || "Sin marca";
-}
-
-function updateMergeButton() {
-  const button = document.getElementById("merge-brands-toggle");
-  button.classList.toggle("active", state.mergeBrands);
-  button.setAttribute("aria-pressed", String(state.mergeBrands));
-  button.textContent = state.mergeBrands ? "Marcas fusionadas" : "Fusionar Grilon3 + 3N3";
 }
 
 function groupRows(rows) {
@@ -196,8 +130,8 @@ function rowTemplate(row) {
 
 function groupKey(product) {
   return [
-    state.mergeBrands ? "0" : brandRank(product.brand),
-    state.mergeBrands ? mergedBrandKey(product.brand) : product.brand || "Sin marca",
+    brandRank(product.brand),
+    product.brand || "Sin marca",
     product.diameter_mm ? `${product.diameter_mm} mm` : "Sin diámetro",
     lineLabel(product),
   ].join("||");
@@ -205,7 +139,7 @@ function groupKey(product) {
 
 function groupTitle(product) {
   const parts = [
-    state.mergeBrands ? "" : product.brand || "Sin marca",
+    product.brand || "Sin marca",
     product.diameter_mm ? `${product.diameter_mm} mm` : "Sin diámetro",
     lineLabel(product),
   ].filter(Boolean);
@@ -242,7 +176,7 @@ function productSummaryName(product) {
 
 function summaryProductTemplate(row) {
   const product = row.product;
-  const details = [product.pantone, brandsLabel(row)].filter(Boolean).join(" · ");
+  const details = [product.pantone].filter(Boolean).join(" · ");
   const detail = details ? `<small>${escapeHtml(details)}</small>` : "";
   return `
     <span class="summary-product">
@@ -253,11 +187,6 @@ function summaryProductTemplate(row) {
       </span>
     </span>
   `;
-}
-
-function brandsLabel(row) {
-  if (!state.mergeBrands || !row.brands || row.brands.length < 2) return "";
-  return row.brands.join(" + ");
 }
 
 function summaryColorSwatchTemplate(product) {
@@ -353,10 +282,6 @@ function samplerLengthLabel(product) {
   const match = names.match(/\bSAMPLER\b.*?\bX\s*(\d+(?:[,.]\d+)?)\s*M\b/i);
   if (!match) return "";
   return `${match[1].replace(",", ".")} m`;
-}
-
-function compareBrands(left, right) {
-  return brandRank(left).localeCompare(brandRank(right), "es-AR") || left.localeCompare(right, "es-AR");
 }
 
 function colorSwatchStyle(product) {

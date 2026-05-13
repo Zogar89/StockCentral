@@ -72,7 +72,7 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert ".filter((product) => product.image_url)" in js
     assert "Number(product.weight_g) === 1000" in js
     assert "Number(product.weight_g) === 2500" in js
-    assert "seenUrls" in js
+    assert "return imageProducts.length ? [imageProducts[0]] : [products[0]]" in js
     assert "media-presentation" in js
     assert "colorSwatchTemplate" in js
     assert "pantoneBadgeTemplate" in js

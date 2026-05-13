@@ -190,20 +190,11 @@ function productVisualsTemplate(product, products) {
 }
 
 function cardImageProducts(products) {
-  const selected = [];
-  const seenUrls = new Set();
-  const add = (candidate) => {
-    if (!candidate?.image_url || seenUrls.has(candidate.image_url)) return;
-    selected.push(candidate);
-    seenUrls.add(candidate.image_url);
-  };
-
-  products
+  const imageProducts = products
     .filter((product) => product.image_url)
-    .sort(compareImagePresentations)
-    .forEach(add);
+    .sort(compareImagePresentations);
 
-  return selected.length ? selected : [products[0]];
+  return imageProducts.length ? [imageProducts[0]] : [products[0]];
 }
 
 function compareImagePresentations(left, right) {

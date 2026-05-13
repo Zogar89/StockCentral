@@ -19,7 +19,7 @@ from stockcentral.models import (
     SourceStatus,
     StockStatus,
 )
-from stockcentral.normalize import build_display_name, build_product_id, normalize_record
+from stockcentral.normalize import COLOR_RULES, build_display_name, build_product_id, normalize_record
 from stockcentral.providers import MANUFACTURERS, SOURCES, SourceConfig
 
 GRILON3_METADATA_CACHE = Path("stockcentral/data/grilon3_metadata.json")
@@ -270,6 +270,9 @@ def _grilon3_metadata_for_fields(metadata: Mapping[str, dict[str, str]], fields)
     legacy = _strip_large_presentation_metadata(legacy, fields)
     unknown_diameter = _strip_large_presentation_metadata(unknown_diameter, fields)
     exact = _strip_large_presentation_metadata(exact, fields)
+    legacy = _strip_color_mismatched_image_metadata(legacy, fields)
+    unknown_diameter = _strip_color_mismatched_image_metadata(unknown_diameter, fields)
+    exact = _strip_color_mismatched_image_metadata(exact, fields)
     return {**legacy, **unknown_diameter, **exact}
 
 
@@ -310,6 +313,43 @@ def _strip_large_presentation_metadata(data: Mapping[str, str], fields) -> dict[
     for key in ["manufacturer_product_url", "image_url", "sku", "ean"]:
         clean.pop(key, None)
     return clean
+
+
+def _strip_color_mismatched_image_metadata(data: Mapping[str, str], fields) -> dict[str, str]:
+    if not data:
+        return {}
+    clean = dict(data)
+    expected_color = getattr(fields, "color", "")
+    detected_color = _image_metadata_color(clean)
+    if expected_color and detected_color and not _colors_match(detected_color, expected_color):
+        clean.pop("image_url", None)
+        clean.pop("image_remote_url", None)
+    return clean
+
+
+def _image_metadata_color(data: Mapping[str, str]) -> str:
+    image_text = " ".join(data.get(key, "") for key in ["image_url", "image_remote_url"])
+    filename = image_text.rsplit("/", 1)[-1]
+    slug = _slug(filename)
+    compact = slug.replace("-", "")
+    for pattern, color in sorted(COLOR_RULES, key=lambda item: len(_slug(item[0])), reverse=True):
+        pattern_slug = _slug(pattern)
+        color_slug = _slug(color)
+        if pattern_slug and pattern_slug in slug:
+            return color
+        if color_slug and color_slug in slug:
+            return color
+        if pattern_slug and pattern_slug.replace("-", "") in compact:
+            return color
+        if color_slug and color_slug.replace("-", "") in compact:
+            return color
+    return ""
+
+
+def _colors_match(detected_color: str, expected_color: str) -> bool:
+    detected = _slug(detected_color)
+    expected = _slug(expected_color)
+    return detected == expected or (detected == "piel" and expected.startswith("piel-"))
 
 
 def _slug(value: str) -> str:

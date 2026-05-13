@@ -537,6 +537,67 @@ def test_build_grilon3_enrichments_does_not_use_megafill_image_for_1kg_product(m
     assert "sku" not in enrichment or enrichment["sku"] == ""
 
 
+@pytest.mark.parametrize(
+    ("product_name", "cache_key", "wrong_image", "expected_id"),
+    [
+        (
+            "GRILON3 PLA Azul 1kg 1.75mm",
+            "pla-azul-grilon3",
+            "assets/grilon3/pla-natural-350x350.jpg",
+            "pla-azul-175-1000-grilon3",
+        ),
+        (
+            "GRILON3 ABS Rojo 1kg 1.75mm",
+            "abs-rojo-grilon3",
+            "assets/grilon3/abs-negro-350x350.jpg",
+            "abs-rojo-175-1000-grilon3",
+        ),
+        (
+            "GRILON3 PETG Gris Plata 1kg 1.75mm",
+            "petg-gris-plata-grilon3",
+            "assets/grilon3/petg-blanco-350x350.jpg",
+            "petg-gris-plata-175-1000-grilon3",
+        ),
+    ],
+)
+def test_build_grilon3_enrichments_rejects_cached_image_from_another_color(
+    monkeypatch,
+    product_name,
+    cache_key,
+    wrong_image,
+    expected_id,
+):
+    monkeypatch.setattr(
+        "stockcentral.build_data.load_grilon3_metadata",
+        lambda: {
+            cache_key: {
+                "image_url": wrong_image,
+                "pantone": "Pantone Test",
+                "sku": "SKU-TEST",
+            },
+        },
+    )
+
+    enrichments = build_grilon3_enrichments(
+        [
+            raw(
+                "filamentos3d",
+                "Filamentos3D",
+                "Zona Sur",
+                product_name,
+                4,
+                brand_hint="Grilon3",
+            )
+        ],
+        catalog={},
+    )
+
+    enrichment = enrichments[expected_id]
+    assert enrichment["pantone"] == "Pantone Test"
+    assert enrichment["sku"] == "SKU-TEST"
+    assert "image_url" not in enrichment or enrichment["image_url"] == ""
+
+
 def test_build_grilon3_enrichments_does_not_apply_roll_images_to_sampler_products(monkeypatch):
     monkeypatch.setattr(
         "stockcentral.build_data.load_grilon3_metadata",

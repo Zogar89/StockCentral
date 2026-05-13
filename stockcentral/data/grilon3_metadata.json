@@ -497,15 +497,14 @@
   },
   "pla-piel-720-grilon3": {
     "ean": "7798049654560",
-    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_natural-350x350.jpg",
-    "image_url": "assets/grilon3/pla-natural-350x350-776c6274.jpg",
+    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2022/07/pla_piel720-600x600.jpg",
+    "image_url": "assets/grilon3/pla-piel720-600x600-ef75b622.jpg",
+    "manufacturer_product_url": "https://grilon3.com.ar/producto/pla-piel-720/",
     "pantone": "Pantone 720",
     "sku": "M10IPI175CJ-1"
   },
   "pla-piel-grilon3": {
     "ean": "7798049654577",
-    "image_remote_url": "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_negro-1-350x350.jpg",
-    "image_url": "assets/grilon3/pla-negro-1-350x350-556faed6.jpg",
     "pantone": "Pantone 162",
     "sku": "M10IPI175CJ"
   },

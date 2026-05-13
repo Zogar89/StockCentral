@@ -7842,12 +7842,12 @@
       "color": "Turquesa",
       "diameter_mm": 1.75,
       "display_name": "PLA 850 Turquesa Grilon3 1 kg 1.75 mm",
-      "ean": "",
+      "ean": "7798049653440",
       "id": "pla-pla-850-turquesa-175-1000-grilon3",
-      "image_source": "",
-      "image_url": "",
+      "image_source": "manufacturer",
+      "image_url": "assets/grilon3/pla-850-turquesa2-600x600-e0873abf.jpg",
       "manufacturer_name": "Grilon3",
-      "manufacturer_product_url": "",
+      "manufacturer_product_url": "https://grilon3.com.ar/producto/filamento-3d-pla-turquesa-2/",
       "material": "PLA",
       "offers": [
         {
@@ -7885,7 +7885,7 @@
         }
       ],
       "pantone": "",
-      "sku": "",
+      "sku": "M11ITU175CJ",
       "variant": "PLA 850",
       "weight_g": 1000
     },

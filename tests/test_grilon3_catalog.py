@@ -105,6 +105,21 @@ def test_parse_grilon3_product_detail_prefers_clean_spool_gallery_image():
     assert detail["image_url"] == "https://grilon3.com.ar/wp-content/uploads/2021/10/astra_calipso_web-600x600.jpg"
 
 
+def test_parse_grilon3_product_detail_prefers_angle_spool_when_no_web_image():
+    html = """
+    <html><body>
+      <img src="/wp-content/uploads/2020/09/pla_850_turquesa-600x600.jpg" alt="PLA 850 Grilon3 caja">
+      <img src="/wp-content/uploads/2020/09/pla_850_turquesa3-600x600.jpg" alt="PLA 850 Grilon3 frontal">
+      <img src="/wp-content/uploads/2020/09/pla_850_turquesa2-600x600.jpg" alt="PLA 850 Grilon3">
+      <p>SKU: M11ITU175CJ EAN: 7798049653440</p>
+    </body></html>
+    """
+
+    detail = parse_grilon3_product_detail(html, base_url="https://grilon3.com.ar/producto/filamento-3d-pla-turquesa-2/")
+
+    assert detail["image_url"] == "https://grilon3.com.ar/wp-content/uploads/2020/09/pla_850_turquesa2-600x600.jpg"
+
+
 def test_fetch_grilon3_product_detail_downloads_product_page(monkeypatch):
     calls = []
 

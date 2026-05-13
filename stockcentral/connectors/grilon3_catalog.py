@@ -389,6 +389,10 @@ def _product_image_score(image_url: str) -> tuple[int, str]:
         score += 80
     if re.search(r"(?:^|[-_])web(?:[-_.]|$)", filename):
         score += 25
+    if re.search(r"[a-z]+2(?:-\d+x\d+)?\.", filename):
+        score += 12
+    if re.search(r"[a-z]+3(?:-\d+x\d+)?\.", filename):
+        score -= 4
     if re.search(r"\d+[-_]web", filename):
         score -= 8
     if re.search(r"\d+(?:[-_]\d+x\d+)?\.", filename):

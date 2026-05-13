@@ -56,6 +56,10 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "cardImageProducts" in js
     assert "productVisualsTemplate" in js
     assert "productVisualTemplate" in js
+    assert "setupImagePreview" in js
+    assert "data-preview-src" in js
+    assert "positionImagePreview" in js
+    assert "image-preview" in js
     assert "compareImagePresentations" in js
     assert "imagePresentationRank" in js
     assert ".filter((product) => product.image_url)" in js
@@ -145,6 +149,9 @@ def test_styles_are_compact_and_responsive():
     assert ".color-swatch" in css
     assert ".swatch-pantone" in css
     assert ".product-media" in css
+    assert ".image-preview" in css
+    assert ".image-preview.visible" in css
+    assert "cursor: zoom-in" in css
     assert "scroll-behavior: smooth" in css
     assert ".footer-provider:target" in css
     assert ".summary-presentation" in css

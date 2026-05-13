@@ -62,6 +62,7 @@ async function init() {
   state.sources = payload.sources || [];
   document.getElementById("last-update").textContent = `Última actualización: ${formatDate(payload.generated_at)}`;
   setupFilters();
+  setupImagePreview();
   render();
 }
 
@@ -186,7 +187,7 @@ function productVisualTemplate(product, imageProduct, showPresentation = false) 
   const presentation = showPresentation ? `<small class="media-presentation">${escapeHtml(formatPresentation(imageProduct))}</small>` : "";
   if (imageProduct.image_url) {
     return `
-      <div class="product-image product-media" title="${escapeAttribute(visualTitle)}">
+      <div class="product-image product-media" data-preview-src="${escapeAttribute(imageProduct.image_url)}" data-preview-title="${escapeAttribute(visualTitle)}" aria-label="${escapeAttribute(visualTitle)}" tabindex="0">
         <img src="${escapeAttribute(imageProduct.image_url)}" alt="${escapeAttribute(productBaseName(imageProduct))}">
         ${presentation}
         ${pantone}
@@ -194,6 +195,83 @@ function productVisualTemplate(product, imageProduct, showPresentation = false) 
     `;
   }
   return colorSwatchTemplate(product);
+}
+
+function setupImagePreview() {
+  const preview = document.createElement("div");
+  preview.className = "image-preview";
+  preview.innerHTML = `<img alt=""><span></span>`;
+  document.body.append(preview);
+
+  const previewImage = preview.querySelector("img");
+  const previewLabel = preview.querySelector("span");
+  let activeMedia = null;
+
+  document.addEventListener("pointerover", (event) => {
+    const media = event.target.closest?.(".product-media[data-preview-src]");
+    if (!media) return;
+    activeMedia = media;
+    showImagePreview(preview, previewImage, previewLabel, media);
+    positionImagePreview(preview, event.clientX, event.clientY);
+  });
+
+  document.addEventListener("pointermove", (event) => {
+    if (!activeMedia) return;
+    positionImagePreview(preview, event.clientX, event.clientY);
+  });
+
+  document.addEventListener("pointerout", (event) => {
+    if (!activeMedia || activeMedia.contains(event.relatedTarget)) return;
+    hideImagePreview(preview, previewImage);
+    activeMedia = null;
+  });
+
+  document.addEventListener("focusin", (event) => {
+    const media = event.target.closest?.(".product-media[data-preview-src]");
+    if (!media) return;
+    activeMedia = media;
+    showImagePreview(preview, previewImage, previewLabel, media);
+    const box = media.getBoundingClientRect();
+    positionImagePreview(preview, box.right, box.top);
+  });
+
+  document.addEventListener("focusout", (event) => {
+    if (!activeMedia || activeMedia.contains(event.relatedTarget)) return;
+    hideImagePreview(preview, previewImage);
+    activeMedia = null;
+  });
+}
+
+function showImagePreview(preview, previewImage, previewLabel, media) {
+  previewImage.src = media.dataset.previewSrc;
+  previewImage.alt = media.dataset.previewTitle || "";
+  previewLabel.textContent = media.dataset.previewTitle || "";
+  preview.classList.add("visible");
+}
+
+function hideImagePreview(preview, previewImage) {
+  preview.classList.remove("visible");
+  previewImage.removeAttribute("src");
+}
+
+function positionImagePreview(preview, clientX, clientY) {
+  const offset = 16;
+  const margin = 12;
+  const box = preview.getBoundingClientRect();
+  const width = box.width || 320;
+  const height = box.height || 360;
+  let left = clientX + offset;
+  let top = clientY + offset;
+
+  if (left + width > window.innerWidth - margin) {
+    left = clientX - width - offset;
+  }
+  if (top + height > window.innerHeight - margin) {
+    top = window.innerHeight - height - margin;
+  }
+
+  preview.style.left = `${Math.max(margin, left)}px`;
+  preview.style.top = `${Math.max(margin, top)}px`;
 }
 
 function colorSwatchTemplate(product) {

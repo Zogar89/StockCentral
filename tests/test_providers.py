@@ -21,7 +21,7 @@ def test_provider_contacts_use_public_official_data():
     assert SOURCES["filamentos3d"].contact_email == "info@filamentos3d.com.ar"
     assert SOURCES["filamentos3d"].address == "Gonzalez Balcarce 2121 PB, Florencio Varela, Buenos Aires"
 
-    assert SOURCES["grupo_senz"].contact_whatsapp_url == ""
+    assert SOURCES["grupo_senz"].contact_whatsapp_url == "https://wa.me/5491136059099"
     assert SOURCES["grupo_senz"].contact_phone == "+54 11 3605-9099"
     assert SOURCES["grupo_senz"].contact_email == "info@gruposenz.com.ar"
     assert SOURCES["grupo_senz"].address == "Polo Comercial K41, Moreno, Buenos Aires"

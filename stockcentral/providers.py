@@ -47,6 +47,7 @@ SOURCES: dict[str, SourceConfig] = {
         connector="google_sheet",
         sheet_id="14nblAeXZfx_TEeHj4xnK90hSmUp3hk6KSO4nUTrb9zM",
         gid="614179668",
+        contact_whatsapp_url="https://wa.me/5491136059099",
         contact_phone="+54 11 3605-9099",
         contact_email="info@gruposenz.com.ar",
         address="Polo Comercial K41, Moreno, Buenos Aires",

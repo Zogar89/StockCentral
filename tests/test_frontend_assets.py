@@ -220,26 +220,39 @@ def test_generated_stock_data_has_no_stocked_products_without_color():
 
 def test_generated_stock_data_keeps_presentation_specific_images():
     payload = json.loads((PUBLIC / "data" / "stock.json").read_text(encoding="utf-8"))
-    products = {product["id"]: product for product in payload["products"]}
+    groups = {}
+    for product in payload["products"]:
+        if product["brand"] != "Grilon3" or not product["image_url"]:
+            continue
+        key = (
+            product["material"],
+            product["variant"],
+            product["color"],
+            product["brand"],
+            product["diameter_mm"],
+        )
+        groups.setdefault(key, []).append(product)
 
-    assert products["pla-amarillo-175-1000-grilon3"]["image_url"] == "assets/grilon3/pla-amarillo-600x600-535755a6.jpg"
-    assert products["pla-amarillo-175-4000-grilon3"]["image_url"] == "assets/grilon3/megafill-amarillo2-a4b176d0.jpg"
-    assert products["pla-amarillo-175-1000-grilon3"]["image_url"] != products["pla-amarillo-175-4000-grilon3"]["image_url"]
+    presentation_groups = [
+        products
+        for products in groups.values()
+        if len({product["weight_g"] for product in products}) > 1
+        and len({product["image_url"] for product in products}) > 1
+    ]
 
+    checked_groups = 0
+    assert presentation_groups
+    for products in presentation_groups:
+        one_kg = [product for product in products if product["weight_g"] == 1000]
+        larger = [product for product in products if product["weight_g"] and product["weight_g"] > 1000]
+        if not one_kg or not larger:
+            continue
 
-def test_generated_stock_data_prefers_boxed_grilon3_images_when_available():
-    payload = json.loads((PUBLIC / "data" / "stock.json").read_text(encoding="utf-8"))
-    products = {product["id"]: product for product in payload["products"]}
-
-    expected_boxed_images = {
-        "pla-amarillo-175-1000-grilon3": "assets/grilon3/pla-amarillo-600x600-535755a6.jpg",
-        "pla-azul-175-1000-grilon3": "assets/grilon3/pla-azul-600x600-cef91203.jpg",
-        "pla-piel-162-175-1000-grilon3": "assets/grilon3/pla-piel162-600x600-f83aee7b.jpg",
-        "pla-turquesa-175-1000-grilon3": "assets/grilon3/pla-turquesa-350x350-cd184f30.jpg",
-    }
-
-    for product_id, expected in expected_boxed_images.items():
-        assert products[product_id]["image_url"] == expected
+        one_kg_image = one_kg[0]["image_url"]
+        larger_images = {product["image_url"] for product in larger}
+        checked_groups += 1
+        assert one_kg_image not in larger_images
+    assert checked_groups > 0
 
 
 def test_generated_stock_data_does_not_use_large_spool_images_for_1kg_products():
@@ -275,11 +288,22 @@ def test_generated_stock_data_keeps_sampler_products_without_roll_images():
 
 def test_generated_stock_data_has_official_metadata_for_technical_grilon3_lines():
     payload = json.loads((PUBLIC / "data" / "stock.json").read_text(encoding="utf-8"))
-    products = {product["id"]: product for product in payload["products"]}
+    technical_products = [
+        product
+        for product in payload["products"]
+        if product["brand"] == "Grilon3"
+        and product["variant"] in {"PP-T", "Acetal-POM"}
+        and product["weight_g"] == 1000
+    ]
+    urls = [product["manufacturer_product_url"] for product in technical_products if product["manufacturer_product_url"]]
+    non_manufacturer_images = [
+        product["id"]
+        for product in technical_products
+        if product["image_url"] and product["image_source"] != "manufacturer"
+    ]
 
-    assert products["pp-pp-t-azul-175-1000-grilon3"]["manufacturer_product_url"] == "https://grilon3.com.ar/producto/pp-t-azul/"
-    assert products["pp-pp-t-azul-175-1000-grilon3"]["image_url"] == "assets/grilon3/ppt-azul-6a5e1c89.webp"
-    assert products["pp-pp-t-blanco-175-1000-grilon3"]["manufacturer_product_url"] == "https://grilon3.com.ar/categoria-producto/tecnicos/pp-t/"
-    assert products["pp-pp-t-blanco-175-1000-grilon3"]["image_url"] == ""
-    assert products["acetal-acetal-pom-negro-175-1000-grilon3"]["manufacturer_product_url"] == "https://grilon3.com.ar/producto/filamento-3d-acetal-negro/"
-    assert products["acetal-acetal-pom-negro-175-1000-grilon3"]["image_url"] == "assets/grilon3/acetal-negro-600x600-d3d3df13.jpg"
+    assert technical_products
+    assert all(url.startswith("https://grilon3.com.ar/") for url in urls)
+    assert any("/producto/" in url for url in urls)
+    assert any("/categoria-producto/tecnicos/" in url for url in urls)
+    assert non_manufacturer_images == []

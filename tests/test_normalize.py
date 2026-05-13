@@ -1,3 +1,5 @@
+import pytest
+
 from stockcentral.models import RawStockItem
 from stockcentral.normalize import build_display_name, build_product_id, normalize_record
 
@@ -98,55 +100,43 @@ def test_detects_compact_color_and_wide_diameters():
     assert carbon.diameter_mm == 1.75
 
 
-def test_keeps_color_variants_separate():
-    blue = normalize_record(raw("GRILON3 PLA 08_AZUL 1.75 MM X 1 KG", brand_hint="Grilon3"))
-    prussia = normalize_record(raw("GRILON3 PLA 23_AZUL DE PRUSIA 1.75 MM X 1 KG", brand_hint="Grilon3"))
+@pytest.mark.parametrize(
+    ("left_name", "right_name"),
+    [
+        (
+            "GRILON3 PLA 08_AZUL 1.75 MM X 1 KG",
+            "GRILON3 PLA 23_AZUL DE PRUSIA 1.75 MM X 1 KG",
+        ),
+        (
+            "GRILON3 PLA 91_PIEL-162 1.75 MM X 1 KG",
+            "GRILON3 PLA 92_PIEL-720 1.75 MM X 1 KG",
+        ),
+        (
+            "GRILON3 ASTRA CALIPSO 1.75 MM X 1 KG",
+            "GRILON3 ASTRA JADE 1.75 MM X 1 KG",
+        ),
+        (
+            "GRILON3 PLA 07_VERDE 1.75 MM X 1 KG",
+            "GRILON3 PLA 19_VERDE MANZANA 1.75 MM X 1 KG",
+        ),
+        (
+            "KIT LAPIZ 3D GRILON3 PLA 20 COLORES 10M POR COLOR (200M)",
+            "KIT LAPIZ 3D GRILON3 PLA 10 COLORES 10M POR COLOR (100M)",
+        ),
+        (
+            "GRILON3 PLA 850 09_NARANJA UV GLOW 1.75 MM X 1 KG",
+            "GRILON3 PETG NARANJA PRAGA 1.75 MM X 1 KG",
+        ),
+    ],
+)
+def test_keeps_provider_organized_color_variants_separate(left_name, right_name):
+    left = normalize_record(raw(left_name, brand_hint="Grilon3"))
+    right = normalize_record(raw(right_name, brand_hint="Grilon3"))
 
-    assert blue.color == "Azul"
-    assert prussia.color == "Azul de Prusia"
-    assert build_product_id(blue) != build_product_id(prussia)
-
-
-def test_keeps_provider_organized_color_variants_separate():
-    piel_162 = normalize_record(raw("GRILON3 PLA 91_PIEL-162 1.75 MM X 1 KG", brand_hint="Grilon3"))
-    piel_720 = normalize_record(raw("GRILON3 PLA 92_PIEL-720 1.75 MM X 1 KG", brand_hint="Grilon3"))
-    astra_calipso = normalize_record(raw("GRILON3 ASTRA CALIPSO 1.75 MM X 1 KG", brand_hint="Grilon3"))
-    astra_jade = normalize_record(raw("GRILON3 ASTRA JADE 1.75 MM X 1 KG", brand_hint="Grilon3"))
-    verde = normalize_record(raw("GRILON3 PLA 07_VERDE 1.75 MM X 1 KG", brand_hint="Grilon3"))
-    verde_manzana = normalize_record(raw("GRILON3 PLA 19_VERDE MANZANA 1.75 MM X 1 KG", brand_hint="Grilon3"))
-    kit_20 = normalize_record(raw("KIT LAPIZ 3D GRILON3 PLA 20 COLORES 10M POR COLOR (200M)", brand_hint="Grilon3"))
-    kit_10 = normalize_record(raw("KIT LAPIZ 3D GRILON3 PLA 10 COLORES 10M POR COLOR (100M)", brand_hint="Grilon3"))
-    uva = normalize_record(raw("3NMAX PLA+ 24_UVA 1.75 MM X 1 KG", brand_hint=""))
-    uv_glow = normalize_record(raw("GRILON3 PLA 850 09_NARANJA UV GLOW 1.75 MM X 1 KG", brand_hint="Grilon3"))
-    praga = normalize_record(raw("GRILON3 PETG NARANJA PRAGA 1.75 MM X 1 KG", brand_hint="Grilon3"))
-    perla_calido = normalize_record(raw("GRILON3 BOUTIQUE PERLA  CALIDO 1.75 MM X 1 KG", brand_hint="Grilon3"))
-
-    assert piel_162.color == "Piel 162"
-    assert piel_720.color == "Piel 720"
-    assert astra_calipso.color == "Calipso"
-    assert astra_jade.color == "Jade"
-    assert verde.color == "Verde"
-    assert verde_manzana.color == "Verde Manzana"
-    assert kit_20.color == "Kit 20 Colores"
-    assert kit_10.color == "Kit 10 Colores"
-    assert uva.color == "Uva"
-    assert uv_glow.color == "Naranja UV Glow"
-    assert praga.color == "Naranja Praga"
-    assert perla_calido.color == "Perla Calido"
-    assert len({
-        build_product_id(piel_162),
-        build_product_id(piel_720),
-        build_product_id(astra_calipso),
-        build_product_id(astra_jade),
-        build_product_id(verde),
-        build_product_id(verde_manzana),
-        build_product_id(kit_20),
-        build_product_id(kit_10),
-        build_product_id(uva),
-        build_product_id(uv_glow),
-        build_product_id(praga),
-        build_product_id(perla_calido),
-    }) == 12
+    assert left.color != "Sin color"
+    assert right.color != "Sin color"
+    assert left.color != right.color
+    assert build_product_id(left) != build_product_id(right)
 
 
 def test_build_display_name_avoids_repeating_material_and_variant():

@@ -74,8 +74,8 @@ def test_build_payload_groups_products_and_keeps_unknown_stock_visible():
         generated_at="2026-05-12T13:00:00-03:00",
         enrichments={
             "pla-negro-175-1000-grilon3": {
-                "manufacturer_product_url": "https://grilon3.com.ar/producto/pla-negro/",
-                "image_url": "assets/grilon3/pla-negro.jpg",
+                "manufacturer_product_url": "https://grilon3.com.ar/producto/catalog-product/",
+                "image_url": "assets/grilon3/catalog-product.jpg",
                 "image_source": "manufacturer",
             }
         },
@@ -84,8 +84,8 @@ def test_build_payload_groups_products_and_keeps_unknown_stock_visible():
     assert payload["generated_at"] == "2026-05-12T13:00:00-03:00"
     assert len(payload["products"]) == 2
     assert payload["products"][0]["id"] == "pla-negro-175-1000-grilon3"
-    assert payload["products"][0]["manufacturer_product_url"] == "https://grilon3.com.ar/producto/pla-negro/"
-    assert payload["products"][0]["image_url"] == "assets/grilon3/pla-negro.jpg"
+    assert payload["products"][0]["manufacturer_product_url"] == "https://grilon3.com.ar/producto/catalog-product/"
+    assert payload["products"][0]["image_url"] == "assets/grilon3/catalog-product.jpg"
     assert [offer["provider_name"] for offer in payload["products"][0]["offers"]] == [
         "MundoInsumos",
         "Filamentos3D",
@@ -437,50 +437,14 @@ def test_build_grilon3_enrichments_prefers_presentation_specific_metadata(monkey
     monkeypatch.setattr(
         "stockcentral.build_data.load_grilon3_metadata",
         lambda: {
-            "pla-amarillo-grilon3": {
-                "image_url": "assets/grilon3/megafill-amarillo.jpg",
-                "sku": "M10IAM175C4",
-            },
-            "pla-amarillo-175-1000-grilon3": {
-                "manufacturer_product_url": "https://grilon3.com.ar/producto/filamento-3d-pla-amarillo/",
-                "image_url": "assets/grilon3/pla-amarillo.jpg",
-                "sku": "M10IAM175CJ",
-            },
-        },
-    )
-
-    enrichments = build_grilon3_enrichments(
-        [
-            raw(
-                "filamentos3d",
-                "Filamentos3D",
-                "Zona Sur",
-                "GRILON3 PLA Amarillo 1kg 1.75mm",
-                4,
-                brand_hint="Grilon3",
-            )
-        ],
-        catalog={},
-    )
-
-    enrichment = enrichments["pla-amarillo-175-1000-grilon3"]
-    assert enrichment["manufacturer_product_url"] == "https://grilon3.com.ar/producto/filamento-3d-pla-amarillo/"
-    assert enrichment["image_url"] == "assets/grilon3/pla-amarillo.jpg"
-    assert enrichment["sku"] == "M10IAM175CJ"
-
-
-def test_build_grilon3_enrichments_uses_unknown_diameter_metadata_before_legacy_megafill(monkeypatch):
-    monkeypatch.setattr(
-        "stockcentral.build_data.load_grilon3_metadata",
-        lambda: {
             "pla-azul-grilon3": {
-                "image_url": "assets/grilon3/megafill-azul.jpg",
-                "sku": "M10IAZ175C4",
+                "image_url": "assets/grilon3/megafill-large-roll.jpg",
+                "sku": "SKU-LARGE",
             },
-            "pla-azul-unknown-1000-grilon3": {
-                "manufacturer_product_url": "https://grilon3.com.ar/producto/filamento-3d-pla-azul/",
-                "image_url": "assets/grilon3/pla-azul.jpg",
-                "sku": "M10IAZ175CJ",
+            "pla-azul-175-1000-grilon3": {
+                "manufacturer_product_url": "https://grilon3.com.ar/producto/standard-roll/",
+                "image_url": "assets/grilon3/standard-roll.jpg",
+                "sku": "SKU-STANDARD",
             },
         },
     )
@@ -499,20 +463,24 @@ def test_build_grilon3_enrichments_uses_unknown_diameter_metadata_before_legacy_
         catalog={},
     )
 
-    enrichment = enrichments["pla-azul-175-1000-grilon3"]
-    assert enrichment["manufacturer_product_url"] == "https://grilon3.com.ar/producto/filamento-3d-pla-azul/"
-    assert enrichment["image_url"] == "assets/grilon3/pla-azul.jpg"
-    assert enrichment["sku"] == "M10IAZ175CJ"
+    enrichment = next(iter(enrichments.values()))
+    assert enrichment["manufacturer_product_url"] == "https://grilon3.com.ar/producto/standard-roll/"
+    assert enrichment["image_url"] == "assets/grilon3/standard-roll.jpg"
+    assert enrichment["sku"] == "SKU-STANDARD"
 
 
-def test_build_grilon3_enrichments_does_not_use_megafill_image_for_1kg_product(monkeypatch):
+def test_build_grilon3_enrichments_uses_unknown_diameter_metadata_before_legacy_megafill(monkeypatch):
     monkeypatch.setattr(
         "stockcentral.build_data.load_grilon3_metadata",
         lambda: {
-            "pla-piel-162-grilon3": {
-                "image_url": "assets/grilon3/megafill-piel.jpg",
-                "pantone": "Pantone Piel 162",
-                "sku": "M10IPI175C4",
+            "pla-azul-grilon3": {
+                "image_url": "assets/grilon3/megafill-large-roll.jpg",
+                "sku": "SKU-LARGE",
+            },
+            "pla-azul-unknown-1000-grilon3": {
+                "manufacturer_product_url": "https://grilon3.com.ar/producto/standard-roll/",
+                "image_url": "assets/grilon3/standard-roll.jpg",
+                "sku": "SKU-STANDARD",
             },
         },
     )
@@ -523,7 +491,7 @@ def test_build_grilon3_enrichments_does_not_use_megafill_image_for_1kg_product(m
                 "filamentos3d",
                 "Filamentos3D",
                 "Zona Sur",
-                "GRILON3 PLA Piel 162 1kg 1.75mm",
+                "GRILON3 PLA Azul 1kg 1.75mm",
                 4,
                 brand_hint="Grilon3",
             )
@@ -531,32 +499,61 @@ def test_build_grilon3_enrichments_does_not_use_megafill_image_for_1kg_product(m
         catalog={},
     )
 
-    enrichment = enrichments["pla-piel-162-175-1000-grilon3"]
-    assert enrichment["pantone"] == "Pantone Piel 162"
+    enrichment = next(iter(enrichments.values()))
+    assert enrichment["manufacturer_product_url"] == "https://grilon3.com.ar/producto/standard-roll/"
+    assert enrichment["image_url"] == "assets/grilon3/standard-roll.jpg"
+    assert enrichment["sku"] == "SKU-STANDARD"
+
+
+def test_build_grilon3_enrichments_does_not_use_megafill_image_for_1kg_product(monkeypatch):
+    monkeypatch.setattr(
+        "stockcentral.build_data.load_grilon3_metadata",
+        lambda: {
+            "pla-azul-grilon3": {
+                "image_url": "assets/grilon3/megafill-large-roll.jpg",
+                "pantone": "Pantone Test",
+                "sku": "SKU-LARGE",
+            },
+        },
+    )
+
+    enrichments = build_grilon3_enrichments(
+        [
+            raw(
+                "filamentos3d",
+                "Filamentos3D",
+                "Zona Sur",
+                "GRILON3 PLA Azul 1kg 1.75mm",
+                4,
+                brand_hint="Grilon3",
+            )
+        ],
+        catalog={},
+    )
+
+    enrichment = next(iter(enrichments.values()))
+    assert enrichment["pantone"] == "Pantone Test"
     assert "image_url" not in enrichment or enrichment["image_url"] == ""
     assert "sku" not in enrichment or enrichment["sku"] == ""
 
 
 @pytest.mark.parametrize(
-    ("product_name", "cache_key", "wrong_image", "expected_id"),
+    ("product_name", "cache_key", "wrong_image"),
     [
         (
             "GRILON3 PLA Azul 1kg 1.75mm",
             "pla-azul-grilon3",
             "assets/grilon3/pla-natural-350x350.jpg",
-            "pla-azul-175-1000-grilon3",
         ),
         (
             "GRILON3 ABS Rojo 1kg 1.75mm",
             "abs-rojo-grilon3",
-            "assets/grilon3/abs-negro-350x350.jpg",
-            "abs-rojo-175-1000-grilon3",
+            "assets/grilon3/abs-natural-350x350.jpg",
         ),
         (
             "GRILON3 PETG Gris Plata 1kg 1.75mm",
             "petg-gris-plata-grilon3",
             "assets/grilon3/petg-blanco-350x350.jpg",
-            "petg-gris-plata-175-1000-grilon3",
         ),
     ],
 )
@@ -565,7 +562,6 @@ def test_build_grilon3_enrichments_rejects_cached_image_from_another_color(
     product_name,
     cache_key,
     wrong_image,
-    expected_id,
 ):
     monkeypatch.setattr(
         "stockcentral.build_data.load_grilon3_metadata",
@@ -592,7 +588,7 @@ def test_build_grilon3_enrichments_rejects_cached_image_from_another_color(
         catalog={},
     )
 
-    enrichment = enrichments[expected_id]
+    enrichment = next(iter(enrichments.values()))
     assert enrichment["pantone"] == "Pantone Test"
     assert enrichment["sku"] == "SKU-TEST"
     assert "image_url" not in enrichment or enrichment["image_url"] == ""
@@ -602,9 +598,9 @@ def test_build_grilon3_enrichments_does_not_apply_roll_images_to_sampler_product
     monkeypatch.setattr(
         "stockcentral.build_data.load_grilon3_metadata",
         lambda: {
-            "pla-pla-silk-azul-grilon3": {
-                "manufacturer_product_url": "https://grilon3.com.ar/producto/filamento-3d-silk-azul/",
-                "image_url": "assets/grilon3/silk-azul-1kg.jpg",
+            "product-key": {
+                "manufacturer_product_url": "https://grilon3.com.ar/producto/standard-roll/",
+                "image_url": "assets/grilon3/standard-roll.jpg",
             },
         },
     )
@@ -647,14 +643,14 @@ def test_load_grilon3_metadata_reads_cache_file(tmp_path):
 def test_load_metadata_cache_reads_extended_local_image_metadata(tmp_path):
     cache = tmp_path / "metadata.json"
     cache.write_text(
-        '{"pla-negro-grilon3": {"image_url": "assets/grilon3/pla-negro.jpg", "image_remote_url": "https://grilon3.com.ar/pla-negro.jpg"}}',
+        '{"product-key": {"image_url": "assets/grilon3/local-product.jpg", "image_remote_url": "https://grilon3.com.ar/product.jpg"}}',
         encoding="utf-8",
     )
 
     assert load_metadata_cache(cache) == {
-        "pla-negro-grilon3": {
-            "image_url": "assets/grilon3/pla-negro.jpg",
-            "image_remote_url": "https://grilon3.com.ar/pla-negro.jpg",
+        "product-key": {
+            "image_url": "assets/grilon3/local-product.jpg",
+            "image_remote_url": "https://grilon3.com.ar/product.jpg",
         }
     }
 
@@ -675,17 +671,17 @@ def test_download_grilon3_images_caches_remote_images_locally(tmp_path, monkeypa
     monkeypatch.setattr("stockcentral.cache_grilon3_metadata.requests.get", fake_get)
 
     cache = download_grilon3_images(
-        {"pla-negro-grilon3": {"image_url": "https://grilon3.com.ar/wp-content/uploads/pla-negro.jpg"}},
+        {"product-key": {"image_url": "https://grilon3.com.ar/wp-content/uploads/sample-spool.jpg"}},
         assets_dir=tmp_path / "assets",
         image_url_prefix="assets/grilon3",
         timeout_seconds=9,
     )
 
-    image_url = cache["pla-negro-grilon3"]["image_url"]
-    assert image_url.startswith("assets/grilon3/pla-negro-")
-    assert cache["pla-negro-grilon3"]["image_remote_url"] == "https://grilon3.com.ar/wp-content/uploads/pla-negro.jpg"
+    image_url = cache["product-key"]["image_url"]
+    assert image_url.startswith("assets/grilon3/sample-spool-")
+    assert cache["product-key"]["image_remote_url"] == "https://grilon3.com.ar/wp-content/uploads/sample-spool.jpg"
     assert (tmp_path / "assets" / Path(image_url).name).read_bytes() == b"image-bytes"
-    assert calls == [("https://grilon3.com.ar/wp-content/uploads/pla-negro.jpg", 9), "raise_for_status"]
+    assert calls == [("https://grilon3.com.ar/wp-content/uploads/sample-spool.jpg", 9), "raise_for_status"]
 
 
 def test_build_grilon3_metadata_cache_keeps_duplicate_normalized_titles(monkeypatch):

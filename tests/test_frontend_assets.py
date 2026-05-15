@@ -80,6 +80,9 @@ def test_catalog_svelte_fetches_json_and_supports_required_filters():
     assert 'loading="lazy"' in js
     assert 'decoding="async"' in js
     assert "image-preview" in js
+    assert "openImagePreview" in js
+    assert "image-preview-modal" in js
+    assert "media-pantone" in js
     assert "compareImagePresentations" in js
     assert "imagePresentationRank" in js
     assert ".filter((item) => item.image_url)" in js
@@ -282,6 +285,9 @@ def test_styles_are_compact_and_responsive():
     assert ".official-product-link" in css
     assert ".image-preview" in css
     assert ".image-preview.visible" in css
+    assert ".image-preview-backdrop" in css
+    assert ".image-preview-modal" in css
+    assert ".media-pantone" in css
     assert "cursor: zoom-in" in css
     assert "scroll-behavior: smooth" in css
     assert ".footer-provider:target" in css

@@ -491,6 +491,8 @@ input {
 .product-media {
   position: relative;
   overflow: hidden;
+  padding: 0;
+  border: 0;
   cursor: zoom-in;
 }
 
@@ -541,6 +543,66 @@ input {
   line-height: 1.25;
 }
 
+.image-preview-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(20, 22, 26, .42);
+  backdrop-filter: blur(8px);
+}
+
+.image-preview-modal {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  width: min(360px, 100%);
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--line) 80%, black);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .97);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .24);
+}
+
+.image-preview-modal img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border-radius: 10px;
+  background: white;
+}
+
+.image-preview-modal strong {
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.image-preview-modal span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.image-preview-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid color-mix(in srgb, var(--line) 84%, black);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .88);
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
 .image-placeholder {
   display: grid;
   place-items: center;
@@ -584,11 +646,8 @@ input {
   overflow-wrap: anywhere;
 }
 
-.product-media .swatch-pantone {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  left: 4px;
+.media-pantone {
+  width: 100%;
 }
 
 .media-presentation {

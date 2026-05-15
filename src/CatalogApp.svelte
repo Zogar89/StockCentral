@@ -217,12 +217,35 @@
       title: [product.color || "Sin color", product.pantone, formatPresentation(product)].filter(Boolean).join(" · "),
       x: event.clientX + 16,
       y: event.clientY + 16,
+      modal: false,
     };
   }
 
   function movePreview(event) {
-    if (!preview) return;
+    if (!preview || preview.modal) return;
     preview = { ...preview, x: event.clientX + 16, y: event.clientY + 16 };
+  }
+
+  function hideHoverPreview() {
+    if (!preview?.modal) preview = null;
+  }
+
+  function openImagePreview(product) {
+    if (!product.image_url) return;
+    preview = {
+      src: assetPath(product.image_url),
+      title: productBaseName(product),
+      meta: [product.color || "Sin color", product.pantone, formatPresentation(product)].filter(Boolean).join(" · "),
+      modal: true,
+    };
+  }
+
+  function closePreviewBackdrop(event) {
+    if (event.target === event.currentTarget) preview = null;
+  }
+
+  function handlePreviewKeydown(event) {
+    if (event.key === "Escape" && preview?.modal) preview = null;
   }
 
   function providerTitle(offer) {
@@ -286,15 +309,16 @@
             <article class="product-row">
               <div class={`product-visuals${card.products.filter((item) => item.image_url).length > 1 ? " multi-image" : ""}`}>
                 {#if visual.image_url}
-                  <div class="product-image product-media" role="img" data-preview-src={assetPath(visual.image_url)} data-preview-title={[visual.color || "Sin color", visual.pantone, formatPresentation(visual)].filter(Boolean).join(" · ")} aria-label={[visual.color || "Sin color", visual.pantone].filter(Boolean).join(" · ")} on:pointerenter={(event) => showPreview(event, visual)} on:pointermove={movePreview} on:pointerleave={() => preview = null}>
+                  <button class="product-image product-media" type="button" data-preview-src={assetPath(visual.image_url)} data-preview-title={[visual.color || "Sin color", visual.pantone, formatPresentation(visual)].filter(Boolean).join(" · ")} aria-label={`Ampliar imagen de ${productBaseName(visual)}`} on:click={() => openImagePreview(visual)} on:pointerenter={(event) => showPreview(event, visual)} on:pointermove={movePreview} on:pointerleave={hideHoverPreview}>
                     <img src={assetPath(visual.thumbnail_url || visual.image_url)} alt={productBaseName(visual)} loading="lazy" decoding="async">
-                    {#if visual.pantone}<small class="swatch-pantone">{pantoneSwatchLabel(visual.pantone)}</small>{/if}
-                  </div>
+                  </button>
                 {:else}
                   <div class="product-image color-swatch" style={colorSwatchStyle(product)} role="img" aria-label={[product.color || "Sin color", product.pantone].filter(Boolean).join(" · ")} title={[product.color || "Sin color", product.pantone].filter(Boolean).join(" · ")}>
                     <span>{colorSwatchLabel(product.color)}</span>
-                    {#if product.pantone}<small class="swatch-pantone">{pantoneSwatchLabel(product.pantone)}</small>{/if}
                   </div>
+                {/if}
+                {#if visual.pantone || product.pantone}
+                  <small class="swatch-pantone media-pantone">{pantoneSwatchLabel(visual.pantone || product.pantone)}</small>
                 {/if}
               </div>
               <div>
@@ -339,7 +363,18 @@
 
 <SiteFooter {sources} {contactContext} />
 
-{#if preview}
+<svelte:window on:keydown={handlePreviewKeydown} />
+
+{#if preview && preview.modal}
+  <div class="image-preview-backdrop" role="presentation" on:click={closePreviewBackdrop}>
+    <div class="image-preview-modal" role="dialog" aria-modal="true" aria-label={preview.title}>
+      <button class="image-preview-close" type="button" aria-label="Cerrar imagen ampliada" on:click={() => preview = null}>×</button>
+      <img src={preview.src} alt={preview.title}>
+      <strong>{preview.title}</strong>
+      <span>{preview.meta}</span>
+    </div>
+  </div>
+{:else if preview}
   <div class="image-preview visible" style={`left:${preview.x}px; top:${preview.y}px;`}>
     <img src={preview.src} alt={preview.title}>
     <span>{preview.title}</span>

@@ -18,8 +18,20 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
       - name: Install dependencies
         run: python -m pip install -e ".[dev]"
 
+      - name: Install frontend dependencies
+        run: npm ci
+
       - name: Run tests
         run: python -m pytest -v
+
+      - name: Build frontend
+        run: npm run build

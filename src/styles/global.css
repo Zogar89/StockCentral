@@ -5,6 +5,7 @@
   --surface-soft: #eeeeef;
   --line: #d7d7dc;
   --text: #1d1d1f;
+  --ink: var(--text);
   --muted: #6e6e73;
   --accent: #006edb;
   --ok: #0a7a3f;
@@ -1199,15 +1200,19 @@ input {
   .topbar {
     align-items: start;
     flex-direction: column;
+    width: 100%;
   }
 
   .view-switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 100%;
     width: 100%;
   }
 
   .view-switch .nav-link {
-    flex: 1;
     min-width: 0;
+    width: 100%;
   }
 
   .filters {
@@ -1406,6 +1411,17 @@ input {
 
   h1 {
     font-size: 27px;
+  }
+
+  .result-meta,
+  .status-strip {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .category-sort {
+    flex-wrap: wrap;
+    width: 100%;
   }
 
   .filters {

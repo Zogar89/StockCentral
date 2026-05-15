@@ -10,6 +10,7 @@ Decisiones principales:
 
 - Sitio estatico publico.
 - Python para ingesta y normalizacion.
+- Vite + Svelte para el frontend.
 - GitHub Actions para actualizar stock 2 a 4 veces por dia en horario de oficina.
 - GitHub Pages para publicar.
 - Proveedores iniciales: Filamentos3D, Grupo Senz y MundoInsumos.
@@ -19,15 +20,16 @@ Decisiones principales:
 
 ```bash
 python -m pip install -e ".[dev]"
+npm ci
 python -m pytest -v --basetemp C:\tmp\pytest-centraldefilamentos
 python -m centraldefilamentos.build_data --output public/data/stock.json
 python -m centraldefilamentos.generate_thumbnails --stock-json public/data/stock.json
-python -m http.server 8000 -d public
+npm run dev
 ```
 
-Abrir `http://localhost:8000`.
-La vista compacta de resumen queda en `http://localhost:8000/resumen.html`.
-La vista interna no enlazada para vendedores queda en `http://localhost:8000/estadisticas.html`.
+Abrir la URL local que informa Vite.
+La vista compacta de resumen queda en `/resumen.html`.
+La vista interna no enlazada para vendedores queda en `/estadisticas.html`.
 
 ### Comandos
 
@@ -35,6 +37,7 @@ Instalar dependencias de desarrollo:
 
 ```bash
 python -m pip install -e ".[dev]"
+npm ci
 ```
 
 Ejecutar tests en Windows local:
@@ -54,6 +57,7 @@ Generar datos para el sitio estatico:
 ```bash
 python -m centraldefilamentos.build_data --output public/data/stock.json
 python -m centraldefilamentos.generate_thumbnails --stock-json public/data/stock.json
+npm run build
 ```
 
 Actualizar la cache local de metadatos e imagenes oficiales de Grilon3, solo cuando Grilon3 cambie o agregue filamentos:
@@ -75,12 +79,19 @@ python -m centraldefilamentos.generate_thumbnails --stock-json public/data/stock
 Levantar servidor estatico local:
 
 ```bash
-python -m http.server 8000 -d public
+npm run dev
+```
+
+Previsualizar el build final como lo recibe GitHub Pages:
+
+```bash
+npm run build
+npm run preview
 ```
 
 ## Datos
 
-El frontend lee `public/data/stock.json`. En produccion, GitHub Actions genera ese archivo, genera las miniaturas y publica `public/` en GitHub Pages.
+El frontend lee `public/data/stock.json` durante desarrollo. En produccion, GitHub Actions genera ese archivo, genera las miniaturas, corre `npm run build` y publica `dist/` en GitHub Pages.
 
 `public/data/stock.json` es salida generada. Evitar editarlo a mano: los cambios persistentes van en normalizacion, fuentes o caches de metadata, y luego se regenera con los comandos anteriores.
 
@@ -126,4 +137,4 @@ GitHub Pages esta configurado con `build_type: workflow`. El workflow `.github/w
 
 ## Proximo paso
 
-Completar el frontend estatico, validar visualmente en mobile/desktop y dejar el workflow de Pages publicando la app desde `public/`.
+Seguir mejorando la UI sobre la base Svelte y validar visualmente los flujos principales en mobile/desktop antes de cambios grandes.

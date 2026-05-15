@@ -4,43 +4,43 @@ from pathlib import Path
 
 
 PUBLIC = Path("public")
+SRC = Path("src")
 
 
 def test_static_frontend_files_exist_and_are_linked():
-    index = (PUBLIC / "index.html").read_text(encoding="utf-8")
-    resumen = (PUBLIC / "resumen.html").read_text(encoding="utf-8")
-    internal = (PUBLIC / "estadisticas.html").read_text(encoding="utf-8")
+    index = Path("index.html").read_text(encoding="utf-8")
+    resumen = Path("resumen.html").read_text(encoding="utf-8")
+    internal = Path("estadisticas.html").read_text(encoding="utf-8")
     flags = json.loads((PUBLIC / "data" / "feature_flags.json").read_text(encoding="utf-8"))
+    catalog_view = (SRC / "CatalogApp.svelte").read_text(encoding="utf-8")
 
-    assert '<script src="app.js" defer></script>' in index
-    assert 'href="styles.css"' in index
-    assert 'href="resumen.html"' in index
-    assert 'id="quick-lines"' in index
-    assert 'id="line-help"' in index
-    assert 'id="site-footer"' in index
-    assert 'data-category-order="popular"' in index
-    assert 'data-category-order="alpha"' in index
-    assert '<script src="resumen.js" defer></script>' in resumen
-    assert 'id="summary-table"' in resumen
-    assert 'id="summary-quick-lines"' in resumen
-    assert 'id="summary-line-help"' in resumen
-    assert 'id="site-footer"' in resumen
+    assert 'type="module" src="/src/catalog.js"' in index
+    assert 'href="resumen.html"' in catalog_view
+    assert 'type="module" src="/src/summary.js"' in resumen
     assert 'id="merge-brands-toggle"' not in resumen
     assert "Fusionar Grilon3 + 3N3" not in resumen
     assert "estadisticas.html" not in index
     assert "estadisticas.html" not in resumen
     assert "vendedores-interno.html" not in index
     assert "vendedores-interno.html" not in resumen
-    assert '<script src="estadisticas.js" defer></script>' in internal
-    assert 'id="vendor-dashboard"' in internal
-    assert 'id="vendor-disabled"' in internal
+    assert 'type="module" src="/src/vendor-stats.js"' in internal
+    assert 'noindex,nofollow' in internal
     assert flags["vendorStatsEnabled"] is True
+    for entry in ["catalog.js", "summary.js", "vendor-stats.js"]:
+        js = (SRC / entry).read_text(encoding="utf-8")
+        assert 'import { mount } from "svelte"' in js
+        assert "mount(" in js
+        assert "new " not in js
 
 
-def test_catalog_script_fetches_json_and_supports_required_filters():
-    js = (PUBLIC / "app.js").read_text(encoding="utf-8")
+def test_catalog_svelte_fetches_json_and_supports_required_filters():
+    view = (SRC / "CatalogApp.svelte").read_text(encoding="utf-8")
+    shared = (SRC / "lib" / "shared.js").read_text(encoding="utf-8")
+    footer = (SRC / "components" / "SiteFooter.svelte").read_text(encoding="utf-8")
+    quick_lines = (SRC / "components" / "QuickLines.svelte").read_text(encoding="utf-8")
+    js = view + shared + footer + quick_lines
 
-    assert 'fetch("data/stock.json")' in js
+    assert "data/stock.json" in js
     for filter_id in [
         "material-filter",
         "variant-filter",
@@ -61,37 +61,25 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "PLA Standard" in js
     assert "PLA Flexible" in js
     assert "brillo tipo glitter" in js
-    assert "E-PET · PET reciclado" in js
-    assert "PP-T · polipropileno" in js
+    assert "E-PET - PET reciclado" in js
+    assert "PP-T - polipropileno" in js
     assert "Sampler / lápiz 3D" in js
     assert "isSamplerProduct" in js
     assert "formatPresentation" in js
     assert "samplerLengthLabel" in js
     assert "groupBaseProducts" in js
-    assert "productCardTemplate" in js
-    assert "officialProductLinkTemplate" in js
     assert "official-product-link" in js
     assert "Página oficial" in js
-    assert "cardImageProducts" in js
-    assert "productVisualsTemplate" in js
-    assert "productVisualTemplate" in js
-    assert "setupImagePreview" in js
     assert "data-preview-src" in js
     assert "thumbnail_url" in js
-    assert "const thumbnailUrl = imageProduct.thumbnail_url || imageProduct.image_url" in js
     assert 'loading="lazy"' in js
     assert 'decoding="async"' in js
-    assert "positionImagePreview" in js
     assert "image-preview" in js
     assert "compareImagePresentations" in js
     assert "imagePresentationRank" in js
-    assert ".filter((product) => product.image_url)" in js
+    assert ".filter((item) => item.image_url)" in js
     assert "Number(product.weight_g) === 1000" in js
     assert "Number(product.weight_g) === 2500" in js
-    assert "return imageProducts.length ? [imageProducts[0]] : [products[0]]" in js
-    assert "media-presentation" in js
-    assert "colorSwatchTemplate" in js
-    assert "pantoneBadgeTemplate" in js
     assert "pantoneSwatchLabel" in js
     assert "colorSwatchStyle" in js
     assert "baseColorFor" in js
@@ -103,7 +91,7 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert 'token === "pla+"' in js
     assert "token.startsWith(term)" in js
     assert "queryText.includes" not in js
-    assert "presentationTemplate" in js
+    assert "presentation-row" in js
     assert "productBaseName" in js
     assert "quickLineValues" in js
     assert "quickLabel" in js
@@ -112,13 +100,9 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert '"PLA Boutique"' in js
     assert '"Nylon 6"' in js
     assert "PLA Wood" in js
-    assert "quickLineButtonTemplate" in js
     assert "categoryOrder" in js
-    assert "setupCategorySort" in js
-    assert "updateCategorySortButtons" in js
     assert "compareGroups" in js
     assert "compareProductGroups" in js
-    assert "scrollToQuickLine" in js
     assert "scrollIntoView" in js
     assert "quick-target" in js
     assert "groupTargetId" in js
@@ -133,12 +117,10 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "providerAnchorId" in js
     assert "proveedor-" in js
     assert "sourceWhatsappUrl" in js
-    assert "whatsappMessage" in js
     assert "contactContext" in js
-    assert "stockDeltaTemplate" in js
+    assert "stockDelta" in js
     assert "stock_delta_units" in js
     assert "vs ayer" in js
-    assert "siteMetaFooterTemplate" in js
     assert "Creado por Gabriel" in js
     assert "Reportar error" in js
     assert "Sumar proveedor" in js
@@ -152,10 +134,14 @@ def test_catalog_script_fetches_json_and_supports_required_filters():
     assert "product.pantone ? chip(product.pantone)" not in js
 
 
-def test_summary_script_uses_carretes_totals_and_provider_order():
-    js = (PUBLIC / "resumen.js").read_text(encoding="utf-8")
+def test_summary_svelte_uses_carretes_totals_and_provider_order():
+    view = (SRC / "SummaryApp.svelte").read_text(encoding="utf-8")
+    shared = (SRC / "lib" / "shared.js").read_text(encoding="utf-8")
+    footer = (SRC / "components" / "SiteFooter.svelte").read_text(encoding="utf-8")
+    quick_lines = (SRC / "components" / "QuickLines.svelte").read_text(encoding="utf-8")
+    js = view + shared + footer + quick_lines
 
-    assert 'fetch("data/stock.json")' in js
+    assert "data/stock.json" in js
     assert "Zona Norte" in js
     assert "Zona Oeste" in js
     assert "Zona Sur" in js
@@ -166,10 +152,10 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert "samplerLengthLabel" in js
     assert "isSamplerProduct" in js
     assert "productSummaryName" in js
-    assert "summaryProductTemplate" in js
-    assert "summaryColorSwatchTemplate" in js
+    assert "summary-product" in js
+    assert "summary-color-swatch" in js
     assert "colorSwatchStyle" in js
-    assert "product.pantone" in js
+    assert "row.product.pantone" in js
     assert "mergeBrands" not in js
     assert "mergeCompatibleBrands" not in js
     assert "mergeRowKey" not in js
@@ -187,18 +173,12 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert '"ABS"' in js
     assert '"PLA Boutique"' in js
     assert '"Nylon 6"' in js
-    assert "renderQuickLines" in js
-    assert "scrollToQuickLine" in js
     assert "summaryGroupTargetId" in js
-    assert "setupStickyGroupRows" in js
     assert "updateStickyGroupRows" in js
     assert "summaryStickyTop" in js
     assert "is-stuck" in js
-    assert "renderSiteFooter" in js
     assert "footer-grid" in js
-    assert "sourceFooter" in js
     assert "sourceWhatsappUrl" in js
-    assert "whatsappMessage" in js
     assert "contactContext" in js
     assert "Creado por Gabriel" in js
     assert "Reportar error" in js
@@ -211,28 +191,26 @@ def test_summary_script_uses_carretes_totals_and_provider_order():
     assert "A revisar" not in js
     assert "Rev." not in js
     assert "total_stock_units" in js
-    assert "stockDeltaTemplate" in js
+    assert "stockDelta" in js
     assert "stock_delta_units" in js
     assert "vs ayer" in js
     assert "const stockDelta = stockDeltaTemplate(source.stats || {});" not in js
     assert "total_stock_kg" not in js
 
 
-def test_internal_vendor_script_uses_feature_flag_and_30_day_history():
-    js = (PUBLIC / "estadisticas.js").read_text(encoding="utf-8")
+def test_internal_vendor_svelte_uses_feature_flag_and_30_day_history():
+    js = (SRC / "VendorStatsApp.svelte").read_text(encoding="utf-8") + (SRC / "lib" / "shared.js").read_text(encoding="utf-8")
 
     assert "data/feature_flags.json" in js
     assert "data/provider_stock_history.json" in js
     assert "data/build_business_log.json" in js
     assert "vendorStatsEnabled" in js
-    assert "renderBuildHealth" in js
     assert "build-health" in js
     assert "last_good_sources" in js
     assert "slice(-30)" in js
     assert "deltaForProvider" in js
     assert "vs dia anterior" in js
     assert "checksForDay" in js
-    assert "intradayRowsTemplate" in js
     assert "details" in js
     assert "Chequeos del dia" in js
     assert "vs 09:00" in js
@@ -246,7 +224,7 @@ def test_internal_vendor_script_uses_feature_flag_and_30_day_history():
 
 
 def test_styles_are_compact_and_responsive():
-    css = (PUBLIC / "styles.css").read_text(encoding="utf-8")
+    css = (SRC / "styles" / "global.css").read_text(encoding="utf-8")
 
     assert "@media" in css
     assert "position: sticky" in css

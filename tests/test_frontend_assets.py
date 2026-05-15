@@ -260,9 +260,9 @@ def test_styles_are_compact_and_responsive():
     assert ".quick-line-boutique" in css
     assert ".quick-line-wood" in css
     assert ".quick-line-nylon" in css
-    assert "flex-wrap: wrap" in css
-    assert "justify-content: center" in css
-    assert "max-height: var(--quick-lines-height)" in css
+    assert "flex-wrap: nowrap" in css
+    assert "scroll-snap-type: x proximity" in css
+    assert "-webkit-overflow-scrolling: touch" in css
     assert "scrollbar-width: none" in css
     assert "top: var(--quick-lines-height)" in css
     assert "scroll-margin-top" in css

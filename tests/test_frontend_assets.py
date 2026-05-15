@@ -282,7 +282,7 @@ def test_styles_are_compact_and_responsive():
     assert ".summary-group-row.quick-target" in css
     assert ".summary-group-row.is-stuck td" not in css
     assert "color: transparent" not in css
-    assert "top: calc(var(--quick-lines-height) + var(--summary-head-height))" not in css
+    assert "top: calc(var(--quick-lines-height) + var(--summary-head-height))" in css
     assert ".summary-table tbody .summary-group-row th" in css
     assert ".internal-shell" in css
     assert ".build-health" in css

@@ -28,6 +28,13 @@ FILAMENTOS3D_METADATA_CACHE = Path("centraldefilamentos/data/filamentos3d_metada
 DAILY_PROVIDER_STOCK_SNAPSHOT = Path("centraldefilamentos/data/daily_provider_stock_snapshot.json")
 PROVIDER_STOCK_HISTORY = Path("centraldefilamentos/data/provider_stock_history.json")
 PUBLIC_PROVIDER_STOCK_HISTORY = Path("public/data/provider_stock_history.json")
+PUBLIC_BUSINESS_LOG = Path("public/data/build_business_log.json")
+PUBLIC_TECHNICAL_LOG = Path("public/data/build_technical_log.json")
+
+MIN_PRODUCTS_FOR_DROP_CHECK = 50
+MIN_PROVIDER_STOCK_FOR_DROP_CHECK = 100
+MAX_PRODUCT_DROP_RATIO = 0.40
+MAX_PROVIDER_STOCK_DROP_RATIO = 0.60
 
 ZONE_ORDER = {
     "Zona Norte": 0,
@@ -123,12 +130,246 @@ def build_payload(
 
 
 def write_payload(payload: Mapping[str, object], output_path: str | Path) -> None:
-    path = Path(output_path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
+    _write_json(output_path, payload)
+
+
+def _write_json(path: str | Path, payload: Mapping[str, object]) -> None:
+    output = Path(path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+
+
+def load_payload(path: str | Path) -> dict[str, object]:
+    payload_path = Path(path)
+    if not payload_path.exists():
+        return {}
+    try:
+        payload = json.loads(payload_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def evaluate_build_quality(
+    payload: Mapping[str, object],
+    previous_payload: Mapping[str, object] | None = None,
+    source_errors: Mapping[str, str] | None = None,
+    enrichment_errors: Mapping[str, str] | None = None,
+) -> dict[str, object]:
+    previous_payload = previous_payload or {}
+    source_errors = {str(source_id): _clean_error_message(error) for source_id, error in (source_errors or {}).items() if error}
+    enrichment_errors = {str(source_id): _clean_error_message(error) for source_id, error in (enrichment_errors or {}).items() if error}
+    current_metrics = _payload_quality_metrics(payload)
+    previous_metrics = _payload_quality_metrics(previous_payload)
+    last_good_sources = _last_good_sources(previous_payload, source_errors)
+    technical_events: list[dict[str, object]] = []
+    business_events: list[dict[str, object]] = []
+    checks: list[dict[str, object]] = []
+    schema_errors = _stock_payload_schema_errors(payload)
+
+    if source_errors:
+        checks.append({"name": "source_errors", "status": "failed", "failed_sources": sorted(source_errors)})
+        for source_id, error_message in sorted(source_errors.items()):
+            source_name = _source_name(payload, source_id)
+            last_good = last_good_sources.get(source_id, {})
+            last_good_text = ""
+            if last_good:
+                last_good_text = f" Se mantiene el ultimo dato bueno de {last_good.get('generated_at', '')}."
+            technical_events.append(
+                {
+                    "level": "error",
+                    "code": "source_error",
+                    "source_id": source_id,
+                    "message": error_message,
+                }
+            )
+            business_events.append(
+                {
+                    "level": "error",
+                    "code": "source_error",
+                    "message": f"{source_name} no respondio correctamente. Se conserva la ultima publicacion buena.{last_good_text}",
+                }
+            )
+    else:
+        checks.append({"name": "source_errors", "status": "passed"})
+
+    if enrichment_errors:
+        checks.append({"name": "enrichment", "status": "warning", "failed_steps": sorted(enrichment_errors)})
+        for enrichment_id, error_message in sorted(enrichment_errors.items()):
+            technical_events.append(
+                {
+                    "level": "warning",
+                    "code": "enrichment_error",
+                    "source_id": enrichment_id,
+                    "message": error_message,
+                }
+            )
+            business_events.append(
+                {
+                    "level": "warning",
+                    "code": "enrichment_error",
+                    "message": "No se pudo actualizar parte de las imagenes o metadata enriquecida. El stock se publica con los datos disponibles.",
+                }
+            )
+    else:
+        checks.append({"name": "enrichment", "status": "passed"})
+
+    if schema_errors:
+        checks.append({"name": "schema", "status": "failed", "errors": schema_errors})
+        for schema_error in schema_errors:
+            technical_events.append({"level": "error", "code": "schema_error", "message": schema_error})
+        business_events.append(
+            {
+                "level": "error",
+                "code": "schema_error",
+                "message": "La estructura del JSON final no paso las validaciones. Se conserva la ultima publicacion buena.",
+            }
+        )
+    else:
+        checks.append({"name": "schema", "status": "passed"})
+
+    if current_metrics["product_count"] == 0:
+        checks.append({"name": "non_empty_catalog", "status": "failed"})
+        technical_events.append({"level": "error", "code": "empty_catalog", "message": "Current payload has no products."})
+        business_events.append(
+            {
+                "level": "error",
+                "code": "empty_catalog",
+                "message": "La corrida no encontro productos. Se conserva la ultima publicacion buena.",
+            }
+        )
+    else:
+        checks.append({"name": "non_empty_catalog", "status": "passed", "product_count": current_metrics["product_count"]})
+
+    previous_product_count = int(previous_metrics.get("product_count", 0))
+    current_product_count = int(current_metrics.get("product_count", 0))
+    if previous_product_count >= MIN_PRODUCTS_FOR_DROP_CHECK:
+        product_drop = _drop_ratio(previous_product_count, current_product_count)
+        if product_drop > MAX_PRODUCT_DROP_RATIO:
+            checks.append(
+                {
+                    "name": "product_count_drop",
+                    "status": "failed",
+                    "previous": previous_product_count,
+                    "current": current_product_count,
+                    "drop_ratio": round(product_drop, 4),
+                    "max_drop_ratio": MAX_PRODUCT_DROP_RATIO,
+                }
+            )
+            technical_events.append(
+                {
+                    "level": "error",
+                    "code": "product_count_drop",
+                    "message": f"Product count dropped from {previous_product_count} to {current_product_count}.",
+                }
+            )
+            business_events.append(
+                {
+                    "level": "error",
+                    "code": "product_count_drop",
+                    "message": "La cantidad de productos bajo demasiado contra la ultima corrida buena. Se conserva la publicacion anterior.",
+                }
+            )
+        else:
+            checks.append({"name": "product_count_drop", "status": "passed", "drop_ratio": round(product_drop, 4)})
+
+    previous_sources = previous_metrics.get("sources", {})
+    current_sources = current_metrics.get("sources", {})
+    if isinstance(previous_sources, dict) and isinstance(current_sources, dict):
+        for source_id, previous_source in sorted(previous_sources.items()):
+            current_source = current_sources.get(source_id)
+            if not isinstance(previous_source, dict) or not isinstance(current_source, dict):
+                continue
+            previous_stock = int(previous_source.get("total_stock_units", 0))
+            current_stock = int(current_source.get("total_stock_units", 0))
+            if previous_stock < MIN_PROVIDER_STOCK_FOR_DROP_CHECK:
+                continue
+            stock_drop = _drop_ratio(previous_stock, current_stock)
+            if stock_drop <= MAX_PROVIDER_STOCK_DROP_RATIO:
+                continue
+            source_name = str(current_source.get("name") or previous_source.get("name") or source_id)
+            checks.append(
+                {
+                    "name": "provider_stock_drop",
+                    "status": "failed",
+                    "source_id": source_id,
+                    "previous": previous_stock,
+                    "current": current_stock,
+                    "drop_ratio": round(stock_drop, 4),
+                    "max_drop_ratio": MAX_PROVIDER_STOCK_DROP_RATIO,
+                }
+            )
+            technical_events.append(
+                {
+                    "level": "error",
+                    "code": "provider_stock_drop",
+                    "source_id": source_id,
+                    "message": f"{source_id} stock dropped from {previous_stock} to {current_stock}.",
+                }
+            )
+            business_events.append(
+                {
+                    "level": "error",
+                    "code": "provider_stock_drop",
+                    "message": f"{source_name} tuvo una baja de stock demasiado grande para publicarla automaticamente. Se conserva la publicacion anterior.",
+                }
+            )
+
+    should_publish = not any(event.get("level") == "error" for event in technical_events)
+    status = "ok" if should_publish else "blocked"
+    summary = (
+        "Publicacion habilitada. No se detectaron errores criticos."
+        if should_publish
+        else "Publicacion bloqueada por datos incompletos o sospechosos."
+    )
+    if should_publish:
+        business_events.append({"level": "info", "code": "publish_ok", "message": "La actualizacion paso los controles y se puede publicar."})
+        technical_events.append({"level": "info", "code": "publish_ok", "message": "Build quality checks passed."})
+
+    return {
+        "generated_at": str(payload.get("generated_at", "")),
+        "status": status,
+        "should_publish": should_publish,
+        "summary": summary,
+        "business_events": business_events,
+        "technical_events": technical_events,
+        "last_good_sources": last_good_sources,
+        "metrics": {
+            "current": current_metrics,
+            "previous": previous_metrics,
+        },
+        "checks": checks,
+    }
+
+
+def write_build_logs(
+    report: Mapping[str, object],
+    business_path: str | Path = PUBLIC_BUSINESS_LOG,
+    technical_path: str | Path = PUBLIC_TECHNICAL_LOG,
+) -> None:
+    business_log = {
+        "generated_at": str(report.get("generated_at", "")),
+        "status": str(report.get("status", "")),
+        "should_publish": bool(report.get("should_publish", False)),
+        "summary": str(report.get("summary", "")),
+        "events": list(report.get("business_events", [])),
+        "last_good_sources": report.get("last_good_sources", {}),
+    }
+    technical_log = {
+        "generated_at": str(report.get("generated_at", "")),
+        "status": str(report.get("status", "")),
+        "should_publish": bool(report.get("should_publish", False)),
+        "summary": str(report.get("summary", "")),
+        "events": list(report.get("technical_events", [])),
+        "last_good_sources": report.get("last_good_sources", {}),
+        "metrics": report.get("metrics", {}),
+        "checks": list(report.get("checks", [])),
+    }
+    _write_json(business_path, business_log)
+    _write_json(technical_path, technical_log)
 
 
 def load_daily_provider_stock_snapshot(path: str | Path = DAILY_PROVIDER_STOCK_SNAPSHOT) -> dict[str, object]:
@@ -272,6 +513,7 @@ def write_public_provider_stock_history(
 def collect_raw_items(
     sources: Mapping[str, SourceConfig] = SOURCES,
     updated_at: str | None = None,
+    retry_attempts: int = 2,
 ) -> tuple[list[RawStockItem], dict[str, str]]:
     generated = updated_at or _now()
     items: list[RawStockItem] = []
@@ -279,11 +521,24 @@ def collect_raw_items(
 
     for source in sources.values():
         try:
-            items.extend(_fetch_source_items(source, generated))
+            items.extend(_fetch_source_items_with_retries(source, generated, retry_attempts))
         except Exception as exc:  # pragma: no cover - exact requests errors vary by provider.
             errors[source.id] = str(exc)
 
     return items, errors
+
+
+def _fetch_source_items_with_retries(source: SourceConfig, updated_at: str, retry_attempts: int) -> list[RawStockItem]:
+    attempts = max(1, retry_attempts)
+    last_error: Exception | None = None
+    for _ in range(attempts):
+        try:
+            return _fetch_source_items(source, updated_at)
+        except Exception as exc:
+            last_error = exc
+    if last_error is not None:
+        raise last_error
+    return []
 
 
 def build_grilon3_enrichments(
@@ -405,6 +660,112 @@ def load_filamentos3d_metadata(path: str | Path = FILAMENTOS3D_METADATA_CACHE) -
     return metadata
 
 
+def _payload_quality_metrics(payload: Mapping[str, object]) -> dict[str, object]:
+    products = payload.get("products", [])
+    product_count = len(products) if isinstance(products, list) else 0
+    sources: dict[str, dict[str, object]] = {}
+    total_stock_units = 0
+    raw_sources = payload.get("sources", [])
+    if isinstance(raw_sources, list):
+        for source in raw_sources:
+            if not isinstance(source, dict):
+                continue
+            source_id = str(source.get("id", ""))
+            if not source_id:
+                continue
+            stats = source.get("stats", {})
+            stats = stats if isinstance(stats, dict) else {}
+            stock_units = _safe_int(stats.get("total_stock_units")) or 0
+            source_product_count = _safe_int(stats.get("product_count")) or 0
+            total_stock_units += stock_units
+            sources[source_id] = {
+                "name": str(source.get("name", source_id)),
+                "status": str(source.get("status", "")),
+                "total_stock_units": stock_units,
+                "product_count": source_product_count,
+            }
+    return {
+        "product_count": product_count,
+        "total_stock_units": total_stock_units,
+        "sources": sources,
+    }
+
+
+def _source_name(payload: Mapping[str, object], source_id: str) -> str:
+    raw_sources = payload.get("sources", [])
+    if isinstance(raw_sources, list):
+        for source in raw_sources:
+            if isinstance(source, dict) and source.get("id") == source_id:
+                return str(source.get("name") or source_id)
+    configured = SOURCES.get(source_id)
+    return configured.name if configured is not None else source_id
+
+
+def _last_good_sources(previous_payload: Mapping[str, object], source_errors: Mapping[str, str]) -> dict[str, dict[str, object]]:
+    generated_at = str(previous_payload.get("generated_at", ""))
+    raw_sources = previous_payload.get("sources", [])
+    if not isinstance(raw_sources, list):
+        return {}
+    last_good: dict[str, dict[str, object]] = {}
+    for source in raw_sources:
+        if not isinstance(source, dict):
+            continue
+        source_id = str(source.get("id", ""))
+        if source_id not in source_errors:
+            continue
+        stats = source.get("stats", {})
+        stats = stats if isinstance(stats, dict) else {}
+        last_good[source_id] = {
+            "name": str(source.get("name") or source_id),
+            "generated_at": generated_at,
+            "total_stock_units": _safe_int(stats.get("total_stock_units")) or 0,
+            "product_count": _safe_int(stats.get("product_count")) or 0,
+        }
+    return last_good
+
+
+def _stock_payload_schema_errors(payload: Mapping[str, object]) -> list[str]:
+    errors: list[str] = []
+    if not str(payload.get("generated_at", "")):
+        errors.append("generated_at is required")
+    products = payload.get("products")
+    sources = payload.get("sources")
+    manufacturers = payload.get("manufacturers")
+    if not isinstance(products, list):
+        errors.append("products must be a list")
+    if not isinstance(sources, list):
+        errors.append("sources must be a list")
+    if not isinstance(manufacturers, list):
+        errors.append("manufacturers must be a list")
+    if isinstance(sources, list):
+        source_ids = {str(source.get("id", "")) for source in sources if isinstance(source, dict)}
+        for expected_id in SOURCES:
+            if expected_id not in source_ids:
+                errors.append(f"missing source {expected_id}")
+    if isinstance(products, list):
+        for index, product in enumerate(products):
+            if not isinstance(product, dict):
+                errors.append(f"products[{index}] must be an object")
+                continue
+            if not product.get("id"):
+                errors.append(f"products[{index}].id is required")
+            offers = product.get("offers")
+            if not isinstance(offers, list):
+                errors.append(f"products[{index}].offers must be a list")
+    return errors
+
+
+def _drop_ratio(previous: int, current: int) -> float:
+    if previous <= 0 or current >= previous:
+        return 0.0
+    return (previous - current) / previous
+
+
+def _clean_error_message(error: object) -> str:
+    message = " ".join(str(error).split())
+    return message[:500]
+
+
 def _grilon3_metadata_for_fields(metadata: Mapping[str, dict[str, str]], fields) -> dict[str, str]:
     exact = metadata.get(_grilon3_metadata_cache_key(fields), {})
     unknown_diameter = metadata.get(_grilon3_metadata_unknown_diameter_cache_key(fields), {})
@@ -507,19 +868,28 @@ def main() -> None:
     parser.add_argument("--daily-snapshot", default=str(DAILY_PROVIDER_STOCK_SNAPSHOT))
     parser.add_argument("--provider-history", default=str(PROVIDER_STOCK_HISTORY))
     parser.add_argument("--public-provider-history", default=str(PUBLIC_PROVIDER_STOCK_HISTORY))
+    parser.add_argument("--business-log", default=str(PUBLIC_BUSINESS_LOG))
+    parser.add_argument("--technical-log", default=str(PUBLIC_TECHNICAL_LOG))
     parser.add_argument("--snapshot-hour", type=int, default=9)
     args = parser.parse_args()
 
     raw_items, source_errors = collect_raw_items()
+    enrichment_errors: dict[str, str] = {}
+    catalog_products = {}
+    enrichments: dict[str, dict[str, str]] = {}
     try:
         catalog_products = fetch_grilon3_catalog_products()
-        enrichments = {
-            **build_filamentos3d_enrichments(raw_items),
-            **build_grilon3_enrichments(raw_items, catalog_products),
-        }
-    except Exception:
-        catalog_products = {}
-        enrichments = {}
+    except Exception as exc:
+        enrichment_errors["grilon3_catalog"] = str(exc)
+    try:
+        enrichments.update(build_filamentos3d_enrichments(raw_items))
+    except Exception as exc:
+        enrichment_errors["filamentos3d_metadata"] = str(exc)
+    try:
+        enrichments.update(build_grilon3_enrichments(raw_items, catalog_products))
+    except Exception as exc:
+        enrichment_errors["grilon3_enrichment"] = str(exc)
+
     payload = build_payload(
         raw_items,
         enrichments=enrichments,
@@ -528,6 +898,12 @@ def main() -> None:
     )
     snapshot = load_daily_provider_stock_snapshot(args.daily_snapshot)
     apply_provider_stock_deltas(payload, snapshot)
+    quality_report = evaluate_build_quality(payload, load_payload(args.output), source_errors, enrichment_errors)
+    write_build_logs(quality_report, args.business_log, args.technical_log)
+    if not quality_report["should_publish"]:
+        print(str(quality_report["summary"]))
+        return
+
     maybe_update_daily_provider_stock_snapshot(payload, args.daily_snapshot, args.snapshot_hour)
     maybe_update_provider_stock_history(payload, args.provider_history, args.snapshot_hour)
     history = load_provider_stock_history(args.provider_history)

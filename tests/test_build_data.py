@@ -9,9 +9,11 @@ from centraldefilamentos.build_data import (
     build_grilon3_enrichments,
     build_payload,
     collect_raw_items,
+    evaluate_build_quality,
     fetch_grilon3_catalog_products,
     load_grilon3_metadata,
     load_filamentos3d_metadata,
+    write_build_logs,
     write_payload,
 )
 from centraldefilamentos.connectors.grilon3_catalog import CatalogProduct
@@ -244,6 +246,152 @@ def test_collect_raw_items_keeps_fetching_when_one_source_fails(monkeypatch):
 
     assert [item.source_id for item in items] == ["filamentos3d", "mundoinsumos"]
     assert errors == {"grupo_senz": "boom"}
+
+
+def test_collect_raw_items_retries_transient_source_failures(monkeypatch):
+    attempts = {"mundoinsumos": 0}
+
+    def fake_fetch(source, updated_at):
+        if source.id == "mundoinsumos":
+            attempts[source.id] += 1
+            if attempts[source.id] == 1:
+                raise RuntimeError("temporary timeout")
+        return [
+            RawStockItem(
+                source_id=source.id,
+                provider_name=source.name,
+                provider_zone=source.zone,
+                provider_url=source.homepage_url,
+                original_name=f"{source.name} PLA Negro 1kg",
+                stock_quantity=1,
+                source_url=source.source_url,
+                updated_at=updated_at,
+            )
+        ]
+
+    monkeypatch.setattr("centraldefilamentos.build_data._fetch_source_items", fake_fetch)
+
+    items, errors = collect_raw_items(sources={"mundoinsumos": SOURCES["mundoinsumos"]}, updated_at="2026-05-12T13:00:00-03:00", retry_attempts=2)
+
+    assert [item.source_id for item in items] == ["mundoinsumos"]
+    assert attempts == {"mundoinsumos": 2}
+    assert errors == {}
+
+
+def test_evaluate_build_quality_blocks_source_errors():
+    current = build_payload(
+        [
+            raw("mundoinsumos", "MundoInsumos", "Zona Norte", "GRILON3 PLA Negro 1kg", 10, brand_hint="Grilon3"),
+            raw("filamentos3d", "Filamentos3D", "Zona Sur", "GRILON3 PLA Rojo 1kg", 20, brand_hint="Grilon3"),
+        ],
+        generated_at="2026-05-15T12:00:00-03:00",
+        source_errors={"grupo_senz": "CSV export returned 403"},
+    )
+    previous = build_payload(
+        [
+            raw("mundoinsumos", "MundoInsumos", "Zona Norte", "GRILON3 PLA Negro 1kg", 10, brand_hint="Grilon3"),
+            raw("grupo_senz", "Grupo Senz", "Zona Oeste", "GRILON3 PLA Azul 1kg", 30, brand_hint="Grilon3"),
+            raw("filamentos3d", "Filamentos3D", "Zona Sur", "GRILON3 PLA Rojo 1kg", 20, brand_hint="Grilon3"),
+        ],
+        generated_at="2026-05-15T09:00:00-03:00",
+    )
+
+    report = evaluate_build_quality(current, previous, {"grupo_senz": "CSV export returned 403"})
+
+    assert report["should_publish"] is False
+    assert report["status"] == "blocked"
+    assert report["last_good_sources"]["grupo_senz"]["total_stock_units"] == 30
+    assert report["last_good_sources"]["grupo_senz"]["generated_at"] == "2026-05-15T09:00:00-03:00"
+    assert any(event["code"] == "source_error" for event in report["technical_events"])
+    assert any("Grupo Senz" in event["message"] and "ultimo dato bueno" in event["message"] for event in report["business_events"])
+
+
+def test_evaluate_build_quality_blocks_invalid_payload_schema():
+    report = evaluate_build_quality(
+        {"generated_at": "2026-05-15T12:00:00-03:00", "products": [{"id": "ok"}]},
+        {"products": [{"id": "ok"}], "sources": []},
+        {},
+    )
+
+    assert report["should_publish"] is False
+    assert any(event["code"] == "schema_error" for event in report["technical_events"])
+    assert any("estructura" in event["message"] for event in report["business_events"])
+
+
+def test_evaluate_build_quality_blocks_suspicious_provider_stock_drop():
+    current = {
+        "generated_at": "2026-05-15T12:00:00-03:00",
+        "products": [{"id": f"product-{index}"} for index in range(100)],
+        "sources": [
+            {"id": "mundoinsumos", "name": "MundoInsumos", "status": "ok", "stats": {"total_stock_units": 120, "product_count": 100}},
+        ],
+    }
+    previous = {
+        "generated_at": "2026-05-15T09:00:00-03:00",
+        "products": [{"id": f"product-{index}"} for index in range(100)],
+        "sources": [
+            {"id": "mundoinsumos", "name": "MundoInsumos", "status": "ok", "stats": {"total_stock_units": 1000, "product_count": 100}},
+        ],
+    }
+
+    report = evaluate_build_quality(current, previous, {})
+
+    assert report["should_publish"] is False
+    assert any(event["code"] == "provider_stock_drop" and event["source_id"] == "mundoinsumos" for event in report["technical_events"])
+    assert any("MundoInsumos" in event["message"] for event in report["business_events"])
+
+
+def test_write_build_logs_splits_business_and_technical_logs(tmp_path):
+    report = {
+        "generated_at": "2026-05-15T12:00:00-03:00",
+        "status": "blocked",
+        "should_publish": False,
+        "summary": "Publicacion bloqueada por datos sospechosos.",
+        "business_events": [
+            {"level": "error", "code": "source_error", "message": "Grupo Senz no respondio."},
+        ],
+        "technical_events": [
+            {"level": "error", "code": "source_error", "source_id": "grupo_senz", "message": "CSV export returned 403"},
+        ],
+        "last_good_sources": {
+            "grupo_senz": {"name": "Grupo Senz", "generated_at": "2026-05-15T09:00:00-03:00", "total_stock_units": 11785},
+        },
+        "metrics": {"current": {"product_count": 0}, "previous": {"product_count": 346}},
+        "checks": [{"name": "source_errors", "status": "failed"}],
+    }
+    business_path = tmp_path / "business.json"
+    technical_path = tmp_path / "technical.json"
+
+    write_build_logs(report, business_path, technical_path)
+
+    business = json.loads(business_path.read_text(encoding="utf-8"))
+    technical = json.loads(technical_path.read_text(encoding="utf-8"))
+    assert business == {
+        "generated_at": "2026-05-15T12:00:00-03:00",
+        "status": "blocked",
+        "should_publish": False,
+        "summary": "Publicacion bloqueada por datos sospechosos.",
+        "events": [{"level": "error", "code": "source_error", "message": "Grupo Senz no respondio."}],
+        "last_good_sources": {
+            "grupo_senz": {"name": "Grupo Senz", "generated_at": "2026-05-15T09:00:00-03:00", "total_stock_units": 11785},
+        },
+    }
+    assert technical["events"][0]["source_id"] == "grupo_senz"
+    assert technical["last_good_sources"]["grupo_senz"]["name"] == "Grupo Senz"
+    assert technical["checks"] == [{"name": "source_errors", "status": "failed"}]
+
+
+def test_evaluate_build_quality_logs_enrichment_warnings_without_blocking():
+    payload = build_payload(
+        [raw("mundoinsumos", "MundoInsumos", "Zona Norte", "GRILON3 PLA Negro 1kg", 10, brand_hint="Grilon3")],
+        generated_at="2026-05-15T12:00:00-03:00",
+    )
+
+    report = evaluate_build_quality(payload, {}, {}, enrichment_errors={"grilon3_catalog": "read timeout"})
+
+    assert report["should_publish"] is True
+    assert any(event["code"] == "enrichment_error" for event in report["technical_events"])
+    assert any("imagenes" in event["message"] for event in report["business_events"])
 
 
 def test_build_grilon3_enrichments_indexes_raw_grilon_products(monkeypatch):

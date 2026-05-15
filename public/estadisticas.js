@@ -95,23 +95,73 @@ function providerCardTemplate(provider) {
               <th>Variacion vs dia anterior</th>
             </tr>
           </thead>
-          <tbody>${[...state.days].reverse().map((day) => dayRowTemplate(day, provider.id)).join("")}</tbody>
+          <tbody>${[...state.days].reverse().map((day) => dayRowsTemplate(day, provider.id)).join("")}</tbody>
         </table>
       </div>
     </article>
   `;
 }
 
-function dayRowTemplate(day, providerId) {
+function dayRowsTemplate(day, providerId) {
   const quantity = quantityForProvider(day, providerId);
   const delta = deltaForProvider(day.date, providerId);
+  const checks = checksForDay(day);
   return `
     <tr>
       <td>${escapeHtml(formatDay(day.date))}</td>
       <td>${formatInteger(quantity)}</td>
       <td>${deltaBadgeTemplate(delta)}</td>
     </tr>
+    <tr class="intraday-checks">
+      <td colspan="3">
+        <details>
+          <summary>Chequeos del dia (${checks.length})</summary>
+          ${intradayRowsTemplate(day, providerId, checks)}
+        </details>
+      </td>
+    </tr>
   `;
+}
+
+function intradayRowsTemplate(day, providerId, checks) {
+  if (!checks.length) return `<p class="intraday-empty">Sin chequeos intradia.</p>`;
+  const baseline = quantityForProvider(day, providerId);
+  return `
+    <table class="intraday-table">
+      <thead>
+        <tr>
+          <th>Hora</th>
+          <th>Cantidad</th>
+          <th>Vs anterior</th>
+          <th>vs 09:00</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${checks.map((check, index) => intradayCheckRowTemplate(check, checks[index - 1], providerId, baseline)).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function intradayCheckRowTemplate(check, previousCheck, providerId, baseline) {
+  const quantity = quantityForProvider(check, providerId);
+  const previousQuantity = previousCheck ? quantityForProvider(previousCheck, providerId) : null;
+  const previousDelta = Number.isFinite(previousQuantity) ? quantity - previousQuantity : null;
+  return `
+    <tr>
+      <td>${escapeHtml(formatTime(check.captured_at))}</td>
+      <td>${formatInteger(quantity)}</td>
+      <td>${deltaBadgeTemplate(previousDelta)}</td>
+      <td>${deltaBadgeTemplate(quantity - baseline)}</td>
+    </tr>
+  `;
+}
+
+function checksForDay(day) {
+  const checks = Array.isArray(day.checks) ? day.checks : [];
+  if (checks.length) return checks;
+  if (!day.captured_at) return [];
+  return [{ captured_at: day.captured_at, providers: day.providers || {} }];
 }
 
 function latestQuantity(providerId) {
@@ -160,12 +210,17 @@ function formatInteger(value) {
 
 function formatDate(value) {
   if (!value) return "Sin datos";
-  return new Intl.DateTimeFormat("es-AR", { dateStyle: "short", timeStyle: "short" }).format(new Date(value));
+  return new Intl.DateTimeFormat("es-AR", { dateStyle: "short", timeStyle: "short", timeZone: "America/Argentina/Buenos_Aires" }).format(new Date(value));
 }
 
 function formatDay(value) {
   if (!value) return "";
-  return new Intl.DateTimeFormat("es-AR", { dateStyle: "short" }).format(new Date(`${value}T09:00:00-03:00`));
+  return new Intl.DateTimeFormat("es-AR", { dateStyle: "short", timeZone: "America/Argentina/Buenos_Aires" }).format(new Date(`${value}T09:00:00-03:00`));
+}
+
+function formatTime(value) {
+  if (!value) return "";
+  return new Intl.DateTimeFormat("es-AR", { timeStyle: "short", timeZone: "America/Argentina/Buenos_Aires" }).format(new Date(value));
 }
 
 function escapeHtml(value) {

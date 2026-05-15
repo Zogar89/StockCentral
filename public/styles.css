@@ -823,6 +823,50 @@ input {
   text-align: left;
 }
 
+.intraday-checks td {
+  padding: 0 6px 8px;
+  background: var(--surface);
+  text-align: left;
+}
+
+.intraday-checks details {
+  border: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.intraday-checks summary {
+  cursor: pointer;
+  padding: 7px 9px;
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.intraday-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  font-size: 12px;
+}
+
+.intraday-table th,
+.intraday-table td {
+  padding: 6px 9px;
+  border-top: 1px solid var(--line);
+  text-align: right;
+}
+
+.intraday-table th:first-child,
+.intraday-table td:first-child {
+  text-align: left;
+}
+
+.intraday-empty {
+  margin: 0;
+  padding: 7px 9px;
+  color: var(--muted);
+}
+
 .delta-badge,
 .delta-muted {
   font-weight: 800;

@@ -86,7 +86,7 @@ El frontend lee `public/data/stock.json`. En produccion, GitHub Actions genera e
 
 La cache `stockcentral/data/daily_provider_stock_snapshot.json` se actualiza en la corrida de las 09 hs Argentina. Guarda la captura diaria por proveedor y la captura anterior para mostrar la diferencia de carretes `vs ayer`.
 
-La cache `stockcentral/data/provider_stock_history.json` guarda hasta 30 capturas diarias por proveedor para la vista interna de vendedores. La pagina se publica como archivo no enlazado y se puede apagar con `public/data/feature_flags.json` cambiando `vendorStatsEnabled` a `false`.
+La cache `stockcentral/data/provider_stock_history.json` guarda hasta 30 dias por proveedor para la vista interna de vendedores. Cada dia conserva la captura base de las 09 hs y los chequeos intradia de las demas corridas. La pagina se publica como archivo no enlazado y se puede apagar con `public/data/feature_flags.json` cambiando `vendorStatsEnabled` a `false`.
 
 La cache `stockcentral/data/grilon3_metadata.json` se versiona en el repositorio. Guarda datos oficiales como Pantone, SKU, EAN y la ruta local de imagen. Las imagenes oficiales descargadas se versionan en `public/assets/grilon3/`. La actualizacion normal de stock no consulta las fichas individuales de Grilon3 ni descarga imagenes; solo lee esa cache local.
 

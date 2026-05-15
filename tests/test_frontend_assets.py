@@ -227,6 +227,12 @@ def test_internal_vendor_script_uses_feature_flag_and_30_day_history():
     assert "slice(-30)" in js
     assert "deltaForProvider" in js
     assert "vs dia anterior" in js
+    assert "checksForDay" in js
+    assert "intradayRowsTemplate" in js
+    assert "details" in js
+    assert "Chequeos del dia" in js
+    assert "vs 09:00" in js
+    assert "America/Argentina/Buenos_Aires" in js
     assert "vendor-dashboard" in js
     assert "vendor-disabled" in js
     assert "Cantidad por dia" in js
@@ -290,6 +296,8 @@ def test_styles_are_compact_and_responsive():
     assert ".internal-shell" in css
     assert ".vendor-stat-grid" in css
     assert ".vendor-history-table" in css
+    assert ".intraday-checks" in css
+    assert ".intraday-table" in css
     assert ".delta-positive" in css
     assert ".delta-negative" in css
 

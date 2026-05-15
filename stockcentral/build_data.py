@@ -208,19 +208,37 @@ def maybe_update_provider_stock_history(
 ) -> bool:
     generated_at = str(payload.get("generated_at", ""))
     generated = _parse_datetime(generated_at)
-    if generated is None or generated.hour != snapshot_hour:
+    if generated is None:
         return False
 
     history_path = Path(path)
     history = load_provider_stock_history(history_path)
     days = _history_days(history)
-    capture = {
-        "date": generated.date().isoformat(),
+    date = generated.date().isoformat()
+    counts = _provider_counts_from_payload(payload)
+    check = {
         "captured_at": generated_at,
-        "providers": _provider_counts_from_payload(payload),
+        "providers": counts,
     }
-    days = [day for day in days if day.get("date") != capture["date"]]
-    days.append(capture)
+    existing_day = next((day for day in days if day.get("date") == date), None)
+    if existing_day is None:
+        day = {
+            "date": date,
+            "captured_at": generated_at,
+            "providers": counts,
+            "checks": [check],
+        }
+        days.append(day)
+    else:
+        checks = _history_checks(existing_day)
+        checks = [item for item in checks if _check_hour(item) != generated.hour]
+        checks.append(check)
+        checks = _sort_checks(checks)
+        existing_day["checks"] = checks
+        if generated.hour == snapshot_hour or not existing_day.get("providers"):
+            existing_day["captured_at"] = generated_at
+            existing_day["providers"] = counts
+
     days = _trim_history_days(days, max_days)
     next_history = {"days": days}
 
@@ -695,12 +713,56 @@ def _history_days(history: Mapping[str, object]) -> list[dict[str, object]]:
     days = history.get("days", [])
     if not isinstance(days, list):
         return []
-    return [dict(day) for day in days if isinstance(day, dict) and day.get("date")]
+    return [_normalize_history_day(day) for day in days if isinstance(day, dict) and day.get("date")]
 
 
 def _trim_history_days(days: list[dict[str, object]], max_days: int) -> list[dict[str, object]]:
     sorted_days = sorted(days, key=lambda day: str(day.get("date", "")))
     return sorted_days[-max_days:]
+
+
+def _normalize_history_day(day: Mapping[str, object]) -> dict[str, object]:
+    providers = _clean_provider_counts(day.get("providers", {}))
+    normalized = {
+        "date": str(day.get("date", "")),
+        "captured_at": str(day.get("captured_at", "")),
+        "providers": providers,
+        "checks": _history_checks(day),
+    }
+    if not normalized["checks"] and normalized["captured_at"] and providers:
+        normalized["checks"] = [
+            {
+                "captured_at": normalized["captured_at"],
+                "providers": providers,
+            }
+        ]
+    return normalized
+
+
+def _history_checks(day: Mapping[str, object]) -> list[dict[str, object]]:
+    raw_checks = day.get("checks", [])
+    if not isinstance(raw_checks, list):
+        return []
+    checks: list[dict[str, object]] = []
+    for check in raw_checks:
+        if not isinstance(check, dict) or not check.get("captured_at"):
+            continue
+        checks.append(
+            {
+                "captured_at": str(check.get("captured_at", "")),
+                "providers": _clean_provider_counts(check.get("providers", {})),
+            }
+        )
+    return _sort_checks(checks)
+
+
+def _sort_checks(checks: list[dict[str, object]]) -> list[dict[str, object]]:
+    return sorted(checks, key=lambda check: str(check.get("captured_at", "")))
+
+
+def _check_hour(check: Mapping[str, object]) -> int | None:
+    parsed = _parse_datetime(str(check.get("captured_at", "")))
+    return parsed.hour if parsed is not None else None
 
 
 def _clean_provider_counts(value: object) -> dict[str, int]:

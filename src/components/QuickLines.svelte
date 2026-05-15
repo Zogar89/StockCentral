@@ -31,3 +31,4 @@
     </button>
   {/each}
 </div>
+<span class="quick-lines-cue" aria-hidden="true"></span>

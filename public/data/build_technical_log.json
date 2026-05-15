@@ -1,10 +1,88 @@
 {
-  "checks": [],
-  "events": [],
-  "generated_at": "",
+  "checks": [
+    {
+      "name": "source_errors",
+      "status": "passed"
+    },
+    {
+      "name": "enrichment",
+      "status": "passed"
+    },
+    {
+      "name": "schema",
+      "status": "passed"
+    },
+    {
+      "name": "non_empty_catalog",
+      "product_count": 346,
+      "status": "passed"
+    },
+    {
+      "drop_ratio": 0.0,
+      "name": "product_count_drop",
+      "status": "passed"
+    }
+  ],
+  "events": [
+    {
+      "code": "publish_ok",
+      "level": "info",
+      "message": "Build quality checks passed."
+    }
+  ],
+  "generated_at": "2026-05-15T18:27:37-03:00",
   "last_good_sources": {},
-  "metrics": {},
+  "metrics": {
+    "current": {
+      "product_count": 346,
+      "sources": {
+        "filamentos3d": {
+          "name": "Filamentos3D",
+          "product_count": 316,
+          "status": "ok",
+          "total_stock_units": 13696
+        },
+        "grupo_senz": {
+          "name": "Grupo Senz",
+          "product_count": 230,
+          "status": "ok",
+          "total_stock_units": 10075
+        },
+        "mundoinsumos": {
+          "name": "MundoInsumos",
+          "product_count": 220,
+          "status": "ok",
+          "total_stock_units": 6807
+        }
+      },
+      "total_stock_units": 30578
+    },
+    "previous": {
+      "product_count": 346,
+      "sources": {
+        "filamentos3d": {
+          "name": "Filamentos3D",
+          "product_count": 316,
+          "status": "ok",
+          "total_stock_units": 13509
+        },
+        "grupo_senz": {
+          "name": "Grupo Senz",
+          "product_count": 230,
+          "status": "ok",
+          "total_stock_units": 11785
+        },
+        "mundoinsumos": {
+          "name": "MundoInsumos",
+          "product_count": 220,
+          "status": "ok",
+          "total_stock_units": 7532
+        }
+      },
+      "total_stock_units": 32826
+    }
+  },
   "should_publish": true,
-  "status": "not_run",
-  "summary": "Todavia no se genero un log tecnico."
+  "status": "ok",
+  "summary": "Publicacion habilitada. No se detectaron errores criticos."
 }

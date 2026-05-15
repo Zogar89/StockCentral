@@ -52,8 +52,14 @@
 
   $: filteredProducts = (filters, categoryOrder, products.filter(matchesFilters).sort(compareProducts));
   $: groups = (categoryOrder, groupProducts(filteredProducts));
-  $: lineOptions = lineValues();
-  $: availableLines = lineValues();
+  $: lineOptions = (products, lineValues());
+  $: availableLines = (products, lineValues());
+  $: materialOptions = (products, valuesFor("material"));
+  $: colorOptions = (products, valuesFor("color"));
+  $: diameterOptions = (products, valuesFor("diameter_mm"));
+  $: weightOptions = (products, valuesFor("weight_g"));
+  $: brandOptions = (products, valuesFor("brand"));
+  $: providerOptions = (products, providerValues());
   $: contactContext = [
     filters.query ? `"${filters.query}"` : "",
     filters.material,
@@ -244,13 +250,13 @@
       <span>Buscar</span>
       <input id="search-input" type="search" value={filters.query} on:input={(event) => setFilter("query", event.currentTarget.value)} placeholder="PLA negro, PETG, Grilon3...">
     </label>
-    <select id="material-filter" value={filters.material} on:change={(event) => setFilter("material", event.currentTarget.value)}><option value="">Material</option>{#each valuesFor("material") as value}<option value={value}>{value}</option>{/each}</select>
+    <select id="material-filter" value={filters.material} on:change={(event) => setFilter("material", event.currentTarget.value)}><option value="">Material</option>{#each materialOptions as value}<option value={value}>{value}</option>{/each}</select>
     <select id="variant-filter" value={filters.variant} on:change={(event) => setVariantFilter(event.currentTarget.value)}><option value="">Línea</option>{#each lineOptions as value}<option value={value}>{lineOptionLabel(value)}</option>{/each}</select>
-    <select id="color-filter" value={filters.color} on:change={(event) => setFilter("color", event.currentTarget.value)}><option value="">Color</option>{#each valuesFor("color") as value}<option value={value}>{value}</option>{/each}</select>
-    <select id="diameter-filter" value={filters.diameter} on:change={(event) => setFilter("diameter", event.currentTarget.value)}><option value="">Diámetro</option>{#each valuesFor("diameter_mm") as value}<option value={String(value)}>{value} mm</option>{/each}</select>
-    <select id="weight-filter" value={filters.weight} on:change={(event) => setFilter("weight", event.currentTarget.value)}><option value="">Peso</option>{#each valuesFor("weight_g") as value}<option value={String(value)}>{Number(value) / 1000} kg</option>{/each}</select>
-    <select id="brand-filter" value={filters.brand} on:change={(event) => setFilter("brand", event.currentTarget.value)}><option value="">Marca</option>{#each valuesFor("brand") as value}<option value={value}>{value}</option>{/each}</select>
-    <select id="provider-filter" value={filters.provider} on:change={(event) => setFilter("provider", event.currentTarget.value)}><option value="">Proveedor</option>{#each providerValues() as value}<option value={value}>{value}</option>{/each}</select>
+    <select id="color-filter" value={filters.color} on:change={(event) => setFilter("color", event.currentTarget.value)}><option value="">Color</option>{#each colorOptions as value}<option value={value}>{value}</option>{/each}</select>
+    <select id="diameter-filter" value={filters.diameter} on:change={(event) => setFilter("diameter", event.currentTarget.value)}><option value="">Diámetro</option>{#each diameterOptions as value}<option value={String(value)}>{value} mm</option>{/each}</select>
+    <select id="weight-filter" value={filters.weight} on:change={(event) => setFilter("weight", event.currentTarget.value)}><option value="">Peso</option>{#each weightOptions as value}<option value={String(value)}>{Number(value) / 1000} kg</option>{/each}</select>
+    <select id="brand-filter" value={filters.brand} on:change={(event) => setFilter("brand", event.currentTarget.value)}><option value="">Marca</option>{#each brandOptions as value}<option value={value}>{value}</option>{/each}</select>
+    <select id="provider-filter" value={filters.provider} on:change={(event) => setFilter("provider", event.currentTarget.value)}><option value="">Proveedor</option>{#each providerOptions as value}<option value={value}>{value}</option>{/each}</select>
     <select id="stock-filter" value={filters.stock} on:change={(event) => setFilter("stock", event.currentTarget.value)}>
       <option value="all">Todos</option>
       <option value="in_stock">Con stock</option>

@@ -87,6 +87,8 @@ def test_catalog_svelte_fetches_json_and_supports_required_filters():
     assert "matchesSearchTerms" in js
     assert "setFilter" in js
     assert "filters, categoryOrder, products.filter" in js
+    assert "materialOptions = (products, valuesFor" in js
+    assert "providerOptions = (products, providerValues" in js
     assert "matchesSearchToken" in js
     assert "searchTokens" in js
     assert 'term === "pla"' in js
@@ -96,6 +98,8 @@ def test_catalog_svelte_fetches_json_and_supports_required_filters():
     assert "presentation-row" in js
     assert "productBaseName" in js
     assert "quickLineValues" in js
+    assert "visibleLines" in js
+    assert "products, lineValues()" in js
     assert "quickLabel" in js
     assert "quickTone" in js
     assert '"ABS"' in js
@@ -177,9 +181,9 @@ def test_summary_svelte_uses_carretes_totals_and_provider_order():
     assert '"PLA Boutique"' in js
     assert '"Nylon 6"' in js
     assert "summaryGroupTargetId" in js
-    assert "updateStickyGroupRows" in js
-    assert "summaryStickyTop" in js
-    assert "is-stuck" in js
+    assert "updateStickyGroupRows" not in js
+    assert "summaryStickyTop" not in js
+    assert "is-stuck" not in js
     assert "footer-grid" in js
     assert "sourceWhatsappUrl" in js
     assert "contactContext" in js
@@ -276,9 +280,9 @@ def test_styles_are_compact_and_responsive():
     assert ".soft-button.active" in css
     assert ".summary-group-row" in css
     assert ".summary-group-row.quick-target" in css
-    assert ".summary-group-row.is-stuck td" in css
-    assert "color: transparent" in css
-    assert "top: calc(var(--quick-lines-height) + var(--summary-head-height))" in css
+    assert ".summary-group-row.is-stuck td" not in css
+    assert "color: transparent" not in css
+    assert "top: calc(var(--quick-lines-height) + var(--summary-head-height))" not in css
     assert ".summary-table tbody .summary-group-row th" in css
     assert ".internal-shell" in css
     assert ".build-health" in css

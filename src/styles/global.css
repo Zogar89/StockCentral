@@ -312,17 +312,13 @@ input {
 }
 
 .group-heading {
-  position: sticky;
-  top: var(--quick-lines-height);
-  z-index: 4;
   display: flex;
   align-items: center;
   gap: 10px;
   margin: 0 -2px;
   padding: 7px 2px 8px;
   border-bottom: 1px solid color-mix(in srgb, var(--line) 72%, transparent);
-  background: color-mix(in srgb, var(--bg) 88%, white);
-  backdrop-filter: blur(14px);
+  background: transparent;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.15;
@@ -1100,15 +1096,6 @@ input {
   background: color-mix(in srgb, var(--accent) 9%, #e9eef5);
 }
 
-.summary-group-row.is-stuck td {
-  color: transparent;
-}
-
-.summary-group-row.is-stuck td::before,
-.summary-group-row.is-stuck td::after {
-  color: transparent;
-}
-
 .summary-table thead th {
   position: sticky;
   top: var(--quick-lines-height);
@@ -1122,13 +1109,15 @@ input {
 
 .summary-table tbody .summary-group-row th,
 .summary-table tbody .summary-group-row td {
-  position: sticky;
-  top: calc(var(--quick-lines-height) + var(--summary-head-height));
-  z-index: 5;
+  position: static;
+  top: auto;
+  z-index: auto;
 }
 
 .summary-table tbody .summary-group-row th:first-child {
-  z-index: 6;
+  position: static;
+  left: auto;
+  z-index: auto;
 }
 
 .summary-total {
@@ -1329,9 +1318,9 @@ input {
   }
 
   .summary-table .summary-group-row {
-    position: sticky;
-    top: var(--quick-lines-height);
-    z-index: 4;
+    position: static;
+    top: auto;
+    z-index: auto;
     margin: 12px 0 6px;
     padding: 7px 10px;
     border-color: #c9d2df;

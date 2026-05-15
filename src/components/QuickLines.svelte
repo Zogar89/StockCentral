@@ -6,7 +6,8 @@
   export let help = "";
   export let id = "";
 
-  const availableSet = () => new Set(available);
+  $: availableSet = new Set(available);
+  $: visibleLines = quickLineValues.filter((line) => availableSet.has(line));
 
   function scrollToLine(line) {
     help = "";
@@ -23,7 +24,7 @@
 </script>
 
 <div id={id || undefined} class="quick-lines">
-  {#each quickLineValues.filter((line) => availableSet().has(line)) as line}
+  {#each visibleLines as line}
     {@const tone = lineMeta[line]?.quickTone || "default"}
     <button class={`quick-line quick-line-${tone}`} type="button" data-line={line} title={quickLineHint(line)} aria-label={`${quickLineLabel(line)}. ${quickLineHint(line)}`} on:click={() => scrollToLine(line)}>
       <span>{quickLineLabel(line)}</span>

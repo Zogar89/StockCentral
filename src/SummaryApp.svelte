@@ -1,5 +1,5 @@
 <script>
-  import { afterUpdate, onMount } from "svelte";
+  import { onMount } from "svelte";
   import QuickLines from "./components/QuickLines.svelte";
   import SiteFooter from "./components/SiteFooter.svelte";
   import {
@@ -24,7 +24,6 @@
   let query = "";
   let categoryOrder = "popular";
   let lineHelp = "";
-  let stickyReady = false;
 
   onMount(async () => {
     const payload = await fetchJson("data/stock.json", { products: [], sources: [] });
@@ -32,24 +31,13 @@
     sources = [...(payload.sources || [])].sort((a, b) => (zoneOrder[a.zone] ?? 99) - (zoneOrder[b.zone] ?? 99) || a.name.localeCompare(b.name, "es-AR"));
     generatedAt = payload.generated_at || "";
     rows = buildRows();
-    window.addEventListener("scroll", updateStickyGroupRows, { passive: true });
-    window.addEventListener("resize", updateStickyGroupRows);
-    return () => {
-      window.removeEventListener("scroll", updateStickyGroupRows);
-      window.removeEventListener("resize", updateStickyGroupRows);
-    };
-  });
-
-  afterUpdate(() => {
-    if (!stickyReady) stickyReady = true;
-    updateStickyGroupRows();
   });
 
   $: visibleRows = (query, rows.filter(matchesQuery));
   $: providerTotals = totalsForRows(visibleRows);
   $: grandTotal = Object.values(providerTotals).reduce((sum, value) => sum + value, 0);
   $: groupedRows = (categoryOrder, groupRows(visibleRows));
-  $: availableLines = [...new Set(products.map(lineLabel).filter(Boolean))];
+  $: availableLines = (products, [...new Set(products.map(lineLabel).filter(Boolean))]);
 
   function buildRows() {
     return products.map((product) => {
@@ -142,21 +130,6 @@
     return `resumen-linea-${slugText(group.title)}`;
   }
 
-  function updateStickyGroupRows() {
-    const stickyTop = summaryStickyTop();
-    document.querySelectorAll(".summary-group-row").forEach((row) => {
-      const rect = row.getBoundingClientRect();
-      row.classList.toggle("is-stuck", rect.top <= stickyTop + 1 && rect.bottom > stickyTop);
-    });
-  }
-
-  function summaryStickyTop() {
-    const styles = getComputedStyle(document.documentElement);
-    const quickLinesHeight = parseFloat(styles.getPropertyValue("--quick-lines-height")) || 0;
-    const summaryHeadHeight = parseFloat(styles.getPropertyValue("--summary-head-height")) || 0;
-    if (window.matchMedia("(max-width: 820px)").matches) return quickLinesHeight;
-    return quickLinesHeight + summaryHeadHeight;
-  }
 </script>
 
 <main class="shell">

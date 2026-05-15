@@ -654,27 +654,59 @@ input {
 }
 
 .site-footer {
-  border-top: 1px solid var(--line);
-  padding: 20px max(12px, calc((100% - 1180px) / 2)) 28px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+  padding: 24px max(12px, calc((100% - 1180px) / 2)) 30px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--soft) 46%, transparent), transparent 44%),
+    color-mix(in srgb, var(--background) 94%, white);
 }
 
 .footer-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .footer-provider {
   display: grid;
-  gap: 6px;
+  gap: 12px;
   color: var(--muted);
   scroll-margin-top: 16px;
   border-radius: 8px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--provider-accent, var(--accent)) 18%, var(--line));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--provider-accent, var(--accent)) 10%, transparent), transparent 38%),
+    var(--surface);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
 }
 
 .footer-provider:target {
-  outline: 2px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  outline-offset: 6px;
+  outline: 2px solid color-mix(in srgb, var(--provider-accent, var(--accent)) 38%, transparent);
+  outline-offset: 4px;
+}
+
+.footer-provider-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.provider-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 24% 24%, rgba(255, 255, 255, 0.8), transparent 34%),
+    linear-gradient(135deg, var(--provider-accent, var(--accent)), color-mix(in srgb, var(--provider-accent, var(--accent)) 62%, #f5c84b));
+  color: white;
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.42), 0 8px 18px rgba(15, 23, 42, 0.12);
 }
 
 .footer-provider h3 {
@@ -685,6 +717,117 @@ input {
 
 .footer-provider p {
   margin: 0;
+}
+
+.provider-zone,
+.footer-provider-details p {
+  display: flex;
+  min-width: 0;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.provider-zone {
+  margin-top: 3px;
+  font-weight: 700;
+}
+
+.footer-provider svg {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.provider-zone svg {
+  color: var(--provider-accent, var(--accent));
+}
+
+.footer-provider-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.footer-provider-stats > span {
+  min-width: 0;
+  padding: 8px 9px;
+  border: 1px solid color-mix(in srgb, var(--line) 76%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--soft) 58%, white);
+}
+
+.footer-provider-stats strong,
+.footer-provider-stats small {
+  display: block;
+}
+
+.footer-provider-stats strong {
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.1;
+}
+
+.footer-provider-stats small {
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.footer-provider-stats .stock-delta {
+  color: var(--muted);
+}
+
+.footer-provider-stats .stock-delta-up strong,
+.footer-provider-stats .stock-delta-up {
+  color: var(--ok);
+}
+
+.footer-provider-stats .stock-delta-down strong,
+.footer-provider-stats .stock-delta-down {
+  color: var(--out);
+}
+
+.footer-provider-details {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.footer-provider-details svg {
+  margin-top: 1px;
+  color: color-mix(in srgb, var(--provider-accent, var(--accent)) 72%, var(--muted));
+}
+
+.footer-actions a {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 6px;
+  border-color: color-mix(in srgb, var(--line) 78%, transparent);
+  background: color-mix(in srgb, var(--surface) 86%, white);
+  color: var(--text);
+  font-weight: 800;
+}
+
+.footer-actions a:hover {
+  border-color: color-mix(in srgb, var(--provider-accent, var(--accent)) 34%, var(--line));
+  color: var(--provider-accent, var(--accent));
+}
+
+.footer-actions svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .footer-meta {
@@ -706,6 +849,10 @@ input {
 
 .footer-meta p {
   margin: 0;
+}
+
+.footer-meta-actions {
+  justify-content: flex-end;
 }
 
 .table-shell {

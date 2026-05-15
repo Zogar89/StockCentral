@@ -1,8 +1,14 @@
 {
-  "events": [],
-  "generated_at": "",
+  "events": [
+    {
+      "code": "publish_ok",
+      "level": "info",
+      "message": "La actualizacion paso los controles y se puede publicar."
+    }
+  ],
+  "generated_at": "2026-05-15T18:27:37-03:00",
   "last_good_sources": {},
   "should_publish": true,
-  "status": "not_run",
-  "summary": "Todavia no se genero un log de negocio."
+  "status": "ok",
+  "summary": "Publicacion habilitada. No se detectaron errores criticos."
 }

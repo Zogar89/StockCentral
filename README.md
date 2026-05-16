@@ -66,6 +66,8 @@ python -m centraldefilamentos.generate_thumbnails --stock-json public/data/stock
 
 Actualizar la cache local de metadatos e imagenes oficiales de Grilon3, solo cuando Grilon3 cambie o agregue filamentos:
 
+> No usar estos comandos para corregir fotos puntuales. La curacion de imagenes se hace producto por producto, con revision humana. Ver `docs/image-curation.md`.
+
 ```bash
 python -m centraldefilamentos.cache_grilon3_metadata --timeout-seconds 10 --max-workers 8
 python -m centraldefilamentos.build_data --output public/data/stock.json
@@ -73,6 +75,8 @@ python -m centraldefilamentos.generate_thumbnails --stock-json public/data/stock
 ```
 
 Si solo hace falta volver a descargar imagenes usando la cache existente, sin leer otra vez las fichas de producto:
+
+> No usar `--images-only` para arreglos puntuales si no hay aprobacion explicita para refrescar imagenes en lote.
 
 ```bash
 python -m centraldefilamentos.cache_grilon3_metadata --images-only --timeout-seconds 20

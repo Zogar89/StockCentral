@@ -451,30 +451,6 @@ def _title_from_product_url(url: str) -> str:
     if parts and parts[-1] == "285":
         diameter = "2.85 mm"
         parts = parts[:-1]
-    if parts[:4] == ["filamento", "3d", "pla", "nt"]:
-        title = "PLA 870 " + " ".join(part.title() for part in parts[4:])
-        pieces = [title, "Grilon3", "1 kg"]
-        if diameter:
-            pieces.append(diameter)
-        return " ".join(pieces)
-    if parts[:3] == ["filamento", "3d", "pla"] and parts[-1:] == ["2"]:
-        title = "PLA 850 " + " ".join(part.title() for part in parts[3:-1])
-        pieces = [title, "Grilon3", "1 kg"]
-        if diameter:
-            pieces.append(diameter)
-        return " ".join(pieces)
-    if parts[:2] == ["pp", "t"]:
-        title = "PP-T " + " ".join(part.title() for part in parts[2:])
-        pieces = [title, "Grilon3", "1 kg"]
-        if diameter:
-            pieces.append(diameter)
-        return " ".join(pieces)
-    if parts[:3] == ["filamento", "3d", "acetal"]:
-        title = "Acetal-POM " + " ".join(part.title() for part in parts[3:])
-        pieces = [title, "Grilon3", "1 kg"]
-        if diameter:
-            pieces.append(diameter)
-        return " ".join(pieces)
     title = " ".join(part.upper() if part in {"pla", "petg", "abs", "hips"} else part.title() for part in parts)
     pieces = [title, "Grilon3", "1 kg"]
     if diameter:

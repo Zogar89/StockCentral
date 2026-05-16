@@ -16,7 +16,6 @@ FILAMENTOS3D_CATEGORY_URLS = {
     "3nflex-pla-plus": "https://filamentos3d.com.ar/66-3nflex-pla-175mm",
     "3n3-petg": "https://filamentos3d.com.ar/48-3n3-petg-175mm",
     "3n3-epet": "https://filamentos3d.com.ar/40-3n3-epet-175mm",
-    "3n3-tpu": "https://filamentos3d.com.ar/25-3n3-tpu-175mm",
 }
 
 

@@ -251,44 +251,6 @@ def test_parse_grilon3_sitemap_adds_285_catalog_products():
     assert catalog["petg-negro-285-1000-grilon3"].title == "PETG Negro Grilon3 1 kg 2.85 mm"
 
 
-def test_parse_grilon3_sitemap_maps_pla_nt_urls_to_pla_870():
-    xml = """
-    <urlset>
-      <url><loc>https://grilon3.com.ar/producto/filamento-3d-pla-nt-blanco/</loc></url>
-    </urlset>
-    """
-
-    catalog = parse_grilon3_sitemap(xml)
-
-    assert catalog["pla-pla-870-blanco-unknown-1000-grilon3"].title == "PLA 870 Blanco Grilon3 1 kg"
-
-
-def test_parse_grilon3_sitemap_maps_second_plain_pla_urls_to_pla_850():
-    xml = """
-    <urlset>
-      <url><loc>https://grilon3.com.ar/producto/filamento-3d-pla-bronce-2/</loc></url>
-    </urlset>
-    """
-
-    catalog = parse_grilon3_sitemap(xml)
-
-    assert catalog["pla-pla-850-bronce-unknown-1000-grilon3"].title == "PLA 850 Bronce Grilon3 1 kg"
-
-
-def test_parse_grilon3_sitemap_maps_technical_material_urls():
-    xml = """
-    <urlset>
-      <url><loc>https://grilon3.com.ar/producto/pp-t-amarillo/</loc></url>
-      <url><loc>https://grilon3.com.ar/producto/filamento-3d-acetal-blanco/</loc></url>
-    </urlset>
-    """
-
-    catalog = parse_grilon3_sitemap(xml)
-
-    assert catalog["pp-pp-t-amarillo-unknown-1000-grilon3"].title == "PP-T Amarillo Grilon3 1 kg"
-    assert catalog["acetal-acetal-pom-blanco-unknown-1000-grilon3"].title == "Acetal-POM Blanco Grilon3 1 kg"
-
-
 def test_fetch_grilon3_sitemap_catalog_downloads_sitemap(monkeypatch):
     calls = []
 

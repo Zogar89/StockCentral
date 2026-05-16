@@ -362,41 +362,5 @@
     "image_url": "assets/filamentos3d/3n3-box-pla-175mm-violeta-x1kg-c7214eea.jpg",
     "line_code": "3n3-pla",
     "provider_product_url": "https://filamentos3d.com.ar/pla-3n3-175mm-1kg/3n3-box-pla-175mm-violeta-x1kg-223.html"
-  },
-  "tpu-azul-175-500-3n3": {
-    "image_remote_url": "https://filamentos3d.com.ar/1021-product_main/3n3-tpu-azul-175mm-x500gr.jpg",
-    "image_url": "assets/filamentos3d/3n3-tpu-azul-175mm-x500gr-fac217bc.jpg",
-    "line_code": "3n3-tpu",
-    "provider_product_url": "https://filamentos3d.com.ar/flexibles/3n3-tpu-azul-175mm-x500gr-37.html"
-  },
-  "tpu-blanco-175-500-3n3": {
-    "image_remote_url": "https://filamentos3d.com.ar/1016-product_main/3n3-tpu-blanco-175mm-x500gr.jpg",
-    "image_url": "assets/filamentos3d/3n3-tpu-blanco-175mm-x500gr-cd8adddf.jpg",
-    "line_code": "3n3-tpu",
-    "provider_product_url": "https://filamentos3d.com.ar/flexibles/3n3-tpu-blanco-175mm-x500gr-31.html"
-  },
-  "tpu-gris-plomo-175-500-3n3": {
-    "image_remote_url": "https://filamentos3d.com.ar/1018-product_main/3n3-tpu-gris-plomo-175mm-x500gr.jpg",
-    "image_url": "assets/filamentos3d/3n3-tpu-gris-plomo-175mm-x500gr-33f4255d.jpg",
-    "line_code": "3n3-tpu",
-    "provider_product_url": "https://filamentos3d.com.ar/flexibles/3n3-tpu-gris-plomo-175mm-x500gr-34.html"
-  },
-  "tpu-negro-175-500-3n3": {
-    "image_remote_url": "https://filamentos3d.com.ar/1017-product_main/3n3-tpu-negro-175mm-x500gr.jpg",
-    "image_url": "assets/filamentos3d/3n3-tpu-negro-175mm-x500gr-0bfeb097.jpg",
-    "line_code": "3n3-tpu",
-    "provider_product_url": "https://filamentos3d.com.ar/flexibles/3n3-tpu-negro-175mm-x500gr-33.html"
-  },
-  "tpu-rojo-175-500-3n3": {
-    "image_remote_url": "https://filamentos3d.com.ar/1019-product_main/3n3-tpu-rojo-175mm-x500gr.jpg",
-    "image_url": "assets/filamentos3d/3n3-tpu-rojo-175mm-x500gr-98322bd2.jpg",
-    "line_code": "3n3-tpu",
-    "provider_product_url": "https://filamentos3d.com.ar/flexibles/3n3-tpu-rojo-175mm-x500gr-35.html"
-  },
-  "tpu-verde-175-500-3n3": {
-    "image_remote_url": "https://filamentos3d.com.ar/1020-product_main/3n3-tpu-verde-175mm-x500gr.jpg",
-    "image_url": "assets/filamentos3d/3n3-tpu-verde-175mm-x500gr-995e9206.jpg",
-    "line_code": "3n3-tpu",
-    "provider_product_url": "https://filamentos3d.com.ar/flexibles/3n3-tpu-verde-175mm-x500gr-36.html"
   }
 }

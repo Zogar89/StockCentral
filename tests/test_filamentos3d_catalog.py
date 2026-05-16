@@ -2,7 +2,6 @@ from pathlib import Path
 
 from centraldefilamentos.cache_filamentos3d_metadata import download_filamentos3d_images
 from centraldefilamentos.connectors.filamentos3d_catalog import (
-    FILAMENTOS3D_CATEGORY_URLS,
     ProviderCatalogProduct,
     parse_filamentos3d_category,
     parse_filamentos3d_product_detail,
@@ -33,10 +32,6 @@ def test_parse_filamentos3d_category_extracts_product_links_and_ids():
     assert products[0].line_code == "3n3-pla"
     assert products[0].image_url == "https://filamentos3d.com.ar/1482-home_default/3n3-box-pla-175mm-negro-x1kg.jpg"
     assert products[1].product_url == "https://filamentos3d.com.ar/3nmax-pla/3nmax-pla-plus-rojo-175mm-x750g-301.html"
-
-
-def test_filamentos3d_catalog_includes_3n3_tpu_category():
-    assert FILAMENTOS3D_CATEGORY_URLS["3n3-tpu"] == "https://filamentos3d.com.ar/25-3n3-tpu-175mm"
 
 
 def test_parse_filamentos3d_product_detail_prefers_main_image_and_ignores_related_products():

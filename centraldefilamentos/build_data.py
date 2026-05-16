@@ -5,7 +5,6 @@ import json
 import re
 import unicodedata
 from collections import Counter
-from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 from typing import Mapping
@@ -51,7 +50,6 @@ DEFAULT_ENRICHMENT = {
     "sku": "",
     "ean": "",
 }
-GRILON3_TECHNICAL_CATEGORY_URL = "https://grilon3.com.ar/categoria-producto/tecnicos/"
 
 
 def build_payload(
@@ -568,8 +566,6 @@ def build_grilon3_enrichments(
         if not enrichment["image_url"] and cache_data.get("image_url"):
             enrichment["image_url"] = cache_data["image_url"]
             enrichment["image_source"] = "manufacturer"
-        if not enrichment["manufacturer_product_url"] and fields.variant in {"PP-T", "Acetal-POM"}:
-            enrichment["manufacturer_product_url"] = GRILON3_TECHNICAL_CATEGORY_URL
         if enrichment["manufacturer_product_url"] or enrichment["image_url"]:
             enrichments[product_id] = enrichment
         elif enrichment["pantone"] or enrichment["sku"] or enrichment["ean"]:
@@ -590,7 +586,7 @@ def build_filamentos3d_enrichments(
         if fields.brand != "3N3":
             continue
         product_id = build_product_id(fields)
-        cache_data = _filamentos3d_metadata_for_fields(metadata, fields)
+        cache_data = metadata.get(product_id, {})
         image_url = cache_data.get("image_url", "")
         if not image_url:
             continue
@@ -604,40 +600,6 @@ def build_filamentos3d_enrichments(
         enrichments[product_id] = enrichment
 
     return enrichments
-
-
-def _filamentos3d_metadata_for_fields(metadata: Mapping[str, dict[str, str]], fields) -> dict[str, str]:
-    product_id = build_product_id(fields)
-    cache_data = metadata.get(product_id, {})
-    if cache_data:
-        return cache_data
-    if fields.brand == "3N3" and fields.material == "TPU" and fields.variant == "Flex":
-        provider_fields = replace(fields, variant="")
-        return metadata.get(build_product_id(provider_fields), {}) or _filamentos3d_family_metadata(metadata, provider_fields)
-    return {}
-
-
-def _filamentos3d_family_metadata(metadata: Mapping[str, dict[str, str]], fields) -> dict[str, str]:
-    brand = _slug(getattr(fields, "brand", ""))
-    prefix = "-".join(
-        _slug(part)
-        for part in [getattr(fields, "material", ""), getattr(fields, "variant", ""), getattr(fields, "color", "")]
-        if part
-    )
-    if not brand or not prefix:
-        return {}
-    weight = getattr(fields, "weight_g", None)
-    matches = [
-        (key, data)
-        for key, data in metadata.items()
-        if key.startswith(f"{prefix}-")
-        and key.endswith(f"-{brand}")
-        and (weight is None or f"-{weight}-" in key)
-    ]
-    if not matches:
-        return {}
-    matches.sort(key=lambda item: item[0])
-    return dict(matches[0][1])
 
 
 def _is_sampler_or_3d_pen_item(item: RawStockItem) -> bool:
@@ -806,83 +768,16 @@ def _clean_error_message(error: object) -> str:
 
 
 def _grilon3_metadata_for_fields(metadata: Mapping[str, dict[str, str]], fields) -> dict[str, str]:
-    family = _matching_grilon3_family_metadata(metadata, fields)
-    exact = _matching_grilon3_metadata(metadata, _grilon3_metadata_cache_key(fields), fields)
-    unknown_diameter = _matching_grilon3_metadata(metadata, _grilon3_metadata_unknown_diameter_cache_key(fields), fields)
-    legacy = _matching_grilon3_metadata(metadata, _grilon3_metadata_legacy_cache_key(fields), fields)
-    return {**family, **legacy, **unknown_diameter, **exact}
-
-
-def _matching_grilon3_metadata(metadata: Mapping[str, dict[str, str]], base_key: str, fields) -> dict[str, str]:
-    matches = [
-        (key, data)
-        for key, data in metadata.items()
-        if key == base_key or key.startswith(f"{base_key}-")
-    ]
-    matches.sort(key=lambda item: _grilon3_metadata_match_sort_key(item[0], item[1], base_key, fields))
-    merged: dict[str, str] = {}
-    for _, data in matches:
-        clean = _strip_large_presentation_metadata(data, fields)
-        clean = _strip_color_mismatched_image_metadata(clean, fields)
-        for key, value in clean.items():
-            if value and not merged.get(key):
-                merged[key] = value
-    return merged
-
-
-def _matching_grilon3_family_metadata(metadata: Mapping[str, dict[str, str]], fields) -> dict[str, str]:
-    brand = _slug(getattr(fields, "brand", ""))
-    prefixes = _grilon3_metadata_family_prefixes(fields)
-    if not brand or not prefixes:
-        return {}
-    matches = [
-        (key, data)
-        for key, data in metadata.items()
-        if any(key.startswith(f"{prefix}-") for prefix in prefixes) and (key.endswith(f"-{brand}") or f"-{brand}-" in key)
-    ]
-    matches.sort(key=lambda item: _grilon3_metadata_match_sort_key(item[0], item[1], "", fields))
-    merged: dict[str, str] = {}
-    for _, data in matches:
-        clean = _strip_large_presentation_metadata(data, fields)
-        clean = _strip_color_mismatched_image_metadata(clean, fields)
-        for key, value in clean.items():
-            if value and not merged.get(key):
-                merged[key] = value
-    return merged
-
-
-def _grilon3_metadata_family_prefixes(fields) -> list[str]:
-    material = getattr(fields, "material", "")
-    variant = getattr(fields, "variant", "")
-    color = getattr(fields, "color", "")
-    prefixes = [
-        "-".join(_slug(part) for part in [material, variant, color] if part)
-    ]
-    if material == "PETG" and not variant and (color.startswith("Clear ") or color == "Nova"):
-        prefixes.append("-".join(_slug(part) for part in [material, "PETG Clear", color] if part))
-    return list(dict.fromkeys(prefix for prefix in prefixes if prefix))
-
-
-def _grilon3_metadata_match_sort_key(key: str, data: Mapping[str, str], base_key: str, fields) -> tuple[int, int, int, str]:
-    exact_key_rank = 0 if key == base_key else 1
-    large = _is_large_presentation_metadata(data)
-    if fields.weight_g and fields.weight_g >= 2500:
-        large_rank = 0 if large else 1
-    else:
-        large_rank = 0 if not large else 1
-    return (exact_key_rank, _grilon3_metadata_diameter_rank(key, fields), large_rank, key)
-
-
-def _grilon3_metadata_diameter_rank(key: str, fields) -> int:
-    diameter = getattr(fields, "diameter_mm", None)
-    if diameter is None:
-        return 0 if "-unknown-" in key else 1
-    diameter_slug = str(diameter).replace(".", "")
-    if f"-{diameter_slug}-" in key:
-        return 0
-    if "-unknown-" in key:
-        return 1
-    return 2
+    exact = metadata.get(_grilon3_metadata_cache_key(fields), {})
+    unknown_diameter = metadata.get(_grilon3_metadata_unknown_diameter_cache_key(fields), {})
+    legacy = metadata.get(_grilon3_metadata_legacy_cache_key(fields), {})
+    legacy = _strip_large_presentation_metadata(legacy, fields)
+    unknown_diameter = _strip_large_presentation_metadata(unknown_diameter, fields)
+    exact = _strip_large_presentation_metadata(exact, fields)
+    legacy = _strip_color_mismatched_image_metadata(legacy, fields)
+    unknown_diameter = _strip_color_mismatched_image_metadata(unknown_diameter, fields)
+    exact = _strip_color_mismatched_image_metadata(exact, fields)
+    return {**legacy, **unknown_diameter, **exact}
 
 
 def _grilon3_metadata_cache_key(fields) -> str:
@@ -913,19 +808,15 @@ def _strip_large_presentation_metadata(data: Mapping[str, str], fields) -> dict[
     clean = dict(data)
     if fields.weight_g and fields.weight_g >= 2500:
         return clean
-    if not _is_large_presentation_metadata(clean):
+    marker_text = " ".join(
+        clean.get(key, "")
+        for key in ["manufacturer_product_url", "image_url", "sku", "ean"]
+    ).lower()
+    if "megafill" not in marker_text and "maxicarrete" not in marker_text:
         return clean
     for key in ["manufacturer_product_url", "image_url", "sku", "ean"]:
         clean.pop(key, None)
     return clean
-
-
-def _is_large_presentation_metadata(data: Mapping[str, str]) -> bool:
-    marker_text = " ".join(
-        data.get(key, "")
-        for key in ["manufacturer_product_url", "image_url", "sku", "ean"]
-    ).lower()
-    return "megafill" in marker_text or "maxicarrete" in marker_text
 
 
 def _strip_color_mismatched_image_metadata(data: Mapping[str, str], fields) -> dict[str, str]:
@@ -941,8 +832,9 @@ def _strip_color_mismatched_image_metadata(data: Mapping[str, str], fields) -> d
 
 
 def _image_metadata_color(data: Mapping[str, str]) -> str:
-    image_text = " ".join(data.get(key, "") for key in ["manufacturer_product_url", "image_url", "image_remote_url"])
-    slug = _slug(image_text)
+    image_text = " ".join(data.get(key, "") for key in ["image_url", "image_remote_url"])
+    filename = image_text.rsplit("/", 1)[-1]
+    slug = _slug(filename)
     compact = slug.replace("-", "")
     for pattern, color in sorted(COLOR_RULES, key=lambda item: len(_slug(item[0])), reverse=True):
         pattern_slug = _slug(pattern)

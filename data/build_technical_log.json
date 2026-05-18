@@ -30,7 +30,7 @@
       "message": "Build quality checks passed."
     }
   ],
-  "generated_at": "2026-05-15T23:01:49-03:00",
+  "generated_at": "2026-05-18T10:26:57-03:00",
   "last_good_sources": {},
   "metrics": {
     "current": {
@@ -40,7 +40,7 @@
           "name": "Filamentos3D",
           "product_count": 316,
           "status": "ok",
-          "total_stock_units": 13696
+          "total_stock_units": 13582
         },
         "grupo_senz": {
           "name": "Grupo Senz",
@@ -52,10 +52,10 @@
           "name": "MundoInsumos",
           "product_count": 220,
           "status": "ok",
-          "total_stock_units": 6807
+          "total_stock_units": 6199
         }
       },
-      "total_stock_units": 30578
+      "total_stock_units": 29856
     },
     "previous": {
       "product_count": 346,
